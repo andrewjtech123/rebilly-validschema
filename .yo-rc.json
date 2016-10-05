@@ -1,0 +1,12 @@
+{
+  "generator-openapi-repo": {
+    "importExistingSpec": true,
+    "importedSpec": "/Users/andrewjohnston/rebilly-validschema/swagger.json",
+    "name": "Draft Orders",
+    "redocVersion": "latest",
+    "repo": "andrewjtech123/rebilly-validschema",
+    "splitSpec": false,
+    "samples": true,
+    "installSwaggerUI": true
+  }
+}
