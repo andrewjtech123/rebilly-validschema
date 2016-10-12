@@ -10,13 +10,13 @@ basePath: /openapi101
 paths:
   /admin/draft_orders.json:
     get:
-      summary: Gets draft orders 
-      description: Retrieve a list of all Draft Orders 
+      summary: Gets draft orders
+      description: Retrieve a list of all Draft Orders
       parameters:
       - $ref: '#/parameters/fields'
       - $ref: '#/parameters/limit'
       - $ref: '#/parameters/page'
-          
+
       responses:
         '200':
           description: List of DraftOrder
@@ -84,8 +84,8 @@ paths:
               }
             }
 
-          
-      
+
+
       responses:
         '200':
           description: returns draft_order object
@@ -113,9 +113,9 @@ paths:
       responses:
         '200':
            description: Count of draft orders
-           schema: 
+           schema:
              type: integer
-  
+
   /admin/draft_orders/#{id}/shipping_rates.json':
     parameters:
       - $ref: '#/parameters/id'
@@ -136,7 +136,7 @@ paths:
 
           #### Rates have been requested and are available
           ```
-          
+
         # Response HTTP/1.1 200 OK {
           "shipping_rates": [
             {
@@ -144,7 +144,7 @@ paths:
               “phone_required”: false,
               "price": "10.00",
               "title": "Standard Shipping",
-              “draft_order”: 
+              “draft_order”:
               {
                  “subtotal_price”: “10.00”,
                  “total_price”: “21.50”,
@@ -156,7 +156,7 @@ paths:
               “phone_required”: false,
               "price": "19.45",
               "title": "UPS Standard",
-              “draft_order”: 
+              “draft_order”:
               {
                  “subtotal_price”: “10.00”,
                  “total_price”: “30.95”,
@@ -168,7 +168,7 @@ paths:
               “phone_required”: true,
               "price": "19.69",
               "title": "UPS Expedited",
-              “draft_order”: 
+              “draft_order”:
               {
                  “subtotal_price”: “10.00”,
                  “total_price”: “31.19”,
@@ -178,8 +178,8 @@ paths:
           ]
         }
 
-          
-          
+
+
         ```
           #### Rates have been requested but none are available for the current shipping address
 
@@ -225,9 +225,9 @@ paths:
           examples: {}
         '412':
           $ref: "#/responses/412PreconditionFailed"
-            
-          
-           
+
+
+
   '/admin/draft_orders/#{id}/send_invoice.json':
     post:
       summary: >-
@@ -243,8 +243,8 @@ paths:
           in: path
           required: true
           type: integer
-        
-        
+
+
       responses:
         '200':
           description: draft order invoice
@@ -329,13 +329,13 @@ definitions:
       shipping_address:
         type: string
         description: The mailing address to where the draft order will be shipped.
-      billing_address: 
+      billing_address:
         type: string
         description: The mailing address associated with the payment method.
       note:
         type: string
         description: The text of an optional note that a shop owner can attach to the draft order.
-      email: 
+      email:
         type: string
         description: The email address used for sending notifications.
       currency:
@@ -347,26 +347,26 @@ definitions:
       invoice_url:
         type: string
         description: The url to send to the customer so that they can complete the checkout.  When using send_invoice, this url is emailed to the customer. This field can be used so that an API client can use another method of communication to provide the url to the customer.
-        
+
       line_items:
         type: array
         items:
           $ref: '#/definitions/line_item'
-          
-      metafields: 
+
+      metafields:
         type: array
         items:
           $ref: '#/definitions/metafield'
-          
+
       shipping_line:
         type: object
         items:
           $ref: '#/definitions/shipping_line'
-          
+
       tags:
         type: string
         description: Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. Each individual tag is limited to 40 characters in length.
-      tax_exempt: 
+      tax_exempt:
         type: boolean
         description: Sets whether taxes are exempt for this draft order. If this value is false, Shopify will honor the tax_exempt value for each line_item.
       tax_lines:
@@ -379,35 +379,35 @@ definitions:
       taxes_included:
         type: boolean
         description: Shop settings taxes are included in the price
-        
+
       total_tax:
         type: string
         description: Total tax amount
-        
+
       subtotal_price:
         type: string
         description: Subtotal after discounts, before shipping and taxes have been applied
-        
-      total_price: 
+
+      total_price:
         type: string
         description: Includes discounts, shipping and taxes
-        
+
       completed_at:
         type: string
         format: date-time
         description: Date at which an order was created and the draft order moved to “completed” status.
       created_at:
         type: string
-        description: description  
-        
+        description: description
+
       updated_at:
         type: string
         description: description
-        
+
       status:
         type: string
         description: description
-        
+
   draft_order_invoice:
     type: object
     properties:
@@ -463,7 +463,7 @@ definitions:
       title:
         type: string
         description: title of the shipping rate
-        
+
   shipping_line:
     type: object
 
@@ -474,7 +474,7 @@ definitions:
         type: integer
         format: int64
         description: description of the metafield
-        
+
   tax_line:
     type: object
 
@@ -487,7 +487,7 @@ definitions:
         type: string
       message:
         type: string
-        
+
 parameters:
   fields:
     name: fields
@@ -495,8 +495,8 @@ parameters:
     description: Comma-separated list of fields to include in the response
     required: false
     type: string
-    
-    
+
+
   limit:
     name: limit
     in: query
@@ -518,10 +518,9 @@ parameters:
     description: id of the draft order
     type: string
 
-    
+
 responses:
   412PreconditionFailed:
     description: Draft order doesn't have a shipping address.
     schema:
       $ref: "#/definitions/Error"
-
