@@ -1,601 +1,527 @@
-{
-    "swagger": "2.0",
-    "info": {
-        "version": "1.0.0",
-        "title": "Draft Orders API",
-        "description": "Shopify Draft Orders API"
-    },
-    "schemes": [
-        "https"
-    ],
-    "host": "simple.api",
-    "basePath": "/openapi101",
-    "paths": {
-        "/admin/draft_orders.json": {
-            "get": {
-                "summary": "Gets draft orders test test test",
-                "description": "Retrieve a list of all Draft Orders please !!!! and thank you",
-                "parameters": [
-                    {
-                        "$ref": "#/parameters/fields"
-                    },
-                    {
-                        "$ref": "#/parameters/limit"
-                    },
-                    {
-                        "$ref": "#/parameters/page"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of DraftOrder",
-                        "schema": {
-                            "$ref": "#/definitions/DraftOrder"
-                        }
-                    }
-                }
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Draft Orders API
+  description: Shopify Draft Orders API
+schemes:
+  - https
+host: simple.api
+basePath: /openapi101
+paths:
+  /admin/draft_orders.json:
+    get:
+      summary: Gets draft orders test test
+      description: Retrieve a list of all Draft Orders 
+      parameters:
+      - $ref: '#/parameters/fields'
+      - $ref: '#/parameters/limit'
+      - $ref: '#/parameters/page'
+          
+      responses:
+        '200':
+          description: List of DraftOrder
+          schema:
+            $ref: '#/definitions/DraftOrder'
+    post:
+      summary: Creates a draft order
+      description: send a draft order in body of the request
+      parameters:
+        - name: draftorder
+          in: body
+          description: The draft order to create.
+          required: true
+          schema:
+            $ref: '#/definitions/DraftOrder'
+      responses:
+        '200':
+          description: The draft order you created
+          schema:
+            $ref: '#/definitions/DraftOrder'
+        '400':
+          description: example
+          schema:
+            $ref: '#/definitions/DraftOrder'
+  '/admin/draft_orders/#{id}.json':
+    get:
+      summary: Receive a single Draft Order
+      description: Receive a single Draft Order
+      parameters:
+        - name: id
+          in: path
+          description: draft order id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: A single DraftOrder
+          schema:
+            $ref: '#/definitions/DraftOrder'
+    put:
+      summary: Modify an existing draft order
+      parameters:
+        - name: draft_order
+          in: body
+          description: the draft order to modify.
+          schema:
+            $ref: "#/definitions/DraftOrder"
+        - name: id
+          in: path
+          description: draft order id
+          required: true
+          type: integer
+      description: |
+        Modify an existing draft order.
+        ### Example
+          Only showing the parameters needed to select a particular shipping rate as returned from
+            `GET /admin/draft_orders/#{id}/shipping_rates`
+
+
+            draft_order: {
+              shipping_line: {
+                handle: ,
+                phone:
+              }
+            }
+
+          
+      
+      responses:
+        '200':
+          description: returns draft_order object
+          schema:
+            $ref: '#/definitions/DraftOrder'
+    delete:
+      summary: removes a draft order from the database.
+      description: 'retruns {}'
+      parameters:
+        - name: id
+          in: path
+          description: draft order id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: A single DraftOrder
+          schema:
+            $ref: '#/definitions/DraftOrder'
+  /admin/draft_orders/count.json:
+    get:
+      summary: Return count
+      description: Returns count of draft orders
+      responses:
+        '200':
+           description: Count of draft orders
+           schema: 
+             type: integer
+  
+  /admin/draft_orders/#{id}/shipping_rates.json':
+    parameters:
+      - $ref: '#/parameters/id'
+    get:
+      summary: gets shipping rates for a specific draft order
+      parameters:
+        - name: id
+          in: path
+          description: draft order id
+          required: true
+          type: integer
+      description: >
+        Get a list of available shipping rates for the specified draft order.
+        Implementers will need to poll this endpoint until rates become
+        available. Calling this endpoint without first specifying a shipping
+        address on the draft order will return an error response. Possible
+        responses outlined below.
+
+          #### Rates have been requested and are available
+          ```
+          
+        # Response HTTP/1.1 200 OK {
+          "shipping_rates": [
+            {
+              "handle": "shopify-Standard%20Shipping-10.00",
+              “phone_required”: false,
+              "price": "10.00",
+              "title": "Standard Shipping",
+              “draft_order”: 
+              {
+                 “subtotal_price”: “10.00”,
+                 “total_price”: “21.50”,
+                 “total_tax”: “1.50”
+              }
             },
-            "post": {
-                "summary": "Creates a draft order",
-                "description": "send a draft order in body of the request",
-                "parameters": [
-                    {
-                        "name": "draftorder",
-                        "in": "body",
-                        "description": "The draft order to create.",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/DraftOrder"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The draft order you created",
-                        "schema": {
-                            "$ref": "#/definitions/DraftOrder"
-                        }
-                    },
-                    "400": {
-                        "description": "example",
-                        "schema": {
-                            "$ref": "#/definitions/DraftOrder"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/draft_orders/#{id}.json": {
-            "get": {
-                "summary": "Receive a single Draft Order",
-                "description": "Receive a single Draft Order",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "draft order id",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A single DraftOrder",
-                        "schema": {
-                            "$ref": "#/definitions/DraftOrder"
-                        }
-                    }
-                }
+            {
+              "handle": "ups-11-19.45",
+              “phone_required”: false,
+              "price": "19.45",
+              "title": "UPS Standard",
+              “draft_order”: 
+              {
+                 “subtotal_price”: “10.00”,
+                 “total_price”: “30.95”,
+                 “total_tax”: “1.50”
+              }
             },
-            "put": {
-                "summary": "Modify an existing draft order",
-                "parameters": [
-                    {
-                        "name": "draft_order",
-                        "in": "body",
-                        "description": "the draft order to modify.",
-                        "schema": {
-                            "$ref": "#/definitions/DraftOrder"
-                        }
-                    },
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "draft order id",
-                        "required": true,
-                        "type": "integer"
-                    }
-                ],
-                "description": "Modify an existing draft order.\n### Example\n  Only showing the parameters needed to select a particular shipping rate as returned from\n    `GET /admin/draft_orders/#{id}/shipping_rates`\n\n\n    draft_order: {\n      shipping_line: {\n        handle: ,\n        phone:\n      }\n    }\n\n  \n",
-                "responses": {
-                    "200": {
-                        "description": "returns draft_order object",
-                        "schema": {
-                            "$ref": "#/definitions/DraftOrder"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "summary": "removes a draft order from the database.",
-                "description": "retruns {}",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "draft order id",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A single DraftOrder",
-                        "schema": {
-                            "$ref": "#/definitions/DraftOrder"
-                        }
-                    }
-                }
+            {
+              "handle": "ups-02-19.69",
+              “phone_required”: true,
+              "price": "19.69",
+              "title": "UPS Expedited",
+              “draft_order”: 
+              {
+                 “subtotal_price”: “10.00”,
+                 “total_price”: “31.19”,
+                 “total_tax”: “1.50”
+              }
             }
-        },
-        "/admin/draft_orders/count.json": {
-            "get": {
-                "summary": "Return count",
-                "description": "Returns count of draft orders",
-                "responses": {
-                    "200": {
-                        "description": "Count of draft orders",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/draft_orders/#{id}/shipping_rates.json'": {
-            "parameters": [
-                {
-                    "$ref": "#/parameters/id"
-                }
-            ],
-            "get": {
-                "summary": "gets shipping rates for a specific draft order",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "draft order id",
-                        "required": true,
-                        "type": "integer"
-                    }
-                ],
-                "description": "Get a list of available shipping rates for the specified draft order. Implementers will need to poll this endpoint until rates become available. Calling this endpoint without first specifying a shipping address on the draft order will return an error response. Possible responses outlined below.\n\n  #### Rates have been requested and are available\n  ```\n  \n# Response HTTP/1.1 200 OK {\n  \"shipping_rates\": [\n    {\n      \"handle\": \"shopify-Standard%20Shipping-10.00\",\n      “phone_required”: false,\n      \"price\": \"10.00\",\n      \"title\": \"Standard Shipping\",\n      “draft_order”: \n      {\n         “subtotal_price”: “10.00”,\n         “total_price”: “21.50”,\n         “total_tax”: “1.50”\n      }\n    },\n    {\n      \"handle\": \"ups-11-19.45\",\n      “phone_required”: false,\n      \"price\": \"19.45\",\n      \"title\": \"UPS Standard\",\n      “draft_order”: \n      {\n         “subtotal_price”: “10.00”,\n         “total_price”: “30.95”,\n         “total_tax”: “1.50”\n      }\n    },\n    {\n      \"handle\": \"ups-02-19.69\",\n      “phone_required”: true,\n      \"price\": \"19.69\",\n      \"title\": \"UPS Expedited\",\n      “draft_order”: \n      {\n         “subtotal_price”: “10.00”,\n         “total_price”: “31.19”,\n         “total_tax”: “1.50”\n      }\n    }\n  ]\n}\n\n  \n  \n```\n  #### Rates have been requested but none are available for the current shipping address\n\n    # Response\n    HTTP/1.1 200 OK\n    {\n      \"shipping_rates\": []\n    }\n",
-                "responses": {
-                    "200": {
-                        "description": "List of shipping_rate.  Rates have been requested and are available",
-                        "schema": {
-                            "$ref": "#/definitions/shipping_rate"
-                        },
-                        "examples": {
-                            "shipping_rates": [
-                                {
-                                    "handle": "shopify-Standard%20Shipping-10.00",
-                                    "“phone_required”": false,
-                                    "price": "10.00",
-                                    "title": "Standard Shipping",
-                                    "“draft_order”": {
-                                        "“subtotal_price”": "“10.00”",
-                                        "“total_price”": "“21.50”",
-                                        "“total_tax”": "“1.50”"
-                                    }
-                                },
-                                {
-                                    "handle": "ups-11-19.45",
-                                    "“phone_required”": false,
-                                    "price": "19.45",
-                                    "title": "UPS Standard",
-                                    "“draft_order”": {
-                                        "“subtotal_price”": "“10.00”",
-                                        "“total_price”": "“30.95”",
-                                        "“total_tax”": "“1.50”"
-                                    }
-                                },
-                                {
-                                    "handle": "ups-02-19.69",
-                                    "“phone_required”": true,
-                                    "price": "19.69",
-                                    "title": "UPS Expedited",
-                                    "“draft_order”": {
-                                        "“subtotal_price”": "“10.00”",
-                                        "“total_price”": "“31.19”",
-                                        "“total_tax”": "“1.50”"
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "202": {
-                        "description": "Accepted",
-                        "schema": {},
-                        "examples": {}
-                    },
-                    "412": {
-                        "$ref": "#/responses/412PreconditionFailed"
-                    }
-                }
-            }
-        },
-        "/admin/draft_orders/#{id}/send_invoice.json": {
-            "post": {
-                "summary": "Send Invoice - “Minimal request” does not require any parameters to be sent (no request body at all or just an empty draft_order_invoice hash)",
-                "parameters": [
-                    {
-                        "name": "draft_order_invoice",
-                        "in": "body",
-                        "description": "draft_order_invoice to post.",
-                        "schema": {
-                            "$ref": "#/definitions/draft_order_invoice"
-                        }
-                    },
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "draft order invoice",
-                        "schema": {
-                            "$ref": "#/definitions/draft_order_invoice"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/draft_orders/#{id}/complete.json": {
-            "parameters": [
-                {
-                    "$ref": "#/parameters/id"
-                }
-            ],
-            "put": {
-                "summary": "Remove a Draft Order from the database",
-                "parameters": [
-                    {
-                        "name": "payment_gateway_id",
-                        "in": "query",
-                        "description": "Gateway used to receive payment. Either ID of custom manual gateway, or null if using the default “Mark As Paid” gateway.",
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "name": "paymentPending",
-                        "in": "query",
-                        "description": "true/false",
-                        "type": "boolean"
-                    },
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "draft order",
-                        "schema": {
-                            "$ref": "#/definitions/DraftOrder"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/draft_orders/#{id}/checkout.json": {
-            "parameters": [
-                {
-                    "$ref": "#/parameters/id"
-                }
-            ],
-            "post": {
-                "summary": "Create or retrieve existing checkout for this draft order, to be used in Checkout API. Requires checkout scope",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Checkout",
-                        "schema": {
-                            "$ref": "#/definitions/checkout"
-                        }
-                    }
-                }
-            }
+          ]
         }
-    },
-    "definitions": {
-        "DraftOrder": {
-            "type": "object",
-            "required": [
-                "id",
-                "name",
-                "currency",
-                "line_items",
-                "tax_exempt",
-                "taxes_included",
-                "total_tax",
-                "subtotal_price",
-                "total_price",
-                "created_at",
-                "updated_at",
-                "status"
-            ],
-            "properties": {
-                "id": {
-                    "type": "string",
-                    "description": "The id of the draft order."
-                },
-                "order_id": {
-                    "type": "string",
-                    "description": "The id of the order associated to the draft order, once created."
-                },
-                "name": {
-                    "type": "string",
-                    "description": "Name of the draft order"
-                },
-                "customer": {
-                    "type": "string",
-                    "description": "Customer object will be serialized with only the default address, however only the ID can be set in order to associate the customer to the draft order. Setting the value to null removes the customer from the draft order."
-                },
-                "shipping_address": {
-                    "type": "string",
-                    "description": "The mailing address to where the draft order will be shipped."
-                },
-                "billing_address": {
-                    "type": "string",
-                    "description": "The mailing address associated with the payment method."
-                },
-                "note": {
-                    "type": "string",
-                    "description": "The text of an optional note that a shop owner can attach to the draft order."
-                },
-                "email": {
-                    "type": "string",
-                    "description": "The email address used for sending notifications."
-                },
-                "currency": {
-                    "type": "string",
-                    "description": "The three letter code for the currency to be used for the payment."
-                },
-                "invoice_sent_at": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "invoice_url": {
-                    "type": "string",
-                    "description": "The url to send to the customer so that they can complete the checkout.  When using send_invoice, this url is emailed to the customer. This field can be used so that an API client can use another method of communication to provide the url to the customer."
-                },
-                "line_items": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/line_item"
-                    }
-                },
-                "metafields": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/metafield"
-                    }
-                },
-                "shipping_line": {
-                    "type": "object",
-                    "items": {
-                        "$ref": "#/definitions/shipping_line"
-                    }
-                },
-                "tags": {
-                    "type": "string",
-                    "description": "Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. Each individual tag is limited to 40 characters in length."
-                },
-                "tax_exempt": {
-                    "type": "boolean",
-                    "description": "Sets whether taxes are exempt for this draft order. If this value is false, Shopify will honor the tax_exempt value for each line_item."
-                },
-                "tax_lines": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/tax_line"
-                    }
-                },
-                "discount": {
-                    "type": "string",
-                    "description": "Order level discount."
-                },
-                "taxes_included": {
-                    "type": "boolean",
-                    "description": "Shop settings taxes are included in the price"
-                },
-                "total_tax": {
-                    "type": "string",
-                    "description": "Total tax amount"
-                },
-                "subtotal_price": {
-                    "type": "string",
-                    "description": "Subtotal after discounts, before shipping and taxes have been applied"
-                },
-                "total_price": {
-                    "type": "string",
-                    "description": "Includes discounts, shipping and taxes"
-                },
-                "completed_at": {
-                    "type": "string",
-                    "format": "date-time",
-                    "description": "Date at which an order was created and the draft order moved to “completed” status."
-                },
-                "created_at": {
-                    "type": "string",
-                    "description": "description"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "description": "description"
-                },
-                "status": {
-                    "type": "string",
-                    "description": "description"
-                }
+
+          
+          
+        ```
+          #### Rates have been requested but none are available for the current shipping address
+
+            # Response
+            HTTP/1.1 200 OK
+            {
+              "shipping_rates": []
             }
-        },
-        "draft_order_invoice": {
-            "type": "object",
-            "properties": {
-                "to": {
-                    "type": "string",
-                    "description": "Use parameter value, but default to draft order email or customer value if parameter not set. If email is blank everywhere, error out."
-                },
-                "from": {
-                    "type": "string",
-                    "description": "One of the staff accoun e-mail addresses."
-                },
-                "bcc": {
-                    "type": "string",
-                    "description": "array of staff account e-mail addresses."
-                },
-                "subject": {
-                    "type": "string",
-                    "description": "subject of custom message injected into the template."
-                },
-                "custom_message": {
-                    "type": "string",
-                    "description": "Custom message that will be injected into the invoice template."
-                }
-            }
-        },
-        "checkout": {
-            "type": "object",
-            "properties": {
-                "to": {
-                    "type": "string",
-                    "description": "Use parameter value, but default to draft order email or customer value if parameter not set. If email is blank everywhere, error out."
-                },
-                "from": {
-                    "type": "string",
-                    "description": "One of the staff accoun e-mail addresses."
-                },
-                "bcc": {
-                    "type": "string",
-                    "description": "array of staff account e-mail addresses."
-                },
-                "subject": {
-                    "type": "string",
-                    "description": "subject of custom message injected into the template."
-                },
-                "custom_message": {
-                    "type": "string",
-                    "description": "Custom message that will be injected into the invoice template."
-                }
-            }
-        },
-        "line_item": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string",
-                    "description": "Can’t be null"
-                }
-            }
-        },
-        "shipping_rate": {
-            "type": "object",
-            "properties": {
-                "handle": {
-                    "type": "string",
-                    "description": "handle of the shipping rate"
-                },
-                "title": {
-                    "type": "string",
-                    "description": "title of the shipping rate"
-                }
-            }
-        },
-        "shipping_line": {
-            "type": "object"
-        },
-        "metafield": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "description of the metafield"
-                }
-            }
-        },
-        "tax_line": {
-            "type": "object"
-        },
-        "Error": {
-            "required": [
-                "code",
-                "message"
-            ],
-            "properties": {
-                "code": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                }
-            }
-        }
-    },
-    "parameters": {
-        "fields": {
-            "name": "fields",
-            "in": "query",
-            "description": "Comma-separated list of fields to include in the response",
-            "required": false,
-            "type": "string"
-        },
-        "limit": {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "description": "Page size",
-            "type": "integer",
-            "format": "int64"
-        },
-        "page": {
-            "name": "page",
-            "in": "query",
-            "type": "integer",
-            "format": "int64",
-            "required": false,
-            "description": "Page to show"
-        },
-        "id": {
-            "name": "id",
-            "in": "query",
-            "required": false,
-            "description": "id of the draft order",
-            "type": "string"
-        }
-    },
-    "responses": {
-        "412PreconditionFailed": {
-            "description": "Draft order doesn't have a shipping address.",
-            "schema": {
-                "$ref": "#/definitions/Error"
-            }
-        }
-    }
-}
+      responses:
+        '200':
+          description: List of shipping_rate.  Rates have been requested and are available
+          schema:
+            $ref: '#/definitions/shipping_rate'
+          examples:
+            shipping_rates:
+              - handle: shopify-Standard%20Shipping-10.00
+                “phone_required”: false
+                price: '10.00'
+                title: Standard Shipping
+                “draft_order”:
+                  “subtotal_price”: “10.00”
+                  “total_price”: “21.50”
+                  “total_tax”: “1.50”
+              - handle: ups-11-19.45
+                “phone_required”: false
+                price: '19.45'
+                title: UPS Standard
+                “draft_order”:
+                  “subtotal_price”: “10.00”
+                  “total_price”: “30.95”
+                  “total_tax”: “1.50”
+              - handle: ups-02-19.69
+                “phone_required”: true
+                price: '19.69'
+                title: UPS Expedited
+                “draft_order”:
+                  “subtotal_price”: “10.00”
+                  “total_price”: “31.19”
+                  “total_tax”: “1.50”
+        '202':
+          description: Accepted
+          schema: {}
+          examples: {}
+        '412':
+          $ref: "#/responses/412PreconditionFailed"
+            
+          
+           
+  '/admin/draft_orders/#{id}/send_invoice.json':
+    post:
+      summary: >-
+        Send Invoice - “Minimal request” does not require any parameters to be
+        sent (no request body at all or just an empty draft_order_invoice hash)
+      parameters:
+        - name: draft_order_invoice
+          in: body
+          description: draft_order_invoice to post.
+          schema:
+            $ref: '#/definitions/draft_order_invoice'
+        - name: id
+          in: path
+          required: true
+          type: integer
+        
+        
+      responses:
+        '200':
+          description: draft order invoice
+          schema:
+            $ref: '#/definitions/draft_order_invoice'
+  '/admin/draft_orders/#{id}/complete.json':
+    parameters:
+      - $ref: '#/parameters/id'
+    put:
+      summary: Remove a Draft Order from the database
+      parameters:
+        - name: payment_gateway_id
+          in: query
+          description: >-
+            Gateway used to receive payment. Either ID of custom manual gateway,
+            or null if using the default “Mark As Paid” gateway.
+          type: integer
+          format: int64
+        - name: paymentPending
+          in: query
+          description: true/false
+          type: boolean
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: draft order
+          schema:
+            $ref: '#/definitions/DraftOrder'
+  '/admin/draft_orders/#{id}/checkout.json':
+    parameters:
+      - $ref: '#/parameters/id'
+    post:
+      summary: >-
+        Create or retrieve existing checkout for this draft order, to be used in
+        Checkout API. Requires checkout scope
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Checkout
+          schema:
+            $ref: '#/definitions/checkout'
+definitions:
+  DraftOrder:
+    type: object
+    required:
+    - id
+    - name
+    - currency
+    - line_items
+    - tax_exempt
+    - taxes_included
+    - total_tax
+    - subtotal_price
+    - total_price
+    - created_at
+    - updated_at
+    - status
+    properties:
+      id:
+        type: string
+        description: The id of the draft order.
+      order_id:
+        type: string
+        description: 'The id of the order associated to the draft order, once created.'
+      name:
+        type: string
+        description: Name of the draft order
+      customer:
+        type: string
+        description: >-
+          Customer object will be serialized with only the default address,
+          however only the ID can be set in order to associate the customer to
+          the draft order. Setting the value to null removes the customer from
+          the draft order.
+      shipping_address:
+        type: string
+        description: The mailing address to where the draft order will be shipped.
+      billing_address: 
+        type: string
+        description: The mailing address associated with the payment method.
+      note:
+        type: string
+        description: The text of an optional note that a shop owner can attach to the draft order.
+      email: 
+        type: string
+        description: The email address used for sending notifications.
+      currency:
+        type: string
+        description: The three letter code for the currency to be used for the payment.
+      invoice_sent_at:
+        type: string
+        format: date-time
+      invoice_url:
+        type: string
+        description: The url to send to the customer so that they can complete the checkout.  When using send_invoice, this url is emailed to the customer. This field can be used so that an API client can use another method of communication to provide the url to the customer.
+        
+      line_items:
+        type: array
+        items:
+          $ref: '#/definitions/line_item'
+          
+      metafields: 
+        type: array
+        items:
+          $ref: '#/definitions/metafield'
+          
+      shipping_line:
+        type: object
+        items:
+          $ref: '#/definitions/shipping_line'
+          
+      tags:
+        type: string
+        description: Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. Each individual tag is limited to 40 characters in length.
+      tax_exempt: 
+        type: boolean
+        description: Sets whether taxes are exempt for this draft order. If this value is false, Shopify will honor the tax_exempt value for each line_item.
+      tax_lines:
+        type: array
+        items:
+          $ref: '#/definitions/tax_line'
+      discount:
+        type: string
+        description: Order level discount.
+      taxes_included:
+        type: boolean
+        description: Shop settings taxes are included in the price
+        
+      total_tax:
+        type: string
+        description: Total tax amount
+        
+      subtotal_price:
+        type: string
+        description: Subtotal after discounts, before shipping and taxes have been applied
+        
+      total_price: 
+        type: string
+        description: Includes discounts, shipping and taxes
+        
+      completed_at:
+        type: string
+        format: date-time
+        description: Date at which an order was created and the draft order moved to “completed” status.
+      created_at:
+        type: string
+        description: description  
+        
+      updated_at:
+        type: string
+        description: description
+        
+      status:
+        type: string
+        description: description
+        
+  draft_order_invoice:
+    type: object
+    properties:
+      to:
+        type: string
+        description: >-
+          Use parameter value, but default to draft order email or customer
+          value if parameter not set. If email is blank everywhere, error out.
+      from:
+        type: string
+        description: One of the staff accoun e-mail addresses.
+      bcc:
+        type: string
+        description: array of staff account e-mail addresses.
+      subject:
+        type: string
+        description: subject of custom message injected into the template.
+      custom_message:
+        type: string
+        description: Custom message that will be injected into the invoice template.
+  checkout:
+    type: object
+    properties:
+      to:
+        type: string
+        description: >-
+          Use parameter value, but default to draft order email or customer
+          value if parameter not set. If email is blank everywhere, error out.
+      from:
+        type: string
+        description: One of the staff accoun e-mail addresses.
+      bcc:
+        type: string
+        description: array of staff account e-mail addresses.
+      subject:
+        type: string
+        description: subject of custom message injected into the template.
+      custom_message:
+        type: string
+        description: Custom message that will be injected into the invoice template.
+  line_item:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Can’t be null
+  shipping_rate:
+    type: object
+    properties:
+      handle:
+        type: string
+        description: handle of the shipping rate
+      title:
+        type: string
+        description: title of the shipping rate
+        
+  shipping_line:
+    type: object
+
+  metafield:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: description of the metafield
+        
+  tax_line:
+    type: object
+
+  Error:
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+        
+parameters:
+  fields:
+    name: fields
+    in: query
+    description: Comma-separated list of fields to include in the response
+    required: false
+    type: string
+    
+    
+  limit:
+    name: limit
+    in: query
+    required: false
+    description: Page size
+    type: integer
+    format: int64
+  page:
+    name: page
+    in: query
+    type: integer
+    format: int64
+    required: false
+    description: Page to show
+  id:
+    name: id
+    in: query
+    required: false
+    description: id of the draft order
+    type: string
+
+    
+responses:
+  412PreconditionFailed:
+    description: Draft order doesn't have a shipping address.
+    schema:
+      $ref: "#/definitions/Error"
+
