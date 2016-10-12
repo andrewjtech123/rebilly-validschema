@@ -104,7 +104,8 @@
                         "type": "integer"
                     }
                 ],
-                "description": "Modify an existing draft order.\n### Example\n  Only showing the parameters needed to select a particular shipping rate as returned from\n    `GET /admin/draft_orders/#{id}/shipping_rates`\n\n\n    draft_order: {\n      shipping_line: {\n        handle: ,\n        phone:\n      }\n    }\n\n  \n",
+                "summary": "Modify draft order",
+                "description": "You can modify an existing draft order.\n### Example\n  Only showing the parameters needed to select a particular shipping rate as returned from\n    `GET /admin/draft_orders/#{id}/shipping_rates`\n\n\n    draft_order: {\n      shipping_line: {\n        handle: ,\n        phone:\n      }\n    }\n\n  \n",
                 "responses": {
                     "200": {
                         "description": "returns draft_order object",
@@ -416,8 +417,10 @@
                     "readOnly": true
                 },
                 "discount": {
-                    "type": "string",
-                    "description": "Order level discount."
+                    "type": "object",
+                    "items": {
+                        "$ref": "#/definitions/discount"
+                    }
                 },
                 "taxes_included": {
                     "type": "boolean",
@@ -597,8 +600,10 @@
                     "readOnly": true
                 },
                 "discount": {
-                    "type": "string",
-                    "description": "a discount"
+                    "type": "object",
+                    "items": {
+                        "$ref": "#/definitions/discount"
+                    }
                 },
                 "tax_line": {
                     "type": "array",
@@ -610,6 +615,11 @@
         },
         "shipping_rate": {
             "type": "object",
+            "required": [
+                "handle",
+                "title",
+                "price"
+            ],
             "properties": {
                 "handle": {
                     "type": "string",
@@ -618,11 +628,48 @@
                 "title": {
                     "type": "string",
                     "description": "title of the shipping rate"
+                },
+                "phoe_required": {
+                    "type": "boolean",
+                    "description": "Whether a phone number is required when applying to a draft order"
+                },
+                "price": {
+                    "type": "string",
+                    "description": "the price of the shipping rate."
                 }
             }
         },
         "shipping_line": {
-            "type": "object"
+            "type": "object",
+            "required": [
+                "title",
+                "price"
+            ],
+            "properties": {
+                "handle": {
+                    "type": "string",
+                    "description": "The handle of the shipping rate which was selected and applied, if applicable"
+                },
+                "title": {
+                    "type": "string",
+                    "description": "descriptive title"
+                },
+                "price": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "price"
+                },
+                "phone": {
+                    "type": "string",
+                    "description": "The phone number =, if required as specified in the shipping_rate"
+                },
+                "tax_lines": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tax_line"
+                    }
+                }
+            }
         },
         "metafield": {
             "type": "object",
@@ -635,7 +682,55 @@
             }
         },
         "tax_line": {
-            "type": "object"
+            "type": "object",
+            "required": [
+                "title",
+                "rate",
+                "price"
+            ],
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "description": "title"
+                },
+                "rate": {
+                    "type": "string",
+                    "description": "Rate for this tax"
+                },
+                "price": {
+                    "type": "string",
+                    "description": "Total"
+                }
+            }
+        },
+        "discount": {
+            "type": "object",
+            "required": [
+                "description",
+                "value"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "reason for the discount"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "The value of the discount. If the type of the discount is “dollar”, then this is a dollar amount, if the type is “percentage”, then this is the percentage. Unlike when specifying discount_codes on the Orders API, specifying a percentage does not replace this value with the dollar amount."
+                },
+                "type": {
+                    "type": "string",
+                    "description": "The type of the discount. Can be one of - “percentage” or ”fixed_amount” (default).",
+                    "enum": [
+                        "percentage",
+                        "fixed_amount (default)"
+                    ]
+                },
+                "amount": {
+                    "type": "string",
+                    "description": "The applied amount of the discount. This amount is not calculated automatically, and must be provided by the API client."
+                }
+            }
         },
         "Error": {
             "required": [
