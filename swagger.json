@@ -13,8 +13,7 @@
     "paths": {
         "/admin/draft_orders.json": {
             "get": {
-                "summary": "Gets draft orders",
-                "description": "Retrieve a list of all Draft Orders",
+                "description": "Retrieve draft orders",
                 "parameters": [
                     {
                         "$ref": "#/parameters/fields"
@@ -36,8 +35,8 @@
                 }
             },
             "post": {
-                "summary": "Creates a draft order",
-                "description": "send a draft order in body of the request",
+                "summary": "Create a draft order",
+                "description": "Create a draft order\n  ### About line items\n  There are two ways to add a line item:\n  \n  * Supply a `variant_id`, `quantity` and (if applicable) `discount` \n  * Add a custom line item by supplying `title`, `price`, `taxable` and `quantity` (at a minimum). The array of line items on a draft order must not contain a `variant_id` more than once. The data copied over from a variant upon creation of a line item is never subsequently updated.\n",
                 "parameters": [
                     {
                         "name": "draftorder",
@@ -67,7 +66,6 @@
         },
         "/admin/draft_orders/#{id}.json": {
             "get": {
-                "summary": "Receive a single Draft Order",
                 "description": "Receive a single Draft Order",
                 "parameters": [
                     {
@@ -89,7 +87,6 @@
                 }
             },
             "put": {
-                "summary": "Modify an existing draft order",
                 "parameters": [
                     {
                         "name": "draft_order",
@@ -118,8 +115,7 @@
                 }
             },
             "delete": {
-                "summary": "removes a draft order from the database.",
-                "description": "retruns {}",
+                "description": "Remove a draft order.",
                 "parameters": [
                     {
                         "name": "id",
@@ -142,8 +138,7 @@
         },
         "/admin/draft_orders/count.json": {
             "get": {
-                "summary": "Return count",
-                "description": "Returns count of draft orders",
+                "description": "Return count of draft orders",
                 "responses": {
                     "200": {
                         "description": "Count of draft orders",
@@ -161,7 +156,6 @@
                 }
             ],
             "get": {
-                "summary": "gets shipping rates for a specific draft order",
                 "parameters": [
                     {
                         "name": "id",
@@ -171,7 +165,8 @@
                         "type": "integer"
                     }
                 ],
-                "description": "Get a list of available shipping rates for the specified draft order. Implementers will need to poll this endpoint until rates become available. Calling this endpoint without first specifying a shipping address on the draft order will return an error response. Possible responses outlined below.\n\n  #### Rates have been requested and are available\n  ```\n  \n# Response HTTP/1.1 200 OK {\n  \"shipping_rates\": [\n    {\n      \"handle\": \"shopify-Standard%20Shipping-10.00\",\n      “phone_required”: false,\n      \"price\": \"10.00\",\n      \"title\": \"Standard Shipping\",\n      “draft_order”: \n      {\n         “subtotal_price”: “10.00”,\n         “total_price”: “21.50”,\n         “total_tax”: “1.50”\n      }\n    },\n    {\n      \"handle\": \"ups-11-19.45\",\n      “phone_required”: false,\n      \"price\": \"19.45\",\n      \"title\": \"UPS Standard\",\n      “draft_order”: \n      {\n         “subtotal_price”: “10.00”,\n         “total_price”: “30.95”,\n         “total_tax”: “1.50”\n      }\n    },\n    {\n      \"handle\": \"ups-02-19.69\",\n      “phone_required”: true,\n      \"price\": \"19.69\",\n      \"title\": \"UPS Expedited\",\n      “draft_order”: \n      {\n         “subtotal_price”: “10.00”,\n         “total_price”: “31.19”,\n         “total_tax”: “1.50”\n      }\n    }\n  ]\n}\n\n  \n  \n```\n  #### Rates have been requested but none are available for the current shipping address\n\n    # Response\n    HTTP/1.1 200 OK\n    {\n      \"shipping_rates\": []\n    }\n",
+                "summary": "Get list of shipping rates",
+                "description": "Implementers will need to poll this endpoint until rates become available. Calling this endpoint without first specifying a shipping address on the draft order will return an error response. Possible responses outlined below.\n\n  #### Rates have been requested and are available\n  ```\n  \n# Response HTTP/1.1 200 OK {\n  \"shipping_rates\": [\n    {\n      \"handle\": \"shopify-Standard%20Shipping-10.00\",\n      “phone_required”: false,\n      \"price\": \"10.00\",\n      \"title\": \"Standard Shipping\",\n      “draft_order”: \n      {\n         “subtotal_price”: “10.00”,\n         “total_price”: “21.50”,\n         “total_tax”: “1.50”\n      }\n    },\n    {\n      \"handle\": \"ups-11-19.45\",\n      “phone_required”: false,\n      \"price\": \"19.45\",\n      \"title\": \"UPS Standard\",\n      “draft_order”: \n      {\n         “subtotal_price”: “10.00”,\n         “total_price”: “30.95”,\n         “total_tax”: “1.50”\n      }\n    },\n    {\n      \"handle\": \"ups-02-19.69\",\n      “phone_required”: true,\n      \"price\": \"19.69\",\n      \"title\": \"UPS Expedited\",\n      “draft_order”: \n      {\n         “subtotal_price”: “10.00”,\n         “total_price”: “31.19”,\n         “total_tax”: “1.50”\n      }\n    }\n  ]\n}\n\n  \n  \n```\n  #### Rates have been requested but none are available for the current shipping address\n\n    # Response\n    HTTP/1.1 200 OK\n    {\n      \"shipping_rates\": []\n    }\n",
                 "responses": {
                     "200": {
                         "description": "List of shipping_rate.  Rates have been requested and are available",
@@ -229,7 +224,8 @@
         },
         "/admin/draft_orders/#{id}/send_invoice.json": {
             "post": {
-                "summary": "Send Invoice - “Minimal request” does not require any parameters to be sent (no request body at all or just an empty draft_order_invoice hash)",
+                "summary": "Send an invoice",
+                "description": "“Minimal request” does not require any parameters to be sent (no request body at all or just an empty draft_order_invoice hash)",
                 "parameters": [
                     {
                         "name": "draft_order_invoice",
@@ -257,13 +253,8 @@
             }
         },
         "/admin/draft_orders/#{id}/complete.json": {
-            "parameters": [
-                {
-                    "$ref": "#/parameters/id"
-                }
-            ],
             "put": {
-                "summary": "Remove a Draft Order from the database",
+                "description": "Mark a Draft Order as paid or pending payment",
                 "parameters": [
                     {
                         "name": "payment_gateway_id",
@@ -302,7 +293,8 @@
                 }
             ],
             "post": {
-                "summary": "Create or retrieve existing checkout for this draft order, to be used in Checkout API. Requires checkout scope",
+                "summary": "Create or retrieve existing checkout",
+                "description": "To be used in Checkout API. Requires checkout scope",
                 "parameters": [
                     {
                         "name": "id",
@@ -342,15 +334,18 @@
             "properties": {
                 "id": {
                     "type": "string",
-                    "description": "The id of the draft order."
+                    "description": "The id of the draft order.",
+                    "readOnly": true
                 },
                 "order_id": {
                     "type": "string",
-                    "description": "The id of the order associated to the draft order, once created."
+                    "description": "The id of the order associated to the draft order, once created.",
+                    "readOnly": true
                 },
                 "name": {
                     "type": "string",
-                    "description": "Name of the draft order"
+                    "description": "Name of the draft order",
+                    "readOnly": true
                 },
                 "customer": {
                     "type": "string",
@@ -374,15 +369,18 @@
                 },
                 "currency": {
                     "type": "string",
-                    "description": "The three letter code for the currency to be used for the payment."
+                    "description": "The three letter code for the currency to be used for the payment.",
+                    "readOnly": true
                 },
                 "invoice_sent_at": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date-time",
+                    "readOnly": true
                 },
                 "invoice_url": {
                     "type": "string",
-                    "description": "The url to send to the customer so that they can complete the checkout.  When using send_invoice, this url is emailed to the customer. This field can be used so that an API client can use another method of communication to provide the url to the customer."
+                    "description": "The url to send to the customer so that they can complete the checkout.  When using send_invoice, this url is emailed to the customer. This field can be used so that an API client can use another method of communication to provide the url to the customer.",
+                    "readOnly": true
                 },
                 "line_items": {
                     "type": "array",
@@ -414,7 +412,8 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/tax_line"
-                    }
+                    },
+                    "readOnly": true
                 },
                 "discount": {
                     "type": "string",
@@ -422,36 +421,49 @@
                 },
                 "taxes_included": {
                     "type": "boolean",
-                    "description": "Shop settings taxes are included in the price"
+                    "description": "Shop settings taxes are included in the price",
+                    "readOnly": true
                 },
                 "total_tax": {
                     "type": "string",
-                    "description": "Total tax amount"
+                    "description": "Total tax amount",
+                    "readOnly": true
                 },
                 "subtotal_price": {
                     "type": "string",
-                    "description": "Subtotal after discounts, before shipping and taxes have been applied"
+                    "description": "Subtotal after discounts, before shipping and taxes have been applied",
+                    "readOnly": true
                 },
                 "total_price": {
                     "type": "string",
-                    "description": "Includes discounts, shipping and taxes"
+                    "description": "Includes discounts, shipping and taxes",
+                    "readOnly": true
                 },
                 "completed_at": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "Date at which an order was created and the draft order moved to “completed” status."
+                    "description": "Date at which an order was created and the draft order moved to “completed” status.",
+                    "readOnly": true
                 },
                 "created_at": {
                     "type": "string",
-                    "description": "description"
+                    "description": "Date at which an order was created",
+                    "readOnly": true
                 },
                 "updated_at": {
                     "type": "string",
-                    "description": "description"
+                    "description": "Date at which an order was updated",
+                    "readOnly": true
                 },
                 "status": {
                     "type": "string",
-                    "description": "description"
+                    "enum": [
+                        "open",
+                        "invoice_sent",
+                        "completed"
+                    ],
+                    "description": "String describing the state of the draft order - “open”, “invoice sent”, “completed”.",
+                    "readOnly": true
                 }
             }
         },
@@ -507,10 +519,92 @@
         },
         "line_item": {
             "type": "object",
+            "required": [
+                "id",
+                "name",
+                "quantity"
+            ],
             "properties": {
                 "id": {
                     "type": "string",
-                    "description": "Can’t be null"
+                    "description": "Can’t be null",
+                    "readOnly": true
+                },
+                "variant_id": {
+                    "type": "string",
+                    "description": "The id of the product variant corresponding to this line item.If this field is null, we assume that this is a custom line item.",
+                    "readOnly": false
+                },
+                "product_id": {
+                    "type": "string",
+                    "description": "The id of the product corresponding to this line item’s product variant."
+                },
+                "name": {
+                    "type": "string",
+                    "description": "The readable name of the product and variant."
+                },
+                "title": {
+                    "type": "string",
+                    "description": "Can only be specified if this is a custom line item, in which case it is mandatory.  The title of the product or variant."
+                },
+                "variant_title": {
+                    "type": "string",
+                    "description": "The title of the product (use public_title). Not settable by custom line item, defaults to “Custom”"
+                },
+                "price": {
+                    "type": "string",
+                    "description": "Can only be specified if this is a custom line item, in which case it is mandatory.  To change the price of a product, use discount field."
+                },
+                "vendor": {
+                    "type": "string",
+                    "description": "vendor"
+                },
+                "grams": {
+                    "type": "string",
+                    "description": "Can only be specified if this is a custom line item, if null default to 0"
+                },
+                "quantity": {
+                    "type": "string",
+                    "description": "quantity"
+                },
+                "requires_shipping": {
+                    "type": "boolean",
+                    "description": "Can only be specified if this is a custom line item.  Defaults to false for custom line items."
+                },
+                "sku": {
+                    "type": "string",
+                    "description": "Can only be specified if this is a custom line item"
+                },
+                "taxable": {
+                    "type": "boolean",
+                    "description": "Can only be specified if this is a custom line item.  Mandatory for custom products."
+                },
+                "gift_card": {
+                    "type": "boolean",
+                    "description": "True if the product is a gift card."
+                },
+                "fulfillment_service": {
+                    "type": "string",
+                    "description": "Defaults to manual for custom."
+                },
+                "properties": {
+                    "type": "string",
+                    "description": "line item properties"
+                },
+                "custom": {
+                    "type": "boolean",
+                    "description": "“false” if the line item is a product variant, “true” if the line item is custom. Determined automatically.",
+                    "readOnly": true
+                },
+                "discount": {
+                    "type": "string",
+                    "description": "a discount"
+                },
+                "tax_line": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tax_line"
+                    }
                 }
             }
         },
