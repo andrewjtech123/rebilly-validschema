@@ -10,7 +10,7 @@ basePath: /openapi101
 paths:
   /admin/draft_orders.json:
     get:
-      summary: Gets draft orders test test
+      summary: Gets draft orders 
       description: Retrieve a list of all Draft Orders 
       parameters:
       - $ref: '#/parameters/fields'
