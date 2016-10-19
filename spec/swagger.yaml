@@ -2,7 +2,27 @@ swagger: '2.0'
 info:
   version: 1.0.0
   title: Draft Orders API
-  description: Shopify Draft Orders API
+  description: >
+    ### Draft Orders API 
+      
+      This API is about operations you can perform on the draft order object as defind below:
+    
+      |Field | Description | Notes|
+      |-------|------|
+      |`ipsum` | augue | SAGGITTIS |
+      |`dolor` | augue | SAGGITTIS |
+      |`amet+adipiscing`| augue | SAGGITTIS |
+      |`imperdiet` | augue | SAGGITTIS  |
+      |`dapibus` | augue | SAGGITTIS |
+      |`aliquam` | augue | SAGGITTIS |
+      |`nibh` | augue | SAGGITTIS |
+      |`risus` | augue | SAGGITTIS |
+      |`blandit` | augue | — |
+      |`nibh` | tortor | — |
+      
+        
+      
+  
 schemes:
   - https
 host: simple.api
@@ -10,7 +30,7 @@ basePath: /openapi101
 paths:
   /admin/draft_orders.json:
     get:
-      description: Retrieve draft orders
+      description: Retrieve draft orders 
       parameters:
       - $ref: '#/parameters/fields'
       - $ref: '#/parameters/limit'
@@ -21,6 +41,9 @@ paths:
           description: List of DraftOrder
           schema:
             $ref: '#/definitions/DraftOrder'
+            
+            
+  
     post:
       summary: Create a draft order
       description: >
@@ -119,114 +142,7 @@ paths:
            schema:
              type: integer
 
-  /admin/draft_orders/#{id}/shipping_rates.json':
-    parameters:
-      - $ref: '#/parameters/id'
-    get:
-      parameters:
-        - name: id
-          in: path
-          description: draft order id
-          required: true
-          type: integer
-      summary: Get list of shipping rates
-      description: >
-        Implementers will need to poll this endpoint until rates become
-        available. Calling this endpoint without first specifying a shipping
-        address on the draft order will return an error response. Possible
-        responses outlined below.
-
-          #### Rates have been requested and are available
-          ```
-
-        # Response HTTP/1.1 200 OK {
-          "shipping_rates": [
-            {
-              "handle": "shopify-Standard%20Shipping-10.00",
-              “phone_required”: false,
-              "price": "10.00",
-              "title": "Standard Shipping",
-              “draft_order”:
-              {
-                 “subtotal_price”: “10.00”,
-                 “total_price”: “21.50”,
-                 “total_tax”: “1.50”
-              }
-            },
-            {
-              "handle": "ups-11-19.45",
-              “phone_required”: false,
-              "price": "19.45",
-              "title": "UPS Standard",
-              “draft_order”:
-              {
-                 “subtotal_price”: “10.00”,
-                 “total_price”: “30.95”,
-                 “total_tax”: “1.50”
-              }
-            },
-            {
-              "handle": "ups-02-19.69",
-              “phone_required”: true,
-              "price": "19.69",
-              "title": "UPS Expedited",
-              “draft_order”:
-              {
-                 “subtotal_price”: “10.00”,
-                 “total_price”: “31.19”,
-                 “total_tax”: “1.50”
-              }
-            }
-          ]
-        }
-
-
-
-        ```
-          #### Rates have been requested but none are available for the current shipping address
-
-            # Response
-            HTTP/1.1 200 OK
-            {
-              "shipping_rates": []
-            }
-      responses:
-        '200':
-          description: List of shipping_rate.  Rates have been requested and are available
-          schema:
-            $ref: '#/definitions/shipping_rate'
-          examples:
-            shipping_rates:
-              - handle: shopify-Standard%20Shipping-10.00
-                “phone_required”: false
-                price: '10.00'
-                title: Standard Shipping
-                “draft_order”:
-                  “subtotal_price”: “10.00”
-                  “total_price”: “21.50”
-                  “total_tax”: “1.50”
-              - handle: ups-11-19.45
-                “phone_required”: false
-                price: '19.45'
-                title: UPS Standard
-                “draft_order”:
-                  “subtotal_price”: “10.00”
-                  “total_price”: “30.95”
-                  “total_tax”: “1.50”
-              - handle: ups-02-19.69
-                “phone_required”: true
-                price: '19.69'
-                title: UPS Expedited
-                “draft_order”:
-                  “subtotal_price”: “10.00”
-                  “total_price”: “31.19”
-                  “total_tax”: “1.50”
-        '202':
-          description: Accepted
-          schema: {}
-          examples: {}
-        '412':
-          $ref: "#/responses/412PreconditionFailed"
+  
 
 
 
