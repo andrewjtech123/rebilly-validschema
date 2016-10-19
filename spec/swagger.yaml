@@ -21,7 +21,10 @@ info:
       |`nibh` | tortor | — |
       
         
-      
+  x-draftorder:
+    type: object
+    schema: 
+      $ref: '#/definitions/DraftOrder'
   
 schemes:
   - https
@@ -35,6 +38,8 @@ paths:
       - $ref: '#/parameters/fields'
       - $ref: '#/parameters/limit'
       - $ref: '#/parameters/page'
+      tags:
+        - Gets
 
       responses:
         '200':
@@ -53,6 +58,9 @@ paths:
 
           * Supply a `variant_id`, `quantity` and (if applicable) `discount`
           * Add a custom line item by supplying `title`, `price`, `taxable` and `quantity` (at a minimum). The array of line items on a draft order must not contain a `variant_id` more than once. The data copied over from a variant upon creation of a line item is never subsequently updated.
+          
+      tags:
+        - Creates
 
       parameters:
         - name: draftorder
@@ -73,6 +81,8 @@ paths:
   '/admin/draft_orders/#{id}.json':
     get:
       description: Receive a single Draft Order
+      tags:
+        - Gets
       parameters:
         - name: id
           in: path
@@ -113,7 +123,8 @@ paths:
             }
 
 
-
+      tags:
+        - Updates
       responses:
         '200':
           description: returns draft_order object
@@ -121,6 +132,8 @@ paths:
             $ref: '#/definitions/DraftOrder'
     delete:
       description: Remove a draft order.
+      tags:
+        - Deletes
       parameters:
         - name: id
           in: path
@@ -136,6 +149,8 @@ paths:
   /admin/draft_orders/count.json:
     get:
       description: Return count of draft orders
+      tags:
+        - Gets
       responses:
         '200':
            description: Count of draft orders
@@ -152,6 +167,8 @@ paths:
       description: >-
         “Minimal request” does not require any parameters to be
         sent (no request body at all or just an empty draft_order_invoice hash)
+      tags:
+        - Creates
       parameters:
         - name: draft_order_invoice
           in: body
@@ -172,6 +189,8 @@ paths:
   '/admin/draft_orders/#{id}/complete.json':
     put:
       description: Mark a Draft Order as paid or pending payment
+      tags:
+        - Updates
       parameters:
         - name: payment_gateway_id
           in: query
