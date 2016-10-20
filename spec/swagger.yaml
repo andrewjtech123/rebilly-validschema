@@ -7,24 +7,19 @@ info:
       
       This API is about operations you can perform on the draft order object as defind below:
     
-      |Field | Description | Notes|
-      |-------|------|
-      |`ipsum` | augue | SAGGITTIS |
-      |`dolor` | augue | SAGGITTIS |
-      |`amet+adipiscing`| augue | SAGGITTIS |
-      |`imperdiet` | augue | SAGGITTIS  |
-      |`dapibus` | augue | SAGGITTIS |
-      |`aliquam` | augue | SAGGITTIS |
-      |`nibh` | augue | SAGGITTIS |
-      |`risus` | augue | SAGGITTIS |
-      |`blandit` | augue | — |
-      |`nibh` | tortor | — |
-      
+    type | definition
+      -----|-----------
+      Vinyl| #/definitions/Vinyl
+      VHS  | #/definitions/VHS
+      AudioCassette | #/definitions/DraftOrder
+     
+  x-draftorder: 
+     type: object
+     description: A draft order
+     schema:
+       $ref: "#/definitions/DraftOrder"
         
-  x-draftorder:
-    type: object
-    schema: 
-      $ref: '#/definitions/DraftOrder'
+
   
 schemes:
   - https
