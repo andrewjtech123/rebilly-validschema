@@ -7,17 +7,28 @@ info:
       
       This API is about operations you can perform on the draft order object as defind below:
     
-    type | definition
-      -----|-----------
-      Vinyl| #/definitions/Vinyl
-      VHS  | #/definitions/VHS
-      AudioCassette | #/definitions/DraftOrder
+    Field | Definition | Data Type
+      -----|-----------|-------------------------
+      `id`| `id` of the draft order |`string`
+      `order_id`  | The id of the order associated to the draft order, once created. | `string`        
+      `name` | Name of the draft order, format #D<number>, where number, is an sequential identifier unique to the shop, starting at 1. For example #D133 | `integer`
      
   x-draftorder: 
-     type: object
-     description: A draft order
-     schema:
-       $ref: "#/definitions/DraftOrder"
+    type: object
+    required:
+    - title
+    - rate
+    - price
+    properties:
+      title:
+        type: string
+        description: title
+      rate:
+        type: string
+        description: Rate for this tax
+      price:
+        type: string
+        description: Total
         
 
   
