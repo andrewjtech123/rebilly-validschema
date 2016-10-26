@@ -380,16 +380,16 @@ definitions:
           
       from:
         type: string
-        description: One of the staff accoun e-mail addresses.
+        description: The email address that the email will appear to be sent from. This defaults to the shop's customer email, and if none exists, simply the shop's account email. When provided, this email address must correspond to the email address of one of the staff accounts.
       bcc:
         type: string
-        description: array of staff account e-mail addresses.
+        description: Optional array of email addresses to bcc. These must correspond to valid staff account email addresses.
       subject:
         type: string
-        description: subject of custom message injected into the template.
+        description: The subject of the email that will be sent. When not provided, defaults to the Draft Order Invoice template's subject, as specified in the shop's Notification settings.
       custom_message:
         type: string
-        description: Custom message that will be injected into the invoice template.
+        description: An optional custom message which will be inserted in the email's body.
   checkout:
     type: object
     properties:
@@ -400,7 +400,7 @@ definitions:
           
       from:
         type: string
-        description: One of the staff accoun e-mail addresses.
+        description: Email address that the email will appear to be sent from. This defaults to the shop's customer email, and if none exists, simply the shop's account email. When provided, this email address must correspond to the email address of one of the staff accounts.
       bcc:
         type: string
         description: array of staff account e-mail addresses.
