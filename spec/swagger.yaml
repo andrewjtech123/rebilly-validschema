@@ -36,8 +36,9 @@ info:
   
 schemes:
   - https
-host: simple.api
-basePath: /openapi101
+host: myshopify.com
+basePath: /v1
+
 paths:
   /admin/draft_orders.json:
     get:
