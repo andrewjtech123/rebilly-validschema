@@ -376,8 +376,8 @@ definitions:
       to:
         type: string
         description: >-
-          Use parameter value, but default to draft order email or customer
-          value if parameter not set. If email is blank everywhere, error out.
+          Email associated with the `draft_order_invoice`.  If not specified, the email associated with the draft order, or the customer's email will be used instead.  If no email address is specified an error will be raised. 
+          
       from:
         type: string
         description: One of the staff accoun e-mail addresses.
