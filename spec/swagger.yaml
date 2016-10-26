@@ -13,6 +13,8 @@ info:
       `order_id`  | The id of the order associated to the draft order, once created. | `string`        
       `name` | Name of the draft order, format #D<number>, where number, is an sequential identifier unique to the shop, starting at 1. For example #D133 | `integer`
      
+
+  
   x-draftorder: 
     type: object
     required:
@@ -39,7 +41,7 @@ basePath: /openapi101
 paths:
   /admin/draft_orders.json:
     get:
-      description: Retrieve draft orders 
+      description: Retrieve draft orders
       parameters:
       - $ref: '#/parameters/fields'
       - $ref: '#/parameters/limit'
@@ -53,6 +55,20 @@ paths:
           schema:
             $ref: '#/definitions/DraftOrder'
             
+      x-code-samples:
+        - lang: curl
+          source: curl https://api.stripe.com/v1/balance \
+          -u sk_test_BQokikJOvBiI2HlWgH4olfQ2:
+      
+        - lang: Ruby
+          source: require "stripe" 
+                  Stripe.api_key = "sk_test_BQokikJOvBiI2HlWgH4olfQ2"Stripe::Balance.retrieve()
+            
+            
+        - lang: PHP
+          source: \Stripe\Stripe::setApiKey("sk_test_BQokikJOvBiI2HlWgH4olfQ2");
+                  \Stripe\Balance::retrieve();
+          
             
   
     post:
