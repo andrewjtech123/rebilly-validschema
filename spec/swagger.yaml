@@ -45,7 +45,7 @@ paths:
       - $ref: '#/parameters/limit'
       - $ref: '#/parameters/page'
       tags:
-        - Gets
+        - Get
 
       responses:
         '200':
@@ -66,7 +66,7 @@ paths:
           * Add a custom line item by supplying `title`, `price`, `taxable` and `quantity` (at a minimum). The array of line items on a draft order must not contain a `variant_id` more than once. The data copied over from a variant upon creation of a line item is never subsequently updated.
           
       tags:
-        - Creates
+        - Create
 
       parameters:
         - name: draftorder
@@ -86,9 +86,9 @@ paths:
             $ref: '#/definitions/DraftOrder'
   '/admin/draft_orders/#{id}.json':
     get:
-      description: Receive a single Draft Order
+      description: Receive a single draft order
       tags:
-        - Gets
+        - Get
       parameters:
         - name: id
           in: path
@@ -130,7 +130,7 @@ paths:
 
 
       tags:
-        - Updates
+        - Update
       responses:
         '200':
           description: returns draft_order object
@@ -139,7 +139,7 @@ paths:
     delete:
       description: Remove a draft order.
       tags:
-        - Deletes
+        - Delete
       parameters:
         - name: id
           in: path
@@ -156,7 +156,7 @@ paths:
     get:
       description: Return count of draft orders
       tags:
-        - Gets
+        - Get
       responses:
         '200':
            description: Count of draft orders
@@ -174,7 +174,7 @@ paths:
         “Minimal request” does not require any parameters to be
         sent (no request body at all or just an empty draft_order_invoice hash)
       tags:
-        - Creates
+        - Create
       parameters:
         - name: draft_order_invoice
           in: body
@@ -194,9 +194,9 @@ paths:
             $ref: '#/definitions/draft_order_invoice'
   '/admin/draft_orders/#{id}/complete.json':
     put:
-      description: Mark a Draft Order as paid or pending payment
+      description: Mark a draft order as paid or pending payment
       tags:
-        - Updates
+        - Update
       parameters:
         - name: payment_gateway_id
           in: query
