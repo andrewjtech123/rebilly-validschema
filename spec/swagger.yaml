@@ -14,24 +14,24 @@ info:
       `name` | Name of the draft order, format #D<number>, where number, is an sequential identifier unique to the shop, starting at 1. For example #D133 | `integer`
       `customer` | Customer object will be serialized with only the default address, however only the ID can be set in order to associate the customer to the draft order. Setting the value to null removes the customer from the draft order. | `object`
       `shipping_address` | The mailing address to where the draft order will be shipped. | `string`
-      `billing_address` | The mailing address associated with the payment method.
-      `note` | The text of an optional note that a shop owner can attach to the draft order.
-      `email` | The email address used for sending notifications.
-      `currency` | The three letter code for the currency to be used for the payment.
-      `invoice_sent_at` | DateTime when the invoice was emailed to the customer by Shopify. 
-      `invoice_url` | The url to send to the customer so that they can complete the checkout.  When using `send_invoice`, this url is emailed to the customer. This field can be used so that an API client can use another method of communication to provide the url to the customer.
+      `billing_address` | The mailing address associated with the payment method. | `string`
+      `note` | The text of an optional note that a shop owner can attach to the draft order. | `string`
+      `email` | The email address used for sending notifications. |`string`
+      `currency` | The three letter code for the currency to be used for the payment. | `string`
+      `invoice_sent_at` | DateTime when the invoice was emailed to the customer by Shopify. | `dateTime`
+      `invoice_url` | The url to send to the customer so that they can complete the checkout.  When using `send_invoice`, this url is emailed to the customer. This field can be used so that an API client can use another method of communication to provide the url to the customer. | `string`
       `line_item`[ ] | | array of `line_item` objects
       `metafields`[ ] | | array of `metafield` objects
       `shipping_line` | | `object`
       `tags` | Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. Each individual tag is limited to 40 characters in length. | `string`
       `tax_exempt` | Sets whether taxes are exempt for this draft order. If this value is `false`, Shopify will honor the `tax_exempt` value for each `line_item`. | `boolean`
       `tax_lines` | Tax lines describing the sum of each type of tax line for line items and shipping line. | array of `tax_line` objects
-      `discount` | Order level discount. | string
+      `discount` | Order level discount. | `string`
       `taxes_included` | Shop settings taxes are included in the price | `boolean`
       `total_tax` | Total tax amount | `integer`
       `completed_at` | Date at which an order was created and the draft order moved to “completed” status. | `DateTime`
-      `created_at` | |
-      `updated_at` | |
+      `created_at` | By default, this auto-generated property is the date and time when the order was created in Shopify, in ISO 8601 format. If you are importing orders to the Shopify platform from another system, the writable `processed_at` property will override the `created_at` date. | `dateTime`
+      `updated_at` | | `dateTime`
       `status` | String describing the state of the draft order. Possible values are `open`, `invoice sent`, or `completed`. | `string`
       
 
@@ -294,23 +294,20 @@ definitions:
     properties:
       id:
         type: string
-        description: The id of the draft order.
+        description: The `id` of the draft order.
         readOnly: true
       order_id:
         type: string
-        description: 'The id of the order associated to the draft order, once created.'
+        description: The `id` of the order associated to the draft order, once created.
         readOnly: true
       name:
         type: string
         description: Name of the draft order
         readOnly: true
       customer:
-        type: string
-        description: >-
-          Customer object will be serialized with only the default address,
-          however only the ID can be set in order to associate the customer to
-          the draft order. Setting the value to null removes the customer from
-          the draft order.
+        type: object
+        $ref: '#/definitions/customer'
+        
       shipping_address:
         type: string
         description: The mailing address to where the draft order will be shipped.
@@ -329,11 +326,13 @@ definitions:
         readOnly: true
       invoice_sent_at:
         type: string
+        description: Date when the invoice was emailed to the customer.
         format: date-time
         readOnly: true
+    
       invoice_url:
         type: string
-        description: The url to send to the customer so that they can complete the checkout.  When using send_invoice, this url is emailed to the customer. This field can be used so that an API client can use another method of communication to provide the url to the customer.
+        description: The url to send to the customer for completing the checkout.  When using `send_invoice`, this url is emailed to the customer.
         readOnly: true
 
       line_items:
@@ -356,9 +355,10 @@ definitions:
         description: Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. Each individual tag is limited to 40 characters in length.
       tax_exempt:
         type: boolean
-        description: Sets whether taxes are exempt for this draft order. If this value is false, Shopify will honor the tax_exempt value for each line_item.
+        description: Sets whether taxes are exempt for this draft order. If this value is `false`, Shopify will honor the `tax_exempt` value for each `line_item`.
       tax_lines:
         type: array
+        description: An array of `tax_line` objects, each of which details the taxes applicable to the checkout. 
         items:
           $ref: '#/definitions/tax_line'
         readOnly: true
@@ -368,7 +368,7 @@ definitions:
           $ref: '#/definitions/discount'
       taxes_included:
         type: boolean
-        description: Shop settings taxes are included in the price
+        description: States whether or not taxes are included in the order subtotal. Valid values are `true` or `false`.
         readOnly: true
 
       total_tax:
@@ -378,12 +378,12 @@ definitions:
 
       subtotal_price:
         type: string
-        description: Subtotal after discounts, before shipping and taxes have been applied
+        description: Subtotal after discounts, before shipping and taxes have been applied.
         readOnly: true
 
       total_price:
         type: string
-        description: Includes discounts, shipping and taxes
+        description: Includes discounts, shipping and taxes.
         readOnly: true
 
       completed_at:
@@ -393,12 +393,14 @@ definitions:
         readOnly: true
       created_at:
         type: string
-        description: Date at which an order was created
+        format: date-time
+        description: By default, this auto-generated property is the date and time when the order was created in Shopify, in ISO 8601 format. If you are importing orders to the Shopify platform from another system, the writable `processed_at` property will override the `created_at date`
         readOnly: true
 
       updated_at:
         type: string
-        description: Date at which an order was updated
+        format: date-time
+        description: The date and time when the draft order was last updated.
         readOnly: true
 
       status:
@@ -407,7 +409,7 @@ definitions:
         - open
         - invoice_sent
         - completed
-        description: String describing the state of the draft order - “open”, “invoice sent”, “completed”.
+        description: String describing the state of the draft order - `open`, `invoice sent`, `completed`.
         readOnly: true
 
   draft_order_invoice:
@@ -416,7 +418,7 @@ definitions:
       to:
         type: string
         description: >-
-          Email associated with the `draft_order_invoice`.  If not specified, the email associated with the draft order, or the customer's email will be used instead.  If no email address is specified an error will be raised. 
+          Email associated with the `draft_order_invoice`.  If not specified, the email associated with the draft order, or the customer's email will be used instead.  If no email address is specified an error is raised.
           
       from:
         type: string
@@ -429,14 +431,14 @@ definitions:
         description: The subject of the email that will be sent. When not provided, defaults to the Draft Order Invoice template's subject, as specified in the shop's Notification settings.
       custom_message:
         type: string
-        description: An optional custom message which will be inserted in the email's body.
+        description: An optional custom message inserted in the email's body.
   checkout:
     type: object
     properties:
       to:
         type: string
         description: >-
-          Email associated with the `draft_order_invoice`.  If not specified, the email associated with the draft order, or the customer's email will be used instead.  If no email address is specified an error will be raised.
+          Email associated with the `draft_order_invoice`.  If not specified, the email associated with the draft order, or the customer's email will be used instead.  If no email address is specified an error is raised.
           
       from:
         type: string
@@ -446,10 +448,10 @@ definitions:
         description: array of staff account e-mail addresses.
       subject:
         type: string
-        description: subject of custom message injected into the template.
+        description: subject of custom message.
       custom_message:
         type: string
-        description: Custom message that will be injected into the invoice template.
+        description: Custom message.
   line_item:
     type: object
     required:
@@ -463,53 +465,53 @@ definitions:
         readOnly: true
       variant_id:
         type: string
-        description: The id of the product variant corresponding to this line item.If this field is null, we assume that this is a custom line item.
+        description: The `id` of the product variant corresponding to the `line_item`.
         readOnly: false
       product_id:
         type: string
-        description: The id of the product corresponding to this line item’s product variant.
+        description: The `id` of the product corresponding to the line item’s product variant.
       name:
         type: string
         description: The readable name of the product and variant.
       title:
         type: string
-        description: Can only be specified if this is a custom line item, in which case it is mandatory.  The title of the product or variant.
+        description:  The title of the product or variant.  Can only be specified if this is a custom line item, in which case it is mandatory.
       variant_title:
         type: string
-        description: The title of the product (use public_title). Not settable by custom line item, defaults to “Custom”
+        description: The title of the product variant.  Default value is “Custom”
       price:
         type: string
-        description: Can only be specified if this is a custom line item, in which case it is mandatory.  To change the price of a product, use discount field.
+        description: The price of the item before discounts have been applied.  Can only be specified if this is a custom line item, in which case it is mandatory.  To change the price of a product, use `discount` as specified below.
       vendor:
         type: string
         description: vendor
       grams:
         type: string
-        description: Can only be specified if this is a custom line item, if null default to 0
+        description: Weight in grams.  Can only be specified if this is a custom line item.  If not specified, defaults to `0`.
       quantity:
         type: string
         description: quantity
       requires_shipping:
         type: boolean
-        description: Can only be specified if this is a custom line item.  Defaults to false for custom line items.
+        description: States whether or not the fulfillment requires shipping. Values are `true` or `false`.  Can only be specified if this is a custom line item.  Defaults to `false`.
       sku:
         type: string
-        description: Can only be specified if this is a custom line item
+        description: Can only be specified if this is a custom line item.
       taxable:
         type: boolean
-        description: Can only be specified if this is a custom line item.  Mandatory for custom products.
+        description: States whether or not the product is taxable. Values are `true` or `false`.  Can only be specified if this is a custom line item.  Mandatory for custom products.
       gift_card:
         type: boolean
-        description: True if the product is a gift card.
+        description: Indicates if the product is a gift card. Values - `true` or `false`.
       fulfillment_service:
         type: string
-        description: Defaults to manual for custom.
+        description: Service provider who is doing the fulfillment. Valid values are either `manual` or the name of the provider. eg `amazon`, `shipwire`, etc.  Defaults to `manual` for custom line items.
       properties:
         type: string
-        description: line item properties
+        description: An array of custom information for an item that has been added to the cart. Often used to provide product customization options. For more information, see the [documentation on collecting customization information on the product page] (https://help.shopify.com/themes/customization/products/get-customization-information-for-products)
       custom:
         type: boolean
-        description: “false” if the line item is a product variant, “true” if the line item is custom. Determined automatically.
+        description: Indicates if the line item is a custom line item.  `false` if the line item is a product variant, `true` if the line item is `custom`.
         readOnly: true
       discount:
         type: object
@@ -531,13 +533,13 @@ definitions:
         description: handle of the shipping rate
       title:
         type: string
-        description: title of the shipping rate
-      phoe_required:
+        description: The shipping method name.
+      phone_required:
         type: boolean
-        description: Whether a phone number is required when applying to a draft order
+        description: Indicates if a phone number is required, when `shipping_rate` is applied to a draft order.  Possible values - `true` or `false`
       price:
         type: string
-        description: the price of the shipping rate.
+        description: The price of the shipping rate.
 
   shipping_line:
     type: object
@@ -550,14 +552,14 @@ definitions:
         description: The handle of the shipping rate which was selected and applied, if applicable
       title:
         type: string
-        description: descriptive title
+        description: The title of the shipping method.
       price:
         type: integer
         format: int64
-        description: price
+        description: The price of this shipping method.
       phone:
         type: string
-        description: The phone number =, if required as specified in the shipping_rate
+        description: The phone number, if required as specified in the `shipping_rate`.
       tax_lines:
         type: array
         items:
@@ -569,7 +571,7 @@ definitions:
       id:
         type: integer
         format: int64
-        description: description of the metafield
+        description: Unique numeric identifier for the metafield.
 
   tax_line:
     type: object
@@ -580,13 +582,13 @@ definitions:
     properties:
       title:
         type: string
-        description: title
+        description: The name of the tax.
       rate:
         type: string
-        description: Rate for this tax
+        description: The rate of tax to be applied.
       price:
         type: string
-        description: Total
+        description: The amount of tax to be charged.
 
   discount:
     type: object
@@ -596,20 +598,64 @@ definitions:
     properties:
       description:
         type: string
-        description: reason for the discount
+        description: Reason for the discount
       value:
         type: string
-        description: The value of the discount. If the type of the discount is “dollar”, then this is a dollar amount, if the type is “percentage”, then this is the percentage. Unlike when specifying discount_codes on the Orders API, specifying a percentage does not replace this value with the dollar amount.
+        description: The value of the discount. If the type of the discount is `fixed_amount`, then this is a fixed dollar amount, if the type is `percentage`, then this is the percentage. 
       type:
         type: string
-        description: The type of the discount. Can be one of - “percentage” or ”fixed_amount” (default).
+        description: The type of the discount. Can be one of - `percentage` or `fixed_amount`. `Fixed_amount` is default value.
         enum:
         - percentage
         - fixed_amount (default)
 
       amount:
         type: string
-        description: The applied amount of the discount. This amount is not calculated automatically, and must be provided by the API client.
+        description: The applied amount of the discount.
+
+  customer:
+    type: object
+    description: Customer to be associated with the draft order; however only the `id` can be set in order to associate the customer to the draft order.  Setting the value to null removes the customer from the draft order.
+    properties:
+      accepts_marketing:
+        type: boolean
+        description: Indicates whether or not the customer would like to receive email updates from the shop. Valid values are `true` and `false`.
+      created_at: 
+        type: string
+        format: date-time
+        description: The date and time when the customer record was created.
+      email:
+        type: string
+        description: The customer's email address.
+      first_name:
+        type: string
+        description: The customer's first name.
+      order_id:
+        type: integer
+        format: integer
+        description: Unique numeric identifier for the customer.
+      last_name:
+        type: string
+        description: Customer's last name.
+      note: 
+        type: string
+        description: Extra information about the customer.
+      orders_count:
+        type: integer
+        description: The number of orders placed by this customer to a shop.
+      state:
+        type: string
+        description: Description.
+      total_spent:
+        type: integer
+        description: Total amount spent by the customer.
+      updated_at: 
+        type: string
+        format: date-time
+        description: The date and time when the customer record was last updated.
+      tags:
+        type: string
+        description: Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. For example, if an order has three tags - `tag1`, `tag2`, `tag3`.
 
   Error:
     required:
