@@ -59,8 +59,14 @@ info:
   
 schemes:
   - https
-host: myshopify.com
-basePath: /v1
+host: johns-apparel.myshopify.com
+
+securityDefinitions:
+  api_key:
+    type: apiKey
+    description: apikey security
+    name: johns-api-key
+    in: header
 
 paths:
   /admin/draft_orders.json:
@@ -78,6 +84,9 @@ paths:
           description: List of DraftOrder
           schema:
             $ref: '#/definitions/DraftOrder'
+            
+      security:
+        - api_key: []
             
       x-code-samples:
         - lang: curl
