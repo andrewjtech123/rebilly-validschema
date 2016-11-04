@@ -106,8 +106,22 @@ paths:
             
             
         - lang: PHP
-          source: \Stripe\Stripe::setApiKey("sk_test_BQokikJOvBiI2HlWgH4olfQ2");
-                  \Stripe\Balance::retrieve();
+          source: |
+            <?php
+            require_once(__DIR__ . '/vendor/autoload.php');
+            
+            $api_instance = new Swagger\Client\Api\GetApi();
+            $fields = "fields_example"; // string | Comma-separated list of fields to include in the response
+            $limit = 789; // int | Page size
+            $page = 789; // int | Page to show
+            
+            try {
+                $result = $api_instance->adminDraftOrdersJsonGet($fields, $limit, $page);
+                print_r($result);
+            } catch (Exception $e) {
+                echo 'Exception when calling GetApi->adminDraftOrdersJsonGet: ', $e->getMessage(), PHP_EOL;
+            }
+            ?>
                   
         - lang: Python
           source: |
@@ -183,13 +197,39 @@ paths:
           -u sk_test_BQokikJOvBiI2HlWgH4olfQ2:
       
         - lang: Ruby
-          source: require "stripe" 
-                  Stripe.api_key = "sk_test_BQokikJOvBiI2HlWgH4olfQ2"Stripe::Balance.retrieve()
+          source: |
+            # load the gem
+            require 'swagger_client'
+            
+            api_instance = SwaggerClient::GetApi.new
+            
+            id = 789 # Integer | draft order id
+            
+            
+            begin
+              result = api_instance.admin_draft_ordersid_json_get(id)
+              p result
+            rescue SwaggerClient::ApiError => e
+              puts "Exception when calling GetApi->admin_draft_ordersid_json_get: #{e}"
+            end
             
             
         - lang: PHP
-          source: \Stripe\Stripe::setApiKey("sk_test_BQokikJOvBiI2HlWgH4olfQ2");
-                  \Stripe\Balance::retrieve();
+          source: |
+            <?php
+            require_once(__DIR__ . '/vendor/autoload.php');
+            
+            $api_instance = new Swagger\Client\Api\GetApi();
+            $id = 789; // int | draft order id
+            
+            try {
+                $result = $api_instance->adminDraftOrdersidJsonGet($id);
+                print_r($result);
+            } catch (Exception $e) {
+                echo 'Exception when calling GetApi->adminDraftOrdersidJsonGet: ', $e->getMessage(), PHP_EOL;
+            }
+            ?>
+
                   
         - lang: Python
           source: |
@@ -273,13 +313,34 @@ paths:
           -u sk_test_BQokikJOvBiI2HlWgH4olfQ2:
       
         - lang: Ruby
-          source: require "stripe" 
-                  Stripe.api_key = "sk_test_BQokikJOvBiI2HlWgH4olfQ2"Stripe::Balance.retrieve()
+          source: |
+            # load the gem
+            require 'swagger_client'
+            
+            api_instance = SwaggerClient::GetApi.new
+            
+            begin
+              result = api_instance.admin_draft_orders_count_json_get
+              p result
+            rescue SwaggerClient::ApiError => e
+              puts "Exception when calling GetApi->admin_draft_orders_count_json_get: #{e}"
+            end
             
             
         - lang: PHP
-          source: \Stripe\Stripe::setApiKey("sk_test_BQokikJOvBiI2HlWgH4olfQ2");
-                  \Stripe\Balance::retrieve();
+          source: |
+            <?php
+            require_once(__DIR__ . '/vendor/autoload.php');
+            
+            $api_instance = new Swagger\Client\Api\GetApi();
+            
+            try {
+                $result = $api_instance->adminDraftOrdersCountJsonGet();
+                print_r($result);
+            } catch (Exception $e) {
+                echo 'Exception when calling GetApi->adminDraftOrdersCountJsonGet: ', $e->getMessage(), PHP_EOL;
+            }
+            ?>
                   
         - lang: Python
           source: |
