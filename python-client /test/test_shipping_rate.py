@@ -28,13 +28,13 @@ import os
 import sys
 import unittest
 
-import swagger_client
-from swagger_client.rest import ApiException
-from swagger_client.models.draft_order_invoice import DraftOrderInvoice
+import Shopify
+from Shopify.rest import ApiException
+from Shopify.models.shipping_rate import ShippingRate
 
 
-class TestDraftOrderInvoice(unittest.TestCase):
-    """ DraftOrderInvoice unit test stubs """
+class TestShippingRate(unittest.TestCase):
+    """ ShippingRate unit test stubs """
 
     def setUp(self):
         pass
@@ -42,11 +42,11 @@ class TestDraftOrderInvoice(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testDraftOrderInvoice(self):
+    def testShippingRate(self):
         """
-        Test DraftOrderInvoice
+        Test ShippingRate
         """
-        model = swagger_client.models.draft_order_invoice.DraftOrderInvoice()
+        model = Shopify.models.shipping_rate.ShippingRate()
 
 
 if __name__ == '__main__':

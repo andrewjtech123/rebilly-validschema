@@ -28,35 +28,25 @@ import os
 import sys
 import unittest
 
-import swagger_client
-from swagger_client.rest import ApiException
-from swagger_client.apis.create_api import CreateApi
+import Shopify
+from Shopify.rest import ApiException
+from Shopify.models.customer import Customer
 
 
-class TestCreateApi(unittest.TestCase):
-    """ CreateApi unit test stubs """
+class TestCustomer(unittest.TestCase):
+    """ Customer unit test stubs """
 
     def setUp(self):
-        self.api = swagger_client.apis.create_api.CreateApi()
+        pass
 
     def tearDown(self):
         pass
 
-    def test_admin_draft_orders_json_post(self):
+    def testCustomer(self):
         """
-        Test case for admin_draft_orders_json_post
-
-        Create a draft order
+        Test Customer
         """
-        pass
-
-    def test_admin_draft_ordersid_send_invoice_json_post(self):
-        """
-        Test case for admin_draft_ordersid_send_invoice_json_post
-
-        Send an invoice
-        """
-        pass
+        model = Shopify.models.customer.Customer()
 
 
 if __name__ == '__main__':

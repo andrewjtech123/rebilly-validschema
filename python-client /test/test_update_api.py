@@ -28,25 +28,35 @@ import os
 import sys
 import unittest
 
-import swagger_client
-from swagger_client.rest import ApiException
-from swagger_client.models.shipping_rate import ShippingRate
+import Shopify
+from Shopify.rest import ApiException
+from Shopify.apis.update_api import UpdateApi
 
 
-class TestShippingRate(unittest.TestCase):
-    """ ShippingRate unit test stubs """
+class TestUpdateApi(unittest.TestCase):
+    """ UpdateApi unit test stubs """
 
     def setUp(self):
-        pass
+        self.api = Shopify.apis.update_api.UpdateApi()
 
     def tearDown(self):
         pass
 
-    def testShippingRate(self):
+    def test_admin_draft_ordersid_complete_json_put(self):
         """
-        Test ShippingRate
+        Test case for admin_draft_ordersid_complete_json_put
+
+        
         """
-        model = swagger_client.models.shipping_rate.ShippingRate()
+        pass
+
+    def test_admin_draft_ordersid_json_put(self):
+        """
+        Test case for admin_draft_ordersid_json_put
+
+        Modify draft order
+        """
+        pass
 
 
 if __name__ == '__main__':

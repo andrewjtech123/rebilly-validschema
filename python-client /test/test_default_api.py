@@ -28,25 +28,27 @@ import os
 import sys
 import unittest
 
-import swagger_client
-from swagger_client.rest import ApiException
-from swagger_client.models.error import Error
+import Shopify
+from Shopify.rest import ApiException
+from Shopify.apis.default_api import DefaultApi
 
 
-class TestError(unittest.TestCase):
-    """ Error unit test stubs """
+class TestDefaultApi(unittest.TestCase):
+    """ DefaultApi unit test stubs """
 
     def setUp(self):
-        pass
+        self.api = Shopify.apis.default_api.DefaultApi()
 
     def tearDown(self):
         pass
 
-    def testError(self):
+    def test_admin_draft_ordersid_checkout_json_post(self):
         """
-        Test Error
+        Test case for admin_draft_ordersid_checkout_json_post
+
+        Create or retrieve existing checkout
         """
-        model = swagger_client.models.error.Error()
+        pass
 
 
 if __name__ == '__main__':

@@ -28,25 +28,43 @@ import os
 import sys
 import unittest
 
-import swagger_client
-from swagger_client.rest import ApiException
-from swagger_client.models.metafield import Metafield
+import Shopify
+from Shopify.rest import ApiException
+from Shopify.apis.get_api import GetApi
 
 
-class TestMetafield(unittest.TestCase):
-    """ Metafield unit test stubs """
+class TestGetApi(unittest.TestCase):
+    """ GetApi unit test stubs """
 
     def setUp(self):
-        pass
+        self.api = Shopify.apis.get_api.GetApi()
 
     def tearDown(self):
         pass
 
-    def testMetafield(self):
+    def test_admin_draft_orders_count_json_get(self):
         """
-        Test Metafield
+        Test case for admin_draft_orders_count_json_get
+
+        
         """
-        model = swagger_client.models.metafield.Metafield()
+        pass
+
+    def test_admin_draft_orders_json_get(self):
+        """
+        Test case for admin_draft_orders_json_get
+
+        
+        """
+        pass
+
+    def test_admin_draft_ordersid_json_get(self):
+        """
+        Test case for admin_draft_ordersid_json_get
+
+        
+        """
+        pass
 
 
 if __name__ == '__main__':

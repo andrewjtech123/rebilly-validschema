@@ -28,13 +28,13 @@ import os
 import sys
 import unittest
 
-import swagger_client
-from swagger_client.rest import ApiException
-from swagger_client.models.shipping_line import ShippingLine
+import Shopify
+from Shopify.rest import ApiException
+from Shopify.models.metafield import Metafield
 
 
-class TestShippingLine(unittest.TestCase):
-    """ ShippingLine unit test stubs """
+class TestMetafield(unittest.TestCase):
+    """ Metafield unit test stubs """
 
     def setUp(self):
         pass
@@ -42,11 +42,11 @@ class TestShippingLine(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testShippingLine(self):
+    def testMetafield(self):
         """
-        Test ShippingLine
+        Test Metafield
         """
-        model = swagger_client.models.shipping_line.ShippingLine()
+        model = Shopify.models.metafield.Metafield()
 
 
 if __name__ == '__main__':

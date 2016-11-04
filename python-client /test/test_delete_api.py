@@ -28,16 +28,16 @@ import os
 import sys
 import unittest
 
-import swagger_client
-from swagger_client.rest import ApiException
-from swagger_client.apis.delete_api import DeleteApi
+import Shopify
+from Shopify.rest import ApiException
+from Shopify.apis.delete_api import DeleteApi
 
 
 class TestDeleteApi(unittest.TestCase):
     """ DeleteApi unit test stubs """
 
     def setUp(self):
-        self.api = swagger_client.apis.delete_api.DeleteApi()
+        self.api = Shopify.apis.delete_api.DeleteApi()
 
     def tearDown(self):
         pass

@@ -1,4 +1,4 @@
-# swagger_client.CreateApi
+# Shopify.CreateApi
 
 All URIs are relative to *https://myshopify.com/v1*
 
@@ -18,13 +18,13 @@ Create a draft order   ### About line items   There are two ways to add a line i
 ### Example 
 ```python
 import time
-import swagger_client
-from swagger_client.rest import ApiException
+import Shopify
+from Shopify.rest import ApiException
 from pprint import pprint
 
 # create an instance of the API class
-api_instance = swagger_client.CreateApi()
-draftorder = swagger_client.DraftOrder() # DraftOrder | The draft order to create.
+api_instance = Shopify.CreateApi()
+draftorder = Shopify.DraftOrder() # DraftOrder | The draft order to create.
 
 try: 
     # Create a draft order
@@ -65,14 +65,14 @@ Send an invoice
 ### Example 
 ```python
 import time
-import swagger_client
-from swagger_client.rest import ApiException
+import Shopify
+from Shopify.rest import ApiException
 from pprint import pprint
 
 # create an instance of the API class
-api_instance = swagger_client.CreateApi()
+api_instance = Shopify.CreateApi()
 id = 56 # int | 
-draft_order_invoice = swagger_client.DraftOrderInvoice() # DraftOrderInvoice | draft_order_invoice to post. (optional)
+draft_order_invoice = Shopify.DraftOrderInvoice() # DraftOrderInvoice | draft_order_invoice to post. (optional)
 
 try: 
     # Send an invoice

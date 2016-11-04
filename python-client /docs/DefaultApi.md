@@ -1,4 +1,4 @@
-# swagger_client.DefaultApi
+# Shopify.DefaultApi
 
 All URIs are relative to *https://myshopify.com/v1*
 
@@ -17,12 +17,12 @@ To be used in Checkout API. Requires checkout scope
 ### Example 
 ```python
 import time
-import swagger_client
-from swagger_client.rest import ApiException
+import Shopify
+from Shopify.rest import ApiException
 from pprint import pprint
 
 # create an instance of the API class
-api_instance = swagger_client.DefaultApi()
+api_instance = Shopify.DefaultApi()
 id2 = 56 # int | 
 id = 'id_example' # str | id of the draft order (optional)
 

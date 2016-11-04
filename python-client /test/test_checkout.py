@@ -28,13 +28,13 @@ import os
 import sys
 import unittest
 
-import swagger_client
-from swagger_client.rest import ApiException
-from swagger_client.models.customer import Customer
+import Shopify
+from Shopify.rest import ApiException
+from Shopify.models.checkout import Checkout
 
 
-class TestCustomer(unittest.TestCase):
-    """ Customer unit test stubs """
+class TestCheckout(unittest.TestCase):
+    """ Checkout unit test stubs """
 
     def setUp(self):
         pass
@@ -42,11 +42,11 @@ class TestCustomer(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testCustomer(self):
+    def testCheckout(self):
         """
-        Test Customer
+        Test Checkout
         """
-        model = swagger_client.models.customer.Customer()
+        model = Shopify.models.checkout.Checkout()
 
 
 if __name__ == '__main__':

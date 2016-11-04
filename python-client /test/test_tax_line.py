@@ -28,43 +28,25 @@ import os
 import sys
 import unittest
 
-import swagger_client
-from swagger_client.rest import ApiException
-from swagger_client.apis.get_api import GetApi
+import Shopify
+from Shopify.rest import ApiException
+from Shopify.models.tax_line import TaxLine
 
 
-class TestGetApi(unittest.TestCase):
-    """ GetApi unit test stubs """
+class TestTaxLine(unittest.TestCase):
+    """ TaxLine unit test stubs """
 
     def setUp(self):
-        self.api = swagger_client.apis.get_api.GetApi()
+        pass
 
     def tearDown(self):
         pass
 
-    def test_admin_draft_orders_count_json_get(self):
+    def testTaxLine(self):
         """
-        Test case for admin_draft_orders_count_json_get
-
-        
+        Test TaxLine
         """
-        pass
-
-    def test_admin_draft_orders_json_get(self):
-        """
-        Test case for admin_draft_orders_json_get
-
-        
-        """
-        pass
-
-    def test_admin_draft_ordersid_json_get(self):
-        """
-        Test case for admin_draft_ordersid_json_get
-
-        
-        """
-        pass
+        model = Shopify.models.tax_line.TaxLine()
 
 
 if __name__ == '__main__':

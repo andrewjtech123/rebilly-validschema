@@ -1,4 +1,4 @@
-# swagger_client.UpdateApi
+# Shopify.UpdateApi
 
 All URIs are relative to *https://myshopify.com/v1*
 
@@ -18,12 +18,12 @@ Mark a draft order as paid or pending payment
 ### Example 
 ```python
 import time
-import swagger_client
-from swagger_client.rest import ApiException
+import Shopify
+from Shopify.rest import ApiException
 from pprint import pprint
 
 # create an instance of the API class
-api_instance = swagger_client.UpdateApi()
+api_instance = Shopify.UpdateApi()
 id = 56 # int | 
 payment_gateway_id = 789 # int | Gateway used to receive payment. Either ID of custom manual gateway, or null if using the default “Mark As Paid” gateway. (optional)
 payment_pending = true # bool | true/false (optional)
@@ -68,14 +68,14 @@ You can modify an existing draft order. ### Example   Only showing the parameter
 ### Example 
 ```python
 import time
-import swagger_client
-from swagger_client.rest import ApiException
+import Shopify
+from Shopify.rest import ApiException
 from pprint import pprint
 
 # create an instance of the API class
-api_instance = swagger_client.UpdateApi()
+api_instance = Shopify.UpdateApi()
 id = 56 # int | draft order id
-draft_order = swagger_client.DraftOrder() # DraftOrder | the draft order to modify. (optional)
+draft_order = Shopify.DraftOrder() # DraftOrder | the draft order to modify. (optional)
 
 try: 
     # Modify draft order

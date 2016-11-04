@@ -1,4 +1,4 @@
-# swagger_client.GetApi
+# Shopify.GetApi
 
 All URIs are relative to *https://myshopify.com/v1*
 
@@ -19,12 +19,12 @@ Return count of draft orders
 ### Example 
 ```python
 import time
-import swagger_client
-from swagger_client.rest import ApiException
+import Shopify
+from Shopify.rest import ApiException
 from pprint import pprint
 
 # create an instance of the API class
-api_instance = swagger_client.GetApi()
+api_instance = Shopify.GetApi()
 
 try: 
     api_response = api_instance.admin_draft_orders_count_json_get()
@@ -61,12 +61,12 @@ Retrieve draft orders
 ### Example 
 ```python
 import time
-import swagger_client
-from swagger_client.rest import ApiException
+import Shopify
+from Shopify.rest import ApiException
 from pprint import pprint
 
 # create an instance of the API class
-api_instance = swagger_client.GetApi()
+api_instance = Shopify.GetApi()
 fields = 'fields_example' # str | Comma-separated list of fields to include in the response (optional)
 limit = 789 # int | Page size (optional)
 page = 789 # int | Page to show (optional)
@@ -111,12 +111,12 @@ Receive a single draft order
 ### Example 
 ```python
 import time
-import swagger_client
-from swagger_client.rest import ApiException
+import Shopify
+from Shopify.rest import ApiException
 from pprint import pprint
 
 # create an instance of the API class
-api_instance = swagger_client.GetApi()
+api_instance = Shopify.GetApi()
 id = 789 # int | draft order id
 
 try: 

@@ -28,13 +28,13 @@ import os
 import sys
 import unittest
 
-import swagger_client
-from swagger_client.rest import ApiException
-from swagger_client.models.tax_line import TaxLine
+import Shopify
+from Shopify.rest import ApiException
+from Shopify.models.draft_order import DraftOrder
 
 
-class TestTaxLine(unittest.TestCase):
-    """ TaxLine unit test stubs """
+class TestDraftOrder(unittest.TestCase):
+    """ DraftOrder unit test stubs """
 
     def setUp(self):
         pass
@@ -42,11 +42,11 @@ class TestTaxLine(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testTaxLine(self):
+    def testDraftOrder(self):
         """
-        Test TaxLine
+        Test DraftOrder
         """
-        model = swagger_client.models.tax_line.TaxLine()
+        model = Shopify.models.draft_order.DraftOrder()
 
 
 if __name__ == '__main__':

@@ -28,35 +28,25 @@ import os
 import sys
 import unittest
 
-import swagger_client
-from swagger_client.rest import ApiException
-from swagger_client.apis.update_api import UpdateApi
+import Shopify
+from Shopify.rest import ApiException
+from Shopify.models.line_item import LineItem
 
 
-class TestUpdateApi(unittest.TestCase):
-    """ UpdateApi unit test stubs """
+class TestLineItem(unittest.TestCase):
+    """ LineItem unit test stubs """
 
     def setUp(self):
-        self.api = swagger_client.apis.update_api.UpdateApi()
+        pass
 
     def tearDown(self):
         pass
 
-    def test_admin_draft_ordersid_complete_json_put(self):
+    def testLineItem(self):
         """
-        Test case for admin_draft_ordersid_complete_json_put
-
-        
+        Test LineItem
         """
-        pass
-
-    def test_admin_draft_ordersid_json_put(self):
-        """
-        Test case for admin_draft_ordersid_json_put
-
-        Modify draft order
-        """
-        pass
+        model = Shopify.models.line_item.LineItem()
 
 
 if __name__ == '__main__':

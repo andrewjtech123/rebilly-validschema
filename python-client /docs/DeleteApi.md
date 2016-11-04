@@ -1,4 +1,4 @@
-# swagger_client.DeleteApi
+# Shopify.DeleteApi
 
 All URIs are relative to *https://myshopify.com/v1*
 
@@ -17,12 +17,12 @@ Remove a draft order.
 ### Example 
 ```python
 import time
-import swagger_client
-from swagger_client.rest import ApiException
+import Shopify
+from Shopify.rest import ApiException
 from pprint import pprint
 
 # create an instance of the API class
-api_instance = swagger_client.DeleteApi()
+api_instance = Shopify.DeleteApi()
 id = 789 # int | draft order id
 
 try: 
