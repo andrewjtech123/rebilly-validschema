@@ -81,8 +81,7 @@ paths:
             
       x-code-samples:
         - lang: curl
-          source: curl https://api.stripe.com/v1/balance \
-          -u sk_test_BQokikJOvBiI2HlWgH4olfQ2:
+          source: curl https://myshopify.com/v1/admin/draft_orders.json
       
         - lang: Ruby
           source: |
@@ -193,8 +192,7 @@ paths:
             
       x-code-samples:
         - lang: curl
-          source: curl https://api.stripe.com/v1/balance \
-          -u sk_test_BQokikJOvBiI2HlWgH4olfQ2:
+          source: curl https://myshopify.com/v1/admin/draft_orders.json
       
         - lang: Ruby
           source: |
@@ -309,8 +307,7 @@ paths:
 
       x-code-samples:
         - lang: curl
-          source: curl https://api.stripe.com/v1/balance \
-          -u sk_test_BQokikJOvBiI2HlWgH4olfQ2:
+          source: curl https://myshopify.com/v1/admin/draft_orders.json
       
         - lang: Ruby
           source: |
