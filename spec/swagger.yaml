@@ -673,7 +673,7 @@ definitions:
           description: Service provider who is doing the fulfillment. Valid values are either `manual` or the name of the provider. eg `amazon`, `shipwire`, etc.  Defaults to `manual` for custom line items.
         properties:
           type: string
-          description: An array of custom information for an item that has been added to the cart. Often used to provide product customization options. For more information, see the [documentation on collecting customization information on the product page] (https://help.shopify.com/themes/customization/products/get-customization-information-for-products)
+          description: An array of custom information for an item that has been added to the cart. Often used to provide product customization options. For more information, see the [documentation on collecting customization information on the product page](https://help.shopify.com/themes/customization/products/get-customization-information-for-products)
         discount:
           type: object
           items:
