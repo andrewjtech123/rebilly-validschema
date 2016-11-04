@@ -92,6 +92,25 @@ paths:
         - lang: PHP
           source: \Stripe\Stripe::setApiKey("sk_test_BQokikJOvBiI2HlWgH4olfQ2");
                   \Stripe\Balance::retrieve();
+                  
+        - lang: Python
+          source: |
+            
+            # create an instance of the API class
+            api_instance = Shopify.GetApi()
+            fields = 'fields_example' # str | Comma-separated list of fields to include in the response (optional)
+            limit = 789 # int | Page size (optional)
+            page = 789 # int | Page to show (optional)
+            
+            try: 
+                api_response = api_instance.admin_draft_orders_json_get(fields=fields, limit=limit, page=page)
+                pprint(api_response)
+            except ApiException as e:
+                print "Exception when calling GetApi->admin_draft_orders_json_get: %s\n" % e
+
+ 
+
+
           
             
   
@@ -141,6 +160,35 @@ paths:
           description: A single DraftOrder
           schema:
             $ref: '#/definitions/DraftOrder'
+            
+      x-code-samples:
+        - lang: curl
+          source: curl https://api.stripe.com/v1/balance \
+          -u sk_test_BQokikJOvBiI2HlWgH4olfQ2:
+      
+        - lang: Ruby
+          source: require "stripe" 
+                  Stripe.api_key = "sk_test_BQokikJOvBiI2HlWgH4olfQ2"Stripe::Balance.retrieve()
+            
+            
+        - lang: PHP
+          source: \Stripe\Stripe::setApiKey("sk_test_BQokikJOvBiI2HlWgH4olfQ2");
+                  \Stripe\Balance::retrieve();
+                  
+        - lang: Python
+          source: |
+            
+            # create an instance of the API class
+            api_instance = Shopify.GetApi()
+            id = 789 # int | draft order id
+
+            try: 
+            api_response = api_instance.admin_draft_ordersid_json_get(id)
+            pprint(api_response)
+            except ApiException as e:
+            print "Exception when calling GetApi->admin_draft_ordersid_json_get: %s\n" % e
+            
+            
     put:
       parameters:
         - name: draft_order
@@ -203,7 +251,31 @@ paths:
            schema:
              type: integer
 
-  
+      x-code-samples:
+        - lang: curl
+          source: curl https://api.stripe.com/v1/balance \
+          -u sk_test_BQokikJOvBiI2HlWgH4olfQ2:
+      
+        - lang: Ruby
+          source: require "stripe" 
+                  Stripe.api_key = "sk_test_BQokikJOvBiI2HlWgH4olfQ2"Stripe::Balance.retrieve()
+            
+            
+        - lang: PHP
+          source: \Stripe\Stripe::setApiKey("sk_test_BQokikJOvBiI2HlWgH4olfQ2");
+                  \Stripe\Balance::retrieve();
+                  
+        - lang: Python
+          source: |
+            
+            # create an instance of the API class
+            api_instance = Shopify.GetApi()
+            
+            try: 
+                api_response = api_instance.admin_draft_orders_count_json_get()
+                pprint(api_response)
+            except ApiException as e:
+                print "Exception when calling GetApi->admin_draft_orders_count_json_get: %s\n" % e
 
 
 
