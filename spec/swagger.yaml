@@ -497,13 +497,11 @@ definitions:
 
       metafields:
         type: array
-        items:
-          $ref: '#/definitions/metafield'
+        $ref: '#/definitions/metafield'
 
       shipping_line:
         type: object
-        items:
-          $ref: '#/definitions/shipping_line'
+        $ref: '#/definitions/shipping_line'
 
       tags:
         type: string
