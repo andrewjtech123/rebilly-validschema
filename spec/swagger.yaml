@@ -6,6 +6,7 @@ info:
     ### Draft Orders API 
       
       This API is about operations you can perform on the draft order object as defind below:
+      
     
     Field | Definition | Data Type
       -----|-----------|-------------------------
@@ -22,16 +23,16 @@ info:
       `invoice_url` | The url to send to the customer so that they can complete the checkout.  When using `send_invoice`, this url is emailed to the customer. This field can be used so that an API client can use another method of communication to provide the url to the customer. | `string`
       `line_item`[ ] | | array of `line_item` objects
       `metafields`[ ] | | array of `metafield` objects
-      `shipping_line` | | `object`
+      `shipping_line` | object which details the shipping rate which has been selected for the draft order. The shipping line is automatically reset to null when the applied shipping rate is no longer valid.  See [draft order description below]( for detailed desription of all properties. | `object`
       `tags` | Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. Each individual tag is limited to 40 characters in length. | `string`
       `tax_exempt` | Sets whether taxes are exempt for this draft order. If this value is `false`, Shopify will honor the `tax_exempt` value for each `line_item`. | `boolean`
       `tax_lines` | Tax lines describing the sum of each type of tax line for line items and shipping line. | array of `tax_line` objects
       `discount` | Order level discount. | `string`
-      `taxes_included` | Shop settings taxes are included in the price | `boolean`
+      `taxes_included` | States whether or not taxes (from shop settings) are included in the draft order. Valid values are `true` or `false`. | `boolean`
       `total_tax` | Total tax amount | `integer`
       `completed_at` | Date at which an order was created and the draft order moved to “completed” status. | `DateTime`
-      `created_at` | By default, this auto-generated property is the date and time when the order was created in Shopify, in ISO 8601 format. If you are importing orders to the Shopify platform from another system, the writable `processed_at` property will override the `created_at` date. | `dateTime`
-      `updated_at` | | `dateTime`
+      `created_at` | By default, this auto-generated property is the date and time when the order was created in Shopify, in ISO 8601 format. | `dateTime`
+      `updated_at` | The date and time when the draft order was last updated. | `dateTime`
       `status` | String describing the state of the draft order. Possible values are `open`, `invoice sent`, or `completed`. | `string`
       
 
@@ -159,8 +160,15 @@ paths:
           ### About line items
           There are two ways to add a line item:
 
-          * Supply a `variant_id`, `quantity` and (if applicable) `discount`
-          * Add a custom line item by supplying `title`, `price`, `taxable` and `quantity` (at a minimum). The array of line items on a draft order must not contain a `variant_id` more than once. The data copied over from a variant upon creation of a line item is never subsequently updated.
+          * Create a line item from a product variant, by providing a `variant_id`, `quantity` and `discount` (if applicable)
+          * Create a custom line item by supplying `title`, `price`, `taxable` and `quantity` 
+          
+          
+          
+        
+          | `Note`| The array of line items on a draft order must not contain a `variant_id` more than once. The data copied over from a variant upon creation of a line item is never subsequently updated.  |
+          |---|-------------|
+         
           
       tags:
         - Create
@@ -174,7 +182,7 @@ paths:
             $ref: '#/definitions/DraftOrder'
       responses:
         '200':
-          description: The draft order you created
+          description: The draft order you created.
           schema:
             $ref: '#/definitions/DraftOrder'
         '400':
@@ -389,7 +397,7 @@ paths:
             $ref: '#/definitions/draft_order_invoice'
   '/admin/draft_orders/#{id}/complete.json':
     put:
-      description: Mark a draft order as paid or pending payment
+      description: Mark a draft order as paid or pending payment.
       tags:
         - Update
       parameters:
@@ -457,7 +465,7 @@ definitions:
         readOnly: true
       name:
         type: string
-        description: Name of the draft order
+        description: Name of the draft order.
         readOnly: true
       customer:
         type: object
@@ -526,7 +534,7 @@ definitions:
 
       total_tax:
         type: string
-        description: Total tax amount
+        description: Total tax amount.
         readOnly: true
 
       subtotal_price:
@@ -547,7 +555,7 @@ definitions:
       created_at:
         type: string
         format: date-time
-        description: By default, this auto-generated property is the date and time when the order was created in Shopify, in ISO 8601 format. If you are importing orders to the Shopify platform from another system, the writable `processed_at` property will override the `created_at date`
+        description: By default, this auto-generated property is the date and time when the order was created in Shopify, in ISO 8601 format. If you are importing orders to the Shopify platform from another system, the writable `processed_at` property will override the `created_at date`.
         readOnly: true
 
       updated_at:
@@ -601,10 +609,10 @@ definitions:
         description: array of staff account e-mail addresses.
       subject:
         type: string
-        description: subject of custom message.
+        description: The subject of the email that will be sent. When not provided, defaults to the Draft Order Invoice template's subject, as specified in the shop's Notification settings.
       custom_message:
         type: string
-        description: Custom message.
+        description: An optional custom message inserted in the email's body.
   line_item:
     type: object
     required:
@@ -665,7 +673,7 @@ definitions:
           description: The readable name of the product and variant.
         variant_title:
           type: string
-          description: The title of the product variant.  Default value is “Custom”
+          description: The title of the product variant.  Default value is “Custom”.
         vendor:
           type: string
           description: vendor
@@ -680,7 +688,7 @@ definitions:
           description: Service provider who is doing the fulfillment. Valid values are either `manual` or the name of the provider. eg `amazon`, `shipwire`, etc.  Defaults to `manual` for custom line items.
         properties:
           type: string
-          description: An array of custom information for an item that has been added to the cart. Often used to provide product customization options. For more information, see the [documentation on collecting customization information on the product page](https://help.shopify.com/themes/customization/products/get-customization-information-for-products)
+          description: An array of custom information for an item that has been added to the cart. Often used to provide product customization options. For more information, see the [documentation on collecting customization information on the product page](https://help.shopify.com/themes/customization/products/get-customization-information-for-products).
         discount:
           type: object
           items:
@@ -701,13 +709,10 @@ definitions:
     properties:
       handle:
         type: string
-        description: handle of the shipping rate
+        description: handle of the shipping rate.
       title:
         type: string
         description: The shipping method name.
-      phone_required:
-        type: boolean
-        description: Indicates if a phone number is required, when `shipping_rate` is applied to a draft order.  Possible values - `true` or `false`
       price:
         type: string
         description: The price of the shipping rate.
@@ -720,7 +725,7 @@ definitions:
     properties:
       handle:
         type: string
-        description: The handle of the shipping rate which was selected and applied, if applicable
+        description: The handle of the shipping rate which was selected and applied, if applicable.
       title:
         type: string
         description: The title of the shipping method.
@@ -769,7 +774,7 @@ definitions:
     properties:
       description:
         type: string
-        description: Reason for the discount
+        description: Reason for the discount.
       value:
         type: string
         description: The value of the discount. If the type of the discount is `fixed_amount`, then this is a fixed dollar amount, if the type is `percentage`, then this is the percentage. 
@@ -843,7 +848,7 @@ parameters:
   fields:
     name: fields
     in: query
-    description: Comma-separated list of fields to include in the response
+    description: Comma-separated list of fields to include in the response.
     required: false
     type: string
 
@@ -852,7 +857,7 @@ parameters:
     name: limit
     in: query
     required: false
-    description: Page size
+    description: Page size.
     type: integer
     format: int64
   page:
@@ -861,12 +866,12 @@ parameters:
     type: integer
     format: int64
     required: false
-    description: Page to show
+    description: Page to show.
   id:
     name: id
     in: query
     required: false
-    description: id of the draft order
+    description: id of the draft order.
     type: string
 
 
