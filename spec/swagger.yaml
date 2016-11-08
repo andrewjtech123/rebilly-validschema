@@ -77,6 +77,9 @@ paths:
       - $ref: '#/parameters/fields'
       - $ref: '#/parameters/limit'
       - $ref: '#/parameters/page'
+      - $ref: '#/parameters/since_id'
+      - $ref: '#/parameters/status'
+      - $ref: '#/parameters/ids'
       tags:
         - Get
 
@@ -155,10 +158,10 @@ paths:
   
     post:
       summary: Create a draft order
-      description: >
-        Create a draft order
-          ### About line items
-          There are two ways to add a line item:
+      description: |
+          ### About line items ###
+          
+          There are two ways to add a line item:<br>
 
           * Create a line item from a product variant, by providing a `variant_id`, `quantity` and `discount` (if applicable)
           * Create a custom line item by supplying `title`, `price`, `taxable` and `quantity` 
@@ -185,19 +188,16 @@ paths:
           description: The draft order you created.
           schema:
             $ref: '#/definitions/DraftOrder'
-        '400':
-          description: example
-          schema:
-            $ref: '#/definitions/DraftOrder'
   '/admin/draft_orders/#{id}.json':
     get:
       description: Receive a single draft order
       tags:
         - Get
       parameters:
+        - $ref: '#/parameters/fields'
         - name: id
           in: path
-          description: draft order id
+          description: draft order `id`.
           required: true
           type: integer
           format: int64
@@ -313,14 +313,21 @@ paths:
             $ref: '#/definitions/DraftOrder'
   /admin/draft_orders/count.json:
     get:
-      description: Return count of draft orders
+      summary: Return count of draft orders
+      description: You can return a count of draft orders by sending a request to the `/admin/draft_orders/count` endpoint.    
+      parameters:
+       - $ref: '#/parameters/fields'
+       - $ref: '#/parameters/limit'
+       - $ref: '#/parameters/page'
+       - $ref: '#/parameters/since_id'
+       - $ref: '#/parameters/status'
+       - $ref: '#/parameters/ids'
       tags:
         - Get
       responses:
         '200':
            description: Count of draft orders
-           schema:
-             type: integer
+           $ref: '#/responses/Integer'
 
       x-code-samples:
         - lang: curl
@@ -843,6 +850,11 @@ definitions:
       message:
         type: string
 
+  Integer:
+    properties:
+      integer:
+        type: integer
+        format: int64
 
 parameters:
   fields:
@@ -873,6 +885,28 @@ parameters:
     required: false
     description: id of the draft order.
     type: string
+    
+  since_id:
+    name: since_id
+    in: query
+    description: Restrict results to be after given ID
+    required: false
+    type: string
+  status:
+    name: status
+    in: query
+    type: string
+    description: Filter by status.
+    enum:
+    - open
+    - invoice_sent
+    - completed
+  ids:
+    name: ids
+    type: string
+    in: query
+    description: Filter by list of ids.
+    
 
 
 responses:
@@ -880,3 +914,8 @@ responses:
     description: Draft order doesn't have a shipping address.
     schema:
       $ref: "#/definitions/Error"
+  Integer:
+    description: count of draft orders
+    schema:
+      $ref: "#/definitions/Integer"
+    
