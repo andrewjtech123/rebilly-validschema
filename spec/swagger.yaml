@@ -10,20 +10,20 @@ info:
     
     Field | Definition | Data Type
       -----|-----------|-------------------------
-      `id`| `id` of the draft order |`string`
+      `id`| `id` of the draft order. |`string`
       `order_id`  | The id of the order associated to the draft order, once created. | `string`        
-      `name` | Name of the draft order, format #D<number>, where number, is an sequential identifier unique to the shop, starting at 1. For example #D133 | `integer`
-      `customer` | Customer object will be serialized with only the default address, however only the ID can be set in order to associate the customer to the draft order. Setting the value to null removes the customer from the draft order. | `object`
+      `name` | Name of the draft order, format `#D<number>`, where number, is a sequential identifier unique to the shop, starting at 1. For example `#D133`. | `integer`
+      `customer` | The customer associated with this draft order. This is a Read only object, but a different customer can be specified using cusotmer `id`.  Setting the value to null removes the customer from the draft order. | `object`
       `shipping_address` | The mailing address to where the draft order will be shipped. | `string`
       `billing_address` | The mailing address associated with the payment method. | `string`
       `note` | The text of an optional note that a shop owner can attach to the draft order. | `string`
-      `email` | The email address used for sending notifications. |`string`
-      `currency` | The three letter code for the currency to be used for the payment. | `string`
+      `email` | The email address used for sending notifications.  Deafults to `customer` email address when customr is present and `email` is not specified for the draft order. |`string`
+      `currency` | The three letter code for the currency to be used for the payment.  Read only field that is provided here for convenience.  Also, a shop setting that can be set via the admin. | `string`
       `invoice_sent_at` | DateTime when the invoice was emailed to the customer by Shopify. | `dateTime`
-      `invoice_url` | The url to send to the customer so that they can complete the checkout.  When using `send_invoice`, this url is emailed to the customer. This field can be used so that an API client can use another method of communication to provide the url to the customer. | `string`
-      `line_item`[ ] | | array of `line_item` objects
-      `metafields`[ ] | | array of `metafield` objects
-      `shipping_line` | object which details the shipping rate which has been selected for the draft order. The shipping line is automatically reset to null when the applied shipping rate is no longer valid.  See [draft order description below]( for detailed desription of all properties. | `object`
+      `invoice_url` | url that the customer uses to complete the checkout.  When using `send_invoice`, this url is emailed to the customer.  Enables your app to provide the url to the customer. | `string`
+      `line_item`[ ] | A list of line item objects, each one containing information about an item in the draft order.  See [draft order description below](https://andrewjtech123.github.io/rebilly-validschema/#tag/Create%2Fpaths%2F~1admin~1draft_orders.json%2Fpost) for detailed desription of all properties.   | array of `line_item` objects
+      `metafields`[ ] | Attaches additional information to a shop's resources.  See [draft order description below](https://andrewjtech123.github.io/rebilly-validschema/#tag/Create%2Fpaths%2F~1admin~1draft_orders.json%2Fpost) for detailed desription of all properties. | array of `metafield` objects
+      `shipping_line` | object which details the shipping rate which has been selected for the draft order. The shipping line is automatically reset to null when the applied shipping rate is no longer valid.  See [draft order description below](https://andrewjtech123.github.io/rebilly-validschema/#tag/Create%2Fpaths%2F~1admin~1draft_orders.json%2Fpost) for detailed desription of all properties. | `object`
       `tags` | Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. Each individual tag is limited to 40 characters in length. | `string`
       `tax_exempt` | Sets whether taxes are exempt for this draft order. If this value is `false`, Shopify will honor the `tax_exempt` value for each `line_item`. | `boolean`
       `tax_lines` | Tax lines describing the sum of each type of tax line for line items and shipping line. | array of `tax_line` objects
