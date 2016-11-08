@@ -3,7 +3,7 @@ info:
   version: 1.0.0
   title: Draft Orders API
   description: >
-    ### Draft Orders API 
+    # Draft Orders API 
       
       This API is about operations you can perform on the draft order object as defind below:
       
@@ -88,6 +88,11 @@ paths:
           description: List of DraftOrder
           schema:
             $ref: '#/definitions/DraftOrder'
+        
+        '400':
+          description: draft order error
+          $ref: '#/responses/Error'
+       
             
       security:
         - api_key: []
@@ -260,43 +265,9 @@ paths:
             print "Exception when calling GetApi->admin_draft_ordersid_json_get: %s\n" % e
             
             
-    put:
-      parameters:
-        - name: draft_order
-          in: body
-          description: the draft order to modify.
-          schema:
-            $ref: "#/definitions/DraftOrder"
-        - name: id
-          in: path
-          description: draft order id
-          required: true
-          type: integer
-      summary: Modify draft order
-      description: |
-        You can modify an existing draft order.
-        ### Example
-          Only showing the parameters needed to select a particular shipping rate as returned from
-            `GET /admin/draft_orders/#{id}/shipping_rates`
-
-
-            draft_order: {
-              shipping_line: {
-                handle: ,
-                phone:
-              }
-            }
-
-
-      tags:
-        - Update
-      responses:
-        '200':
-          description: returns draft_order object
-          schema:
-            $ref: '#/definitions/DraftOrder'
+    
     delete:
-      description: Remove a draft order.
+      description: Remove a draft order
       tags:
         - Delete
       parameters:
@@ -308,13 +279,13 @@ paths:
           format: int64
       responses:
         '200':
-          description: A single DraftOrder
+          description: The draft order deleted.
           schema:
             $ref: '#/definitions/DraftOrder'
   /admin/draft_orders/count.json:
     get:
       summary: Return count of draft orders
-      description: You can return a count of draft orders by sending a request to the `/admin/draft_orders/count` endpoint.    
+      description: You can return a count of draft orders by sending a GET request to the `/admin/draft_orders/count` endpoint.    
       parameters:
        - $ref: '#/parameters/fields'
        - $ref: '#/parameters/limit'
@@ -379,10 +350,8 @@ paths:
 
   '/admin/draft_orders/#{id}/send_invoice.json':
     post:
-      summary: Send an invoice
-      description: >-
-        “Minimal request” does not require any parameters to be
-        sent (no request body at all or just an empty draft_order_invoice hash)
+      summary: Create an invoice for a draft order
+      description: You can POST an invoice for a draft order by sending a call to the `/admin/draft_orders/#{id}/send_invoice.json` endpoint.  Additionally, you can send a `draft_order_invoice object in the body of the request to override any of the default email parameters for the invoice.  
       tags:
         - Create
       parameters:
@@ -434,7 +403,8 @@ paths:
     post:
       summary: Create or retrieve existing checkout
       description: >-
-        To be used in Checkout API. Requires checkout scope
+        A call to the `/admin/draft_orders/#{id}/checkout.json` endpoint works in conjunction with the Checkout API and requires the checkout scope.
+      
       parameters:
         - name: id
           in: path
@@ -445,6 +415,8 @@ paths:
           description: Checkout
           schema:
             $ref: '#/definitions/checkout'
+      tags:
+        - Create
 definitions:
   DraftOrder:
     type: object
@@ -532,8 +504,7 @@ definitions:
         readOnly: true
       discount:
         type: object
-        items:
-          $ref: '#/definitions/discount'
+        $ref: '#/definitions/discount'
       taxes_included:
         type: boolean
         description: States whether or not taxes are included in the order subtotal. Valid values are `true` or `false`.
@@ -698,8 +669,7 @@ definitions:
           description: An array of custom information for an item that has been added to the cart. Often used to provide product customization options. For more information, see the [documentation on collecting customization information on the product page](https://help.shopify.com/themes/customization/products/get-customization-information-for-products).
         discount:
           type: object
-          items:
-            $ref: '#/definitions/discount'
+          $ref: '#/definitions/discount'
         tax_line:
           type: array
           items:
@@ -841,20 +811,29 @@ definitions:
         description: Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. For example, if an order has three tags - `tag1`, `tag2`, `tag3`.
 
   Error:
-    required:
-      - code
-      - message
     properties:
-      code:
-        type: string
-      message:
-        type: string
+      errors:
+        type: object
+        properties:
+          value:
+            type: string
+            description: error description
+          key:
+            type: string
+            description: attribute that triggered the error
+          
+      
 
   Integer:
     properties:
       integer:
         type: integer
         format: int64
+        
+  Object:
+    properties:
+      object:
+        type: object
 
 parameters:
   fields:
@@ -910,12 +889,17 @@ parameters:
 
 
 responses:
-  412PreconditionFailed:
-    description: Draft order doesn't have a shipping address.
+  Error:
+    description: Object describing errors.
     schema:
       $ref: "#/definitions/Error"
   Integer:
     description: count of draft orders
     schema:
       $ref: "#/definitions/Integer"
+  Object:
+    description: empty object signifying that the draft order is deleted.
+    schema:
+      $ref: "#/definitions/Integer"
+     
     
