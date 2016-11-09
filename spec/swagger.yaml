@@ -90,8 +90,12 @@ paths:
             $ref: '#/definitions/DraftOrder'
         
         '400':
-          description: draft order error
-          $ref: '#/responses/Error'
+          description: General API error
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'
        
             
       security:
@@ -811,17 +815,11 @@ definitions:
         description: Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. For example, if an order has three tags - `tag1`, `tag2`, `tag3`.
 
   Error:
-    properties:
-      errors:
-        type: object
-        properties:
-          value:
-            type: string
-            description: error description
-          key:
-            type: string
-            description: attribute that triggered the error
-          
+    type: object
+    additionalProperties:
+      type: string
+      description: cheatos
+            
       
 
   Integer:
