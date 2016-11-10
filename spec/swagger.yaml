@@ -816,9 +816,16 @@ definitions:
 
   Error:
     type: object
+    description: Object describing errors (values) on specific attributes (keys) that prevented a draft order from being saved.
     additionalProperties:
-      type: string
-      description: cheatos
+      description: Single `key:value` pair out of possible multiple retruned to describe errors on specific attributes.
+      properties:
+        key:
+          type: string
+          description: attribute that raised the eroor
+        value: 
+          type: string
+          description: error description
             
       
 
