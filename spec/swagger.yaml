@@ -872,10 +872,10 @@ definitions:
       properties:
         key:
           type: string
-          description: attribute that raised the eroor
+          description: Attribute that raised the error.
         value: 
           type: string
-          description: error description
+          description: Error description.
             
       
 
