@@ -698,29 +698,79 @@ definitions:
         type: string
         description: The price of the shipping rate.
 
+
   shipping_line:
     type: object
     required:
+    - custom
+    discriminator: custom
+    properties:
+      custom:
+        description: Indicates if the shipping_line is custom
+        type: boolean
+        enum: 
+        - true
+        - false
+
+  regular_shipping_line:
+    allOf:
+    - $ref: '#/definitions/shipping_line'
+    - type: object
+    required:
     - title
     - price
+    - tax_lines
     properties:
       handle:
         type: string
-        description: The handle of the shipping rate which was selected and applied, if applicable.
+        description: The handle of the shipping line.
       title:
         type: string
         description: The title of the shipping method.
+        readOnly: true
       price:
         type: integer
         format: int64
         description: The price of this shipping method.
+        readOnly: true
       phone:
         type: string
         description: The phone number, if required as specified in the `shipping_rate`.
       tax_lines:
         type: array
+        readOnly: true
         items:
           $ref: '#/definitions/tax_line'
+      
+  custom_shipping_line:
+    allOf:
+    - $ref: '#/definitions/shipping_line'
+    - type: object
+    required:
+    - title
+    - price
+    - tax_lines
+    properties:
+      handle:
+        type: string
+        description: Nil for custom lines.
+      title:
+        type: string
+        description: The title of the shipping method.
+        readOnly: false
+      price:
+        type: integer
+        format: int64
+        description: The price of this shipping method.
+        readOnly: false
+      phone:
+        type: string
+        description: The phone number, if required as specified in the `shipping_rate`.
+      tax_lines:
+        type: array
+        readOnly: true
+        items:
+          $ref: '#/definitions/tax_line'    
 
   metafield:
     type: object
