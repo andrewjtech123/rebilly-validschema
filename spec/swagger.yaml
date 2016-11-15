@@ -80,6 +80,7 @@ paths:
       - $ref: '#/parameters/since_id'
       - $ref: '#/parameters/status'
       - $ref: '#/parameters/ids'
+    
       tags:
         - Get
 
@@ -355,7 +356,7 @@ paths:
   '/admin/draft_orders/#{id}/send_invoice.json':
     post:
       summary: Create an invoice for a draft order
-      description: You can POST an invoice for a draft order by sending a call to the `/admin/draft_orders/#{id}/send_invoice.json` endpoint.  Additionally, you can send a `draft_order_invoice object in the body of the request to override any of the default email parameters for the invoice.  
+      description: You can POST an invoice for a draft order by sending a call to the `/admin/draft_orders/#{id}/send_invoice.json` endpoint.  Additionally, you can send a `draft_order_invoice` object in the body of the request to override any of the default email parameters for the invoice.  
       tags:
         - Create
       parameters:
@@ -363,7 +364,11 @@ paths:
           in: body
           description: draft_order_invoice to post.
           schema:
-            $ref: '#/definitions/draft_order_invoice'
+            allOf:
+              - $ref: '#/definitions/draft_order_invoice'
+            required:
+            - to
+            - from 
         - name: id
           in: path
           required: true
@@ -437,6 +442,7 @@ definitions:
     - created_at
     - updated_at
     - status
+    - discount
     properties:
       id:
         type: string
@@ -483,6 +489,7 @@ definitions:
 
       line_items:
         type: array
+        description: Draft orders must include at least one `line_item`.
         items:
           $ref: '#/definitions/line_item'
 
@@ -500,6 +507,9 @@ definitions:
       tax_exempt:
         type: boolean
         description: Sets whether taxes are exempt for this draft order. If this value is `false`, Shopify will honor the `tax_exempt` value for each `line_item`.
+        enum:
+        - true
+        - false 
       tax_lines:
         type: array
         description: An array of `tax_line` objects, each of which details the taxes applicable to the checkout. 
@@ -509,10 +519,14 @@ definitions:
       discount:
         type: object
         $ref: '#/definitions/discount'
+        description: Order level discount.
       taxes_included:
         type: boolean
-        description: States whether or not taxes are included in the order subtotal. Valid values are `true` or `false`.
+        description: States whether or not taxes are included in the order subtotal.
         readOnly: true
+        enum:
+        - true
+        - false
 
       total_tax:
         type: string
@@ -646,7 +660,7 @@ definitions:
             $ref: '#/definitions/tax_line'
       
         
-  _true:
+  custom_line_item_true:
     description: custom line item
     allOf:
     - $ref: '#/definitions/line_item'
@@ -676,7 +690,7 @@ definitions:
           type: boolean
           description: States whether or not the product is taxable. Values are `true` or `false`.  Can only be specified if this is a custom line item.  Mandatory for custom products.
 
-  _false:      
+  custom_line_item_false:      
     description: regular line item
     allOf:
     - $ref: '#/definitions/line_item'
@@ -735,7 +749,7 @@ definitions:
           $ref: '#/definitions/tax_line'
       
 
-  false:
+  custom_shipping_line_false:
     allOf:
     - $ref: '#/definitions/shipping_line'
     - type: object
@@ -749,7 +763,7 @@ definitions:
         description: The handle of the shipping rate which was selected and applied
     
       
-  true:
+  custom_shipping_line_true:
     allOf:
     - $ref: '#/definitions/shipping_line'
     - type: object
