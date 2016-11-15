@@ -702,28 +702,18 @@ definitions:
   shipping_line:
     type: object
     required:
-    - custom
+    - title
+    - price
+    - tax_lines
     discriminator: custom
     properties:
       custom:
-        description: Indicates if the shipping_line is custom
+        description: Indicates if the shipping_line is custom.  Thsi field is not serialized and is not used for creating draft orders.  The `custom` field may be used for filtering GET queries to the draft orders endpoint.
         type: boolean
         enum: 
         - true
         - false
-
-  regular_shipping_line:
-    allOf:
-    - $ref: '#/definitions/shipping_line'
-    - type: object
-    required:
-    - title
-    - price
-    - tax_lines
-    properties:
-      handle:
-        type: string
-        description: The handle of the shipping line.
+  
       title:
         type: string
         description: The title of the shipping method.
@@ -742,7 +732,22 @@ definitions:
         items:
           $ref: '#/definitions/tax_line'
       
-  custom_shipping_line:
+
+  false:
+    allOf:
+    - $ref: '#/definitions/shipping_line'
+    - type: object
+    required:
+    - title
+    - price
+    - tax_lines
+    properties:
+      handle:
+        type: string
+        description: The handle of the shipping rate which was selected and applied
+    
+      
+  true:
     allOf:
     - $ref: '#/definitions/shipping_line'
     - type: object
@@ -754,23 +759,7 @@ definitions:
       handle:
         type: string
         description: Nil for custom lines.
-      title:
-        type: string
-        description: The title of the shipping method.
-        readOnly: false
-      price:
-        type: integer
-        format: int64
-        description: The price of this shipping method.
-        readOnly: false
-      phone:
-        type: string
-        description: The phone number, if required as specified in the `shipping_rate`.
-      tax_lines:
-        type: array
-        readOnly: true
-        items:
-          $ref: '#/definitions/tax_line'    
+         
 
   metafield:
     type: object
