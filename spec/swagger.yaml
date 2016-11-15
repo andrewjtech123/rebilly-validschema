@@ -597,22 +597,65 @@ definitions:
         description: An optional custom message inserted in the email's body.
   line_item:
     type: object
-    required:
-    - custom
     discriminator: custom
     properties:
       custom:
-        description: Indicates if the line item is a custom line item.  `false` if the line item is a product variant, `true` if the line item is `custom`.
+        description: Indicates if the line item is a custom line item.  `false` if the line item is a product variant, `true` if the line item is `custom`.  This field should not be sent when creating draft orders.  The `custom` field is recommended for filtering GET queries to the draft orders endpoint.
         type: boolean
         enum: 
         - true
         - false
+      id:
+          type: string
+          description: Can’t be null
+          readOnly: true
+      variant_id:
+          type: string
+          description: The `id` of the product variant corresponding to the `line_item`.
+          readOnly: false
+      product_id:
+          type: string
+          description: The `id` of the product corresponding to the line item’s product variant.
+      name:
+          type: string
+          description: The readable name of the product and variant.
+      variant_title:
+          type: string
+          description: The title of the product variant.  Default value is “Custom”.
+      vendor:
+          type: string
+          description: vendor
+      quantity:
+          type: string
+          description: quantity
+      gift_card:
+          type: boolean
+          description: Indicates if the product is a gift card. Values - `true` or `false`.
+      fulfillment_service:
+          type: string
+          description: Service provider who is doing the fulfillment. Valid values are either `manual` or the name of the provider. eg `amazon`, `shipwire`, etc.  Defaults to `manual` for custom line items.
+      properties:
+          type: string
+          description: An array of custom information for an item that has been added to the cart. Often used to provide product customization options. For more information, see the [documentation on collecting customization information on the product page](https://help.shopify.com/themes/customization/products/get-customization-information-for-products).
+      discount:
+          type: object
+          $ref: '#/definitions/discount'
+      tax_line:
+          type: array
+          items:
+            $ref: '#/definitions/tax_line'
+      
         
-  custom_line_item:
+  _true:
     description: custom line item
     allOf:
     - $ref: '#/definitions/line_item'
     - type: object
+      required:
+      - title
+      - price
+      - grams
+    
       properties:
         title:
           type: string
@@ -633,51 +676,10 @@ definitions:
           type: boolean
           description: States whether or not the product is taxable. Values are `true` or `false`.  Can only be specified if this is a custom line item.  Mandatory for custom products.
 
-  regular_line_item:      
+  _false:      
     description: regular line item
     allOf:
     - $ref: '#/definitions/line_item'
-    - type: object
-      properties:
-        id:
-          type: string
-          description: Can’t be null
-          readOnly: true
-        variant_id:
-          type: string
-          description: The `id` of the product variant corresponding to the `line_item`.
-          readOnly: false
-        product_id:
-          type: string
-          description: The `id` of the product corresponding to the line item’s product variant.
-        name:
-          type: string
-          description: The readable name of the product and variant.
-        variant_title:
-          type: string
-          description: The title of the product variant.  Default value is “Custom”.
-        vendor:
-          type: string
-          description: vendor
-        quantity:
-          type: string
-          description: quantity
-        gift_card:
-          type: boolean
-          description: Indicates if the product is a gift card. Values - `true` or `false`.
-        fulfillment_service:
-          type: string
-          description: Service provider who is doing the fulfillment. Valid values are either `manual` or the name of the provider. eg `amazon`, `shipwire`, etc.  Defaults to `manual` for custom line items.
-        properties:
-          type: string
-          description: An array of custom information for an item that has been added to the cart. Often used to provide product customization options. For more information, see the [documentation on collecting customization information on the product page](https://help.shopify.com/themes/customization/products/get-customization-information-for-products).
-        discount:
-          type: object
-          $ref: '#/definitions/discount'
-        tax_line:
-          type: array
-          items:
-            $ref: '#/definitions/tax_line'
 
     
   
@@ -708,7 +710,7 @@ definitions:
     discriminator: custom
     properties:
       custom:
-        description: Indicates if the shipping_line is custom.  Thsi field is not serialized and is not used for creating draft orders.  The `custom` field may be used for filtering GET queries to the draft orders endpoint.
+        description: Indicates if the shipping_line is custom.  This field should not be sent when creating draft orders.  The `custom` field is recommended for filtering GET queries to the draft orders endpoint.
         type: boolean
         enum: 
         - true
