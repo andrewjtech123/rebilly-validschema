@@ -5,7 +5,12 @@ info:
   description: >
     # Draft Orders API 
       
-      This API is about operations you can perform on the draft order object as defind below:
+      A Draft Order is an order created via the API, on which shipping, taxes and all total amounts are calculated by Shopify.  
+      
+      The Draft Order includes information like tax lines, shipping costs, shipping requirements and more.
+      
+      
+      The Draft Order object is defind below:
       
     
     Field | Definition | Data Type
@@ -194,21 +199,8 @@ paths:
             allOf:
               - $ref: '#/definitions/DraftOrder'
             required:
-            - id
-            - name
-            - note
-            - currency
             - line_items
-            - tax_exempt
-            - tax_lines
-            - discount
-            - taxes_included
-            - total_tax
-            - subtotal_price
-            - total_price
-            - created_at
-            - updated_at
-            - status
+      
           
             
 
@@ -620,7 +612,7 @@ definitions:
     discriminator: custom
     properties:
       custom:
-        description: Indicates if the line item is a custom line item.  `false` if the line item is a product variant, `true` if the line item is `custom`.  This field should not be sent when creating draft orders.  The `custom` field is recommended for filtering GET queries to the draft orders endpoint.
+        description: Indicates if this is product_variant_line_item, or a custom_line_item.  This field is not sent when creating draft orders.  However, use of the `custom` field is recommended for filtering GET queries for draft orders.
         type: boolean
         enum: 
         - true
@@ -666,7 +658,7 @@ definitions:
             $ref: '#/definitions/tax_line'
       
         
-  custom_line_item_true:
+  custom_line_item:
     description: custom line item
     allOf:
     - $ref: '#/definitions/line_item'
@@ -696,8 +688,8 @@ definitions:
           type: boolean
           description: States whether or not the product is taxable. Values are `true` or `false`.  Can only be specified if this is a custom line item.  Mandatory for custom products.
 
-  custom_line_item_false:      
-    description: regular line item
+  product_variant_line_item:      
+    description: product variant line item
     allOf:
     - $ref: '#/definitions/line_item'
 
@@ -755,7 +747,7 @@ definitions:
           $ref: '#/definitions/tax_line'
       
 
-  custom_shipping_line_false:
+  regular_shipping_line:
     allOf:
     - $ref: '#/definitions/shipping_line'
     - type: object
@@ -769,7 +761,7 @@ definitions:
         description: The handle of the shipping rate which was selected and applied
     
       
-  custom_shipping_line_true:
+  custom_shipping_line:
     allOf:
     - $ref: '#/definitions/shipping_line'
     - type: object
