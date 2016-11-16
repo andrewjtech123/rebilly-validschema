@@ -388,9 +388,7 @@ paths:
           schema:
             allOf:
               - $ref: '#/definitions/draft_order_invoice'
-            required:
-            - to
-            - from 
+      
         - name: id
           in: path
           required: true
