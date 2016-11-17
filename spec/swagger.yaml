@@ -5,42 +5,22 @@ info:
   description: >
     # Draft Orders API 
       
-      A Draft Order is an order created via the API, on which shipping, taxes and all total amounts are calculated by Shopify.  
+      A Draft Order represents the status of an order before the customer has completed the checkout process. Using the Draft Orders API you can create a draft order and transition it to a completed order with great flexibility.  The following flows are supported:
       
-      The Draft Order includes information like tax lines, shipping costs, shipping requirements and more.
+      * Create a draft order that calculates taxes and totals but accept payment from the customer outside of Shopify.
+      * Create a draft order (with taxes and totals) and email your customer a web checkout link to complete purchase and transition to a completed order.
+      * Use Draft Orders API in conjunction with the Checkouts API by created a Checkout object based on a draft order (Sales Channel SDK only).  This enables a highly customizable experience for channels.
       
-      
-      The Draft Order object is defind below:
-      
+     ## Draft Order Use Cases
     
-    Field | Definition | Data Type
-      -----|-----------|-------------------------
-      `id`| `id` of the draft order. |`string`
-      `order_id`  | The id of the order associated to the draft order, once created. | `string`        
-      `name` | Name of the draft order, format `#D<number>`, where number, is a sequential identifier unique to the shop, starting at 1. For example `#D133`. | `integer`
-      `customer` | The customer associated with this draft order. This is a Read only object, but a different customer can be specified using cusotmer `id`.  Setting the value to null removes the customer from the draft order. | `object`
-      `shipping_address` | The mailing address to where the draft order will be shipped. | `string`
-      `billing_address` | The mailing address associated with the payment method. | `string`
-      `note` | The text of an optional note that a shop owner can attach to the draft order. | `string`
-      `email` | The email address used for sending notifications.  Deafults to `customer` email address when customr is present and `email` is not specified for the draft order. |`string`
-      `currency` | The three letter code for the currency to be used for the payment.  Read only field that is provided here for convenience.  Also, a shop setting that can be set via the admin. | `string`
-      `invoice_sent_at` | DateTime when the invoice was emailed to the customer by Shopify. | `dateTime`
-      `invoice_url` | url that the customer uses to complete the checkout.  When using `send_invoice`, this url is emailed to the customer.  Enables your app to provide the url to the customer. | `string`
-      `line_item`[ ] | A list of line item objects, each one containing information about an item in the draft order.  See [draft order description below](https://andrewjtech123.github.io/rebilly-validschema/#tag/Create) for detailed description of all properties.   | array of `line_item` objects
-      `metafields`[ ] | Attaches additional information to a shop's resources.  See [draft order description below](https://andrewjtech123.github.io/rebilly-validschema/#tag/Create) for detailed description of all properties. | array of `metafield` objects
-      `shipping_line` | object which details the shipping rate which has been selected for the draft order. The shipping line is automatically reset to null when the applied shipping rate is no longer valid.  See [draft order description below](https://andrewjtech123.github.io/rebilly-validschema/#tag/Create) for detailed description of all properties. | `object`
-      `tags` | Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. Each individual tag is limited to 40 characters in length. | `string`
-      `tax_exempt` | Sets whether taxes are exempt for this draft order. If this value is `false`, Shopify will honor the `tax_exempt` value for each `line_item`. | `boolean`
-      `tax_lines` | Tax lines describing the sum of each type of tax line for line items and shipping line. | array of `tax_line` objects
-      `discount` | Order level discount. | `string`
-      `taxes_included` | States whether or not taxes (from shop settings) are included in the draft order. Valid values are `true` or `false`. | `boolean`
-      `total_tax` | Total tax amount | `integer`
-      `completed_at` | Date at which an order was created and the draft order moved to “completed” status. | `DateTime`
-      `created_at` | By default, this auto-generated property is the date and time when the order was created in Shopify, in ISO 8601 format. | `dateTime`
-      `updated_at` | The date and time when the draft order was last updated. | `dateTime`
-      `status` | String describing the state of the draft order. Possible values are `open`, `invoice sent`, or `completed`. | `string`
+     When using the Orders API to create orders, no payment information is calcualted and no transaction is performed.  By contrast, you can use the Draft Orders API to create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including applying one-off discounts to orders, offering special wholesale pricing, and more. 
       
-
+      ## About Custom Line Items and Shipping Lines
+      
+      Using the Draft Orders API you can create draft orders using product variant line items, or your own custom line items.  This enables you to create spacial, one-off products that exist outside of your regular inventory management system.  To create a product variant draft order, you simply specify a `variant_id` when creating a draft order.  For custom line items, you are required to send the `title` of your custom product.
+      
+      Using the Draft Orders API provides you with the flexibility to fulfill order shipments either using Shopify or outside of Shopify.  To fulfill your order within Shopify, you can send the `handle` of the `shipping_rate` set via the Shopify admin.  For a custom shipping line, simply specify a `shipping_line` object with no `handle`.  This is covered in more detail in the specific endpoint calls below.  
+    
      
 
   
@@ -681,6 +661,9 @@ definitions:
         requires_shipping:
           type: boolean
           description: States whether or not the fulfillment requires shipping. Values are `true` or `false`.  Can only be specified if this is a custom line item.  Defaults to `false`.
+          enum: 
+          - true
+          - false
         sku:
           type: string
           description: Can only be specified if this is a custom line item.
@@ -722,7 +705,7 @@ definitions:
     discriminator: custom
     properties:
       custom:
-        description: Indicates if the shipping_line is custom.  This field should not be sent when creating draft orders.  The `custom` field is recommended for filtering GET queries to the draft orders endpoint.
+        description: Indicates if the shipping_line is custom.  This field is not set when creating draft orders.  Use the `custom` field when retrieving data from the darft orders endpoint.
         type: boolean
         enum: 
         - true
@@ -731,18 +714,18 @@ definitions:
       title:
         type: string
         description: The title of the shipping method.
-        readOnly: true
+        readOnly: false
       price:
         type: integer
         format: int64
         description: The price of this shipping method.
-        readOnly: true
+        readOnly: false
       phone:
         type: string
         description: The phone number, if required as specified in the `shipping_rate`.
       tax_lines:
         type: array
-        readOnly: true
+        readOnly: false
         items:
           $ref: '#/definitions/tax_line'
       
