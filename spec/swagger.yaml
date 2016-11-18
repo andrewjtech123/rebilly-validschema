@@ -11,16 +11,9 @@ info:
       * Create a draft order (with taxes and totals) and email your customer a web checkout link to complete purchase and transition to a completed order.
       * Use Draft Orders API in conjunction with the [Checkouts API](https://help.shopify.com/api/tutorials/sell-through-the-checkout-api) by created a Checkout object based on a draft order (Sales Channel SDK only).  This enables a highly customizable experience for channels.
       
-     ## Draft Order Use Cases
+     ## About Draft Orders
     
-     When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calcualted and no transaction is performed.  By contrast, you can use the Draft Orders API to create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including applying one-off discounts to orders, offering special wholesale pricing, and more. 
-      
-      ## About Custom Line Items and Shipping Lines
-      
-      Using the Draft Orders API you can create draft orders using product variant line items, or your own custom line items.  This enables you to create spacial, one-off products that exist outside of your regular inventory management system.  To create a product variant draft order, you simply specify a `variant_id` when creating a draft order.  For custom line items, you are required to send the `title` of your custom product, as well as other required fields.
-      
-      Using the Draft Orders API provides you with the flexibility to fulfill order shipments either using Shopify or outside of Shopify.  To fulfill your order within Shopify, you can send the `handle` of the `shipping_rate` set via the Shopify admin.  For a custom shipping line, simply specify a `shipping_line` object with no `handle`.  This is covered in more detail in the specific endpoint calls below.  
-    
+     When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calcualted and no transaction is performed.  By contrast, you can use the Draft Orders API to create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including applying one-off discounts to orders, offering special wholesale pricing, and returning draft order invoices for order printers.
      
 
   
@@ -57,7 +50,8 @@ securityDefinitions:
 paths:
   /admin/draft_orders.json:
     get:
-      description: Retrieve draft orders
+      summary: Retrieve draft orders
+      description: you can use custom yes/no to return only custom line items or product_variant line items.  Thsi can be useful when returning draft orders for printing.
       parameters:
       - $ref: '#/parameters/fields'
       - $ref: '#/parameters/limit'
@@ -154,18 +148,16 @@ paths:
     post:
       summary: Create a draft order
       description: |
-          ### About line items ###
           
-          There are two ways to add a line item:<br>
-
-          * Create a line item from a product variant, by providing a `variant_id`, `quantity` and `discount` (if applicable)
-          * Create a custom line item by supplying `title`, `price`, `taxable` and `quantity` 
-          
-          
+          Using the Draft Orders API you can create draft orders using product variant line items, or your own custom line items.  This enables you to create one-off products that exist outside of your regular inventory management system.  To create a product variant draft order, simply specify a `variant_id` `quantity` and `discount` (if applicable).  Create a custom line item by supplying `title`, `price`, `taxable` and `quantity`. 
           
         
           | `Note`| The array of line items on a draft order must not contain a `variant_id` more than once. The data copied over from a variant upon creation of a line item is never subsequently updated.  |
           |---|-------------|
+          
+          #### About Custom Shipping Lines
+          
+            Using the Draft Orders API provides you with the flexibility to fulfill order shipments either using Shopify or outside of Shopify.  To fulfill your order within Shopify, you can send the `handle` of the `shipping_rate` set via the Shopify admin.  For a custom shipping line, simply specify a `shipping_line` object with no `handle`.  This is covered in more detail in the endpoint calls below.  
          
           
       tags:
