@@ -51,7 +51,7 @@ paths:
   /admin/draft_orders.json:
     get:
       summary: Retrieve draft orders
-      description: you can use custom yes/no to return only custom line items or product_variant line items.  Thsi can be useful when returning draft orders for printing.
+      description: You can use this endpoint to return a list of draft order objects.  This can be useful for a variety of applications including draft order printing.  For `line_items` you can use the value of the `custom` field (true/false) to differentiate between custom line items and product variant line items.
       parameters:
       - $ref: '#/parameters/fields'
       - $ref: '#/parameters/limit'
@@ -276,7 +276,7 @@ paths:
   /admin/draft_orders/count.json:
     get:
       summary: Return count of draft orders
-      description: You can return a count of draft orders by sending a GET request to the `/admin/draft_orders/count` endpoint.    
+      description: This endpoint enables you to return a count of all draft orders.    
       parameters:
        - $ref: '#/parameters/fields'
        - $ref: '#/parameters/limit'
@@ -545,11 +545,11 @@ definitions:
       to:
         type: string
         description: >-
-          Email associated with the `draft_order_invoice`.  If not specified, the email associated with the draft order, or the customer's email will be used instead.  If no email address is specified an error is raised.
+          Email associated with the `draft_order_invoice`.  If not specified, the email associated with the draft order, or the customer's email will be used instead.  If no email address is specified an error is returned.
           
       from:
         type: string
-        description: The email address that the email will appear to be sent from. This defaults to the shop's customer email, and if none exists, simply the shop's account email. When provided, this email address must correspond to the email address of one of the staff accounts.
+        description: The email address that the email will appear to be sent from. This defaults to the shop's customer email, and if none exists, the shop's account email. When provided, this email address must correspond to the email address of one of the staff accounts.
       bcc:
         type: string
         description: Optional array of email addresses to bcc. These must correspond to valid staff account email addresses.
@@ -565,7 +565,7 @@ definitions:
       to:
         type: string
         description: >-
-          Email associated with the `draft_order_invoice`.  If not specified, the email associated with the draft order, or the customer's email will be used instead.  If no email address is specified an error is raised.
+          Email associated with the `draft_order_invoice`.  If not specified, the email associated with the draft order, or the customer's email will be used instead.  If no email address is specified an error is returned.
           
       from:
         type: string
@@ -584,7 +584,7 @@ definitions:
     discriminator: custom
     properties:
       custom:
-        description: Indicates if this is product_variant_line_item, or a custom_line_item.  This field is not sent when creating draft orders.  However, use of the `custom` field is recommended for filtering GET queries for draft orders.
+        description: Indicates if this is product_variant_line_item, or a custom_line_item.  If set to `true` indicates that the `line_item` is a custom line item.  If set to `false` indicates that it is a product variant `line_item`.  
         type: boolean
         enum: 
         - true
@@ -697,7 +697,7 @@ definitions:
     discriminator: custom
     properties:
       custom:
-        description: Indicates if the shipping_line is custom.  This field is not set when creating draft orders.  Use the `custom` field when retrieving data from the darft orders endpoint.
+        description: Indicates whether or not the shipping_line is a custom_shipping_line.  When set to `true` indicates that it is a custom_shipping_line.  
         type: boolean
         enum: 
         - true
