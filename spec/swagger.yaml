@@ -117,7 +117,99 @@ paths:
           description: A single DraftOrder
           schema:
             $ref: '#/definitions/DraftOrder'
-      
+            
+      x-code-samples:
+        - lang: curl
+          source: |
+            curl -X POST -H "Content-Type: application/json" -H "Authorization: Basic YOUR-API-KEY=" -d '{
+              "id": 57760135,
+              "order_id": 57760134,
+              "name": "api created draft order",
+              "customer": {
+                "accepts_marketing": true,
+                "created_at": "2016-11-18T17:10:07Z",
+                "email": "string",
+                "first_name": "string",
+                "order_id": 0,
+                "last_name": "string",
+                "note": "string",
+                "orders_count": 0,
+                "state": "string",
+                "total_spent": 0,
+                "updated_at": "2016-11-18T17:10:07Z",
+                "tags": "string"
+              },
+              "shipping_address": "string",
+              "billing_address": "string",
+              "note": "string",
+              "email": "string",
+              "currency": "string",
+              "invoice_sent_at": "2016-11-18T17:10:07Z",
+              "invoice_url": "string",
+              "line_items": [
+                {
+                  "custom": true,
+                  "id": "string",
+                  "vendor": "string",
+                  "quantity": "string",
+                  "gift_card": true,
+                  "fulfillment_service": "string",
+                  "properties": "string",
+                  "discount": {
+                    "description": "string",
+                    "value": "string",
+                    "type": "percentage",
+                    "amount": "string"
+                  },
+                  "tax_line": [
+                    {
+                      "title": "string",
+                      "rate": "string",
+                      "price": "string"
+                    }
+                  ]
+                }
+              ],
+              "metafields": {
+                "id": 0
+              },
+              "shipping_line": {
+                "custom": true,
+                "title": "string",
+                "price": 0,
+                "phone": "string",
+                "tax_lines": [
+                  {
+                    "title": "string",
+                    "rate": "string",
+                    "price": "string"
+                  }
+                ]
+              },
+              "tags": "string",
+              "tax_exempt": true,
+              "tax_lines": [
+                {
+                  "title": "string",
+                  "rate": "string",
+                  "price": "string"
+                }
+              ],
+              "discount": {
+                "description": "string",
+                "value": "string",
+                "type": "percentage",
+                "amount": "string"
+              },
+              "taxes_included": true,
+              "total_tax": "string",
+              "subtotal_price": "string",
+              "total_price": "string",
+              "completed_at": "2016-11-18T17:10:07Z",
+              "created_at": "2016-11-18T17:10:07Z",
+              "updated_at": "2016-11-18T17:10:07Z",
+              "status": "open"
+            }' "https://your_store_domain.myshopify.com/admin/draft_orders.json"
    
             
   '/admin/draft_orders/#{id}.json':
@@ -141,7 +233,8 @@ paths:
             
       x-code-samples:
         - lang: curl
-          source: curl https://myshopify.com/v1/admin/draft_orders.json
+          source: |
+            curl -X GET -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/57760134.json?fields=line_items"
       
         - lang: Ruby
           source: |
@@ -160,36 +253,7 @@ paths:
               puts "Exception when calling GetApi->admin_draft_ordersid_json_get: #{e}"
             end
             
-            
-        - lang: PHP
-          source: |
-            <?php
-            require_once(__DIR__ . '/vendor/autoload.php');
-            
-            $api_instance = new Swagger\Client\Api\GetApi();
-            $id = 789; // int | draft order id
-            
-            try {
-                $result = $api_instance->adminDraftOrdersidJsonGet($id);
-                print_r($result);
-            } catch (Exception $e) {
-                echo 'Exception when calling GetApi->adminDraftOrdersidJsonGet: ', $e->getMessage(), PHP_EOL;
-            }
-            ?>
-
-                  
-        - lang: Python
-          source: |
-            
-            # create an instance of the API class
-            api_instance = Shopify.GetApi()
-            id = 789 # int | draft order id
-
-            try: 
-            api_response = api_instance.admin_draft_ordersid_json_get(id)
-            pprint(api_response)
-            except ApiException as e:
-            print "Exception when calling GetApi->admin_draft_ordersid_json_get: %s\n" % e
+  
             
             
     
@@ -229,7 +293,8 @@ paths:
 
       x-code-samples:
         - lang: curl
-          source: curl https://myshopify.com/v1/admin/draft_orders.json
+          source: |
+            curl -X GET -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/count.json"
       
         - lang: Ruby
           source: |
@@ -244,34 +309,6 @@ paths:
             rescue SwaggerClient::ApiError => e
               puts "Exception when calling GetApi->admin_draft_orders_count_json_get: #{e}"
             end
-            
-            
-        - lang: PHP
-          source: |
-            <?php
-            require_once(__DIR__ . '/vendor/autoload.php');
-            
-            $api_instance = new Swagger\Client\Api\GetApi();
-            
-            try {
-                $result = $api_instance->adminDraftOrdersCountJsonGet();
-                print_r($result);
-            } catch (Exception $e) {
-                echo 'Exception when calling GetApi->adminDraftOrdersCountJsonGet: ', $e->getMessage(), PHP_EOL;
-            }
-            ?>
-                  
-        - lang: Python
-          source: |
-            
-            # create an instance of the API class
-            api_instance = Shopify.GetApi()
-            
-            try: 
-                api_response = api_instance.admin_draft_orders_count_json_get()
-                pprint(api_response)
-            except ApiException as e:
-                print "Exception when calling GetApi->admin_draft_orders_count_json_get: %s\n" % e
 
 
 
