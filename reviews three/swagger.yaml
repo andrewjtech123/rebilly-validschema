@@ -1,0 +1,954 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Draft Orders API
+  x-logo:
+    url: "https://andrewjtech123.github.io/imagehost/shopify_logo_white.png"
+    backgroundColor: "#7ab55c"
+  description: >
+    # Draft Orders API 
+      
+      A [Draft Order](https://help.shopify.com/manual/orders/create-orders) represents the status of an order before the customer has completed the checkout process. Using the Draft Orders API you can create a draft order and transition it to a completed order with great flexibility.  The following flows are supported:
+      
+      * Create a draft order that calculates taxes and totals but accept payment from the customer outside of Shopify.
+      * Create a draft order (with taxes and totals) and email your customer a web checkout link to complete purchase and transition to a completed order.
+      * Use Draft Orders API in conjunction with the [Checkouts API](https://help.shopify.com/api/tutorials/sell-through-the-checkout-api) by created a Checkout object based on a draft order (Sales Channel SDK only).  This enables a highly customizable experience for channels.
+      
+     ## About Draft Orders
+    
+     When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calcualted and no transaction is performed.  With the Draft Orders API, on the other hand, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including applying one-off discounts to orders, offering special wholesale pricing, and returning draft order invoices for order printing.
+        
+
+  
+schemes:
+  - https
+  
+host: your-store-domain.myshopify.com
+
+paths:
+  /admin/draft_orders.json:
+    get:
+      summary: Retrieve draft orders
+      description: You can use this endpoint to return a list of draft order objects.  This can be useful for a variety of applications including draft order printing.  For `line_items` you can use the value of the `custom` field (true/false) to differentiate between custom line items and product variant line items.
+      parameters:
+      - $ref: '#/parameters/fields'
+      - $ref: '#/parameters/limit'
+      - $ref: '#/parameters/page'
+      - $ref: '#/parameters/since_id'
+      - $ref: '#/parameters/status'
+      - $ref: '#/parameters/ids'
+    
+      tags:
+        - Get
+
+      responses:
+        '200':
+          description: List of DraftOrder
+          schema:
+            $ref: '#/definitions/DraftOrder'
+        
+        '400':
+          description: General API error
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'
+       
+          
+            
+      x-code-samples:
+        - lang: curl
+          source:  |
+            curl -X GET -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders.json"
+      
+        - lang: Ruby
+          source: |
+              # load the gem
+              require 'swagger_client'
+              
+              api_instance = SwaggerClient::GetApi.new
+              
+              opts = { 
+                fields: "fields_example", # String | Comma-separated list of fields to include in the response
+                limit: 789, # Integer | Page size
+                page: 789 # Integer | Page to show
+              }
+              
+              begin
+                result = api_instance.admin_draft_orders_json_get(opts)
+                p result
+              rescue SwaggerClient::ApiError => e
+                puts "Exception when calling GetApi->admin_draft_orders_json_get: #{e}"
+              end
+            
+            
+  
+    post:
+      summary: Create a draft order
+      description: |
+          
+          Using the Draft Orders API you can create draft orders using product variant line items, or your own custom line items.  This enables you to create one-off products that exist outside of your regular inventory management system.  To create a product variant draft order, simply specify a `variant_id` `quantity` and `discount` (if applicable).  Create a custom line item by supplying `title`, `price`, `taxable` and `quantity`. 
+          
+        
+          | `Note`| The array of line items on a draft order must not contain a `variant_id` more than once. The data copied over from a variant upon creation of a line item is never subsequently updated.  |
+          |---|-------------|
+          
+          #### About Custom Shipping Lines
+          
+            Using the Draft Orders API provides you with the flexibility to fulfill order shipments either using Shopify or outside of Shopify.  To fulfill your order within Shopify, you can send the `handle` of the `shipping_rate` set via the Shopify admin.  For a custom shipping line, simply specify a `shipping_line` object with no `handle`.  This is covered in more detail in the endpoint calls below.  
+         
+          
+      tags:
+        - Create
+
+      parameters:
+        - name: draft_order
+          in: body
+          description: draft_order to create.
+          schema:
+            allOf:
+              - $ref: '#/definitions/DraftOrder'
+            required:
+            - line_items
+      
+          
+            
+
+      responses:
+        '200':
+          description: A single DraftOrder
+          schema:
+            $ref: '#/definitions/DraftOrder'
+            
+      x-code-samples:
+        - lang: curl
+          source: |
+            curl -X POST -H "Content-Type: application/json" -H "Authorization: Basic YOUR-API-KEY=" -d '{
+              "id": 57760135,
+              "order_id": 57760134,
+              "name": "api created draft order",
+              "customer": {
+                "accepts_marketing": true,
+                "created_at": "2016-11-18T17:10:07Z",
+                "email": "string",
+                "first_name": "string",
+                "order_id": 0,
+                "last_name": "string",
+                "note": "string",
+                "orders_count": 0,
+                "state": "string",
+                "total_spent": 0,
+                "updated_at": "2016-11-18T17:10:07Z",
+                "tags": "string"
+              },
+              "shipping_address": "string",
+              "billing_address": "string",
+              "note": "string",
+              "email": "string",
+              "currency": "string",
+              "invoice_sent_at": "2016-11-18T17:10:07Z",
+              "invoice_url": "string",
+              "line_items": [
+                {
+                  "custom": true,
+                  "id": "string",
+                  "vendor": "string",
+                  "quantity": "string",
+                  "gift_card": true,
+                  "fulfillment_service": "string",
+                  "properties": "string",
+                  "discount": {
+                    "description": "string",
+                    "value": "string",
+                    "type": "percentage",
+                    "amount": "string"
+                  },
+                  "tax_line": [
+                    {
+                      "title": "string",
+                      "rate": "string",
+                      "price": "string"
+                    }
+                  ]
+                }
+              ],
+              "metafields": {
+                "id": 0
+              },
+              "shipping_line": {
+                "custom": true,
+                "title": "string",
+                "price": 0,
+                "phone": "string",
+                "tax_lines": [
+                  {
+                    "title": "string",
+                    "rate": "string",
+                    "price": "string"
+                  }
+                ]
+              },
+              "tags": "string",
+              "tax_exempt": true,
+              "tax_lines": [
+                {
+                  "title": "string",
+                  "rate": "string",
+                  "price": "string"
+                }
+              ],
+              "discount": {
+                "description": "string",
+                "value": "string",
+                "type": "percentage",
+                "amount": "string"
+              },
+              "taxes_included": true,
+              "total_tax": "string",
+              "subtotal_price": "string",
+              "total_price": "string",
+              "completed_at": "2016-11-18T17:10:07Z",
+              "created_at": "2016-11-18T17:10:07Z",
+              "updated_at": "2016-11-18T17:10:07Z",
+              "status": "open"
+            }' "https://your_store_domain.myshopify.com/admin/draft_orders.json"
+   
+            
+  '/admin/draft_orders/#{id}.json':
+    get:
+      description: Receive a single draft order
+      tags:
+        - Get
+      parameters:
+        - $ref: '#/parameters/fields'
+        - name: id
+          in: path
+          description: draft order `id`.
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: A single DraftOrder
+          schema:
+            $ref: '#/definitions/DraftOrder'
+            
+      x-code-samples:
+        - lang: curl
+          source: |
+            curl -X GET -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/57760134.json?fields=line_items"
+      
+        - lang: Ruby
+          source: |
+            # load the gem
+            require 'swagger_client'
+            
+            api_instance = SwaggerClient::GetApi.new
+            
+            id = 789 # Integer | draft order id
+            
+            
+            begin
+              result = api_instance.admin_draft_ordersid_json_get(id)
+              p result
+            rescue SwaggerClient::ApiError => e
+              puts "Exception when calling GetApi->admin_draft_ordersid_json_get: #{e}"
+            end
+            
+  
+            
+            
+    
+    delete:
+      description: Remove a draft order
+      tags:
+        - Delete
+      parameters:
+        - name: id
+          in: path
+          description: draft order id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Deleted draft order
+          schema:
+            $ref: '#/definitions/DraftOrder'
+            
+      x-code-samples:
+        - lang: curl
+          source: |
+            curl -X DELETE -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/57777542.json"
+      
+  /admin/draft_orders/count.json:
+    get:
+      summary: Return count of draft orders
+      description: This endpoint enables you to return a count of all draft orders.    
+      parameters:
+       - $ref: '#/parameters/fields'
+       - $ref: '#/parameters/limit'
+       - $ref: '#/parameters/page'
+       - $ref: '#/parameters/since_id'
+       - $ref: '#/parameters/status'
+       - $ref: '#/parameters/ids'
+      tags:
+        - Get
+      responses:
+        '200':
+           description: Count of draft orders
+           $ref: '#/responses/Integer'
+
+      x-code-samples:
+        - lang: curl
+          source: |
+            curl -X GET -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/count.json"
+      
+        - lang: Ruby
+          source: |
+            # load the gem
+            require 'swagger_client'
+            
+            api_instance = SwaggerClient::GetApi.new
+            
+            begin
+              result = api_instance.admin_draft_orders_count_json_get
+              p result
+            rescue SwaggerClient::ApiError => e
+              puts "Exception when calling GetApi->admin_draft_orders_count_json_get: #{e}"
+            end
+
+
+
+  '/admin/draft_orders/#{id}/send_invoice.json':
+    post:
+      summary: Create an invoice for a draft order
+      description: You can use this endpoint to send your customer an invoice via email for thier draft order.  The invoice contains a url link, enabling the customer to pay for the item using web checkout.  Additionally, you can send a `draft_order_invoice` object in the body of the request to override any of the default email parameters for the invoice.  
+      tags:
+        - Create
+      parameters:
+        - name: draft_order_invoice
+          in: body
+          description: draft_order_invoice to post.
+          schema:
+            allOf:
+              - $ref: '#/definitions/draft_order_invoice'
+      
+        - name: id
+          in: path
+          required: true
+          type: integer
+
+
+      responses:
+        '201':
+          description: draft order invoice
+          schema:
+            $ref: '#/definitions/draft_order_invoice'
+            
+            
+      x-code-samples:
+        - lang: curl
+          source: |
+            curl -X POST -H "Content-Type: application/json" -H "Authorization: Basic YOUR-API-KEY=" -d '' "https://your_store_domain.myshopify.com/admin/draft_orders/57760134/send_invoice.json"
+      
+        - lang: Ruby
+          source: |
+            # load the gem
+            require 'swagger_client'
+            
+            api_instance = SwaggerClient::GetApi.new
+            
+            begin
+              result = api_instance.admin_draft_orders_count_json_get
+              p result
+            rescue SwaggerClient::ApiError => e
+              puts "Exception when calling GetApi->admin_draft_orders_count_json_get: #{e}"
+            end      
+            
+            
+            
+  '/admin/draft_orders/#{id}/complete.json':
+    put:
+      description: Mark a draft order as paid or pending payment.
+      tags:
+        - Update
+      parameters:
+        - name: payment_gateway_id
+          in: query
+          description: >-
+            Gateway used to receive payment. Either `id` of custom manual gateway,
+            or null if using the default “Mark As Paid” gateway.
+          type: integer
+          format: int64
+        - name: payment_pending
+          in: query
+          description: Sets whether or not payment is pending for the draft order.
+          enum:
+          - true
+          - false
+          type: boolean
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: draft order
+          schema:
+            $ref: '#/definitions/DraftOrder'
+            
+            
+      x-code-samples:
+        - lang: curl
+          source: |
+            curl -X PUT -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/57760134/complete.json?payment_gateway_id=null&payment_pending=false"    
+            
+            
+  '/admin/draft_orders/#{id}/checkout.json':
+    post:
+      summary: Create or retrieve existing checkout
+      description: >-
+        This call will either retrieve an existing checkout for this draft order or will create a new checkout if none exists previosuly.
+        
+         | `Note`| This API call requires the checkouts_api scope, and is only applicable for users of the Sales Channel SDK.  |
+          |---|-------------|
+        
+        
+      
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Checkout object that was created or retrieved.  Not in scope for Alpha.
+          schema:
+            $ref: '#/definitions/checkout'
+            
+            
+      
+      tags:
+        - Create
+        
+      x-code-samples:
+        - lang: curl
+          source: |
+            curl -X POST -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/57760134/checkout.json" 
+definitions:
+  DraftOrder:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The `id` of the draft order.
+        readOnly: false
+      order_id:
+        type: string
+        description: The `id` of the order associated to the draft order, once created.
+        readOnly: false
+      name:
+        type: string
+        description: Name of the draft order.
+        readOnly: false
+      customer:
+        type: object
+        $ref: '#/definitions/customer'
+        
+      shipping_address:
+        type: string
+        description: The mailing address to where the draft order will be shipped.
+      billing_address:
+        type: string
+        description: The mailing address associated with the payment method.
+      note:
+        type: string
+        description: The text of an optional note that a shop owner can attach to the draft order.
+      email:
+        type: string
+        description: The email address used for sending notifications.
+      currency:
+        type: string
+        description: The three letter code for the currency to be used for the payment.
+        readOnly: true
+      invoice_sent_at:
+        type: string
+        description: Date when the invoice was emailed to the customer.
+        format: date-time
+        readOnly: true
+    
+      invoice_url:
+        type: string
+        description: The url to send to the customer for completing the checkout.  When using `send_invoice`, this url is emailed to the customer.
+        readOnly: true
+
+      line_items:
+        type: array
+        description: Draft orders must include at least one `line_item`.
+        items:
+          $ref: '#/definitions/line_item'
+
+      metafields:
+        type: array
+        $ref: '#/definitions/metafield'
+
+      shipping_line:
+        type: object
+        $ref: '#/definitions/shipping_line'
+
+      tags:
+        type: string
+        description: Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. Each individual tag is limited to 40 characters in length.
+      tax_exempt:
+        type: boolean
+        description: Sets whether taxes are exempt for this draft order. If this value is `false`, Shopify will honor the `tax_exempt` value for each `line_item`.
+        enum:
+        - true
+        - false 
+      tax_lines:
+        type: array
+        description: An array of `tax_line` objects, each of which details the taxes applicable to the checkout. 
+        items:
+          $ref: '#/definitions/tax_line'
+        readOnly: true
+      discount:
+        type: object
+        $ref: '#/definitions/discount'
+        description: Order level discount.
+      taxes_included:
+        type: boolean
+        description: States whether or not taxes are included in the order subtotal.
+        readOnly: true
+        enum:
+        - true
+        - false
+
+      total_tax:
+        type: string
+        description: Total tax amount.
+        readOnly: true
+
+      subtotal_price:
+        type: string
+        description: Subtotal after discounts, before shipping and taxes have been applied.
+        readOnly: true
+
+      total_price:
+        type: string
+        description: Includes discounts, shipping and taxes.
+        readOnly: true
+
+      completed_at:
+        type: string
+        format: date-time
+        description: Date at which an order was created and the draft order moved to “completed” status.
+        readOnly: true
+      created_at:
+        type: string
+        format: date-time
+        description: By default, this auto-generated property is the date and time when the order was created in Shopify, in ISO 8601 format. If you are importing orders to the Shopify platform from another system, the writable `processed_at` property will override the `created_at date`.
+        readOnly: true
+
+      updated_at:
+        type: string
+        format: date-time
+        description: The date and time when the draft order was last updated.
+        readOnly: true
+
+      status:
+        type: string
+        enum:
+        - open
+        - invoice_sent
+        - completed
+        description: String describing the state of the draft order - `open`, `invoice sent`, `completed`.
+        readOnly: true
+
+  draft_order_invoice:
+    type: object
+    properties:
+      to:
+        type: string
+        description: >-
+          Email associated with the `draft_order_invoice`.  If not specified, the email associated with the draft order, or the customer's email will be used instead.  If no email address is specified an error is returned.
+          
+      from:
+        type: string
+        description: The email address that the email will appear to be sent from. This defaults to the shop's customer email, and if none exists, the shop's account email. When provided, this email address must correspond to the email address of one of the staff accounts.
+      bcc:
+        type: string
+        description: Optional array of email addresses to bcc. These must correspond to valid staff account email addresses.
+      subject:
+        type: string
+        description: The subject of the email that will be sent. When not provided, defaults to the Draft Order Invoice template's subject, as specified in the shop's Notification settings.
+      custom_message:
+        type: string
+        description: An optional custom message inserted in the email's body.
+  checkout:
+    type: object
+    description: requires checkout_api scope.  This object is not in scope for Alpha release.
+  line_item:
+    type: object
+    discriminator: custom
+    properties:
+      custom:
+        description: Indicates if this is product_variant_line_item, or a custom_line_item.  If set to `true` indicates that the `line_item` is a custom line item.  If set to `false` indicates that it is a product variant `line_item`.  
+        type: boolean
+        enum: 
+        - true
+        - false
+      id:
+          type: string
+          description: Can’t be null
+          readOnly: true
+     
+      vendor:
+          type: string
+          description: vendor
+      quantity:
+          type: string
+          description: quantity
+      gift_card:
+          type: boolean
+          description: Indicates if the product is a gift card. Values - `true` or `false`.
+      fulfillment_service:
+          type: string
+          description: Service provider who is doing the fulfillment. Valid values are either `manual` or the name of the provider. eg `amazon`, `shipwire`, etc.  Defaults to `manual` for custom line items.
+      properties:
+          type: string
+          description: An array of custom information for an item that has been added to the cart. Often used to provide product customization options. For more information, see the [documentation on collecting customization information on the product page](https://help.shopify.com/themes/customization/products/get-customization-information-for-products).
+      discount:
+          type: object
+          $ref: '#/definitions/discount'
+      tax_line:
+          type: array
+          items:
+            $ref: '#/definitions/tax_line'
+      
+        
+  custom_line_item:
+    description: custom line item
+    allOf:
+    - $ref: '#/definitions/line_item'
+    - type: object
+      required:
+      - title
+      - price
+      - grams
+    
+      properties:
+        title:
+          type: string
+          description:  The title of the product or variant.  Can only be specified if this is a custom line item, in which case it is mandatory.
+        price:
+          type: string
+          description: The price of the item before discounts have been applied.  Can only be specified if this is a custom line item, in which case it is mandatory.  To change the price of a product, use `discount` as specified below.
+        grams:
+          type: string
+          description: Weight in grams.  Can only be specified if this is a custom line item.  If not specified, defaults to `0`.
+        requires_shipping:
+          type: boolean
+          description: States whether or not the fulfillment requires shipping. Values are `true` or `false`.  Can only be specified if this is a custom line item.  Defaults to `false`.
+          enum: 
+          - true
+          - false
+        sku:
+          type: string
+          description: Can only be specified if this is a custom line item.
+        taxable:
+          type: boolean
+          description: States whether or not the product is taxable. Values are `true` or `false`.  Can only be specified if this is a custom line item.  Mandatory for custom products.
+
+  product_variant_line_item:      
+    description: product variant line item
+    allOf:
+    - $ref: '#/definitions/line_item'
+    - type: object
+      required:
+      - variant_id
+       
+      properties:
+        variant_id:
+          type: string
+          description: The `id` of the product variant corresponding to the `line_item`.  Null if custom `line_item`.
+          readOnly: false
+        product_id:
+          type: string
+          description: The `id` of the product corresponding to the line item’s product variant.
+        name:
+          type: string
+          description: The readable name of the product and variant.
+        variant_title:
+          type: string
+          description: The title of the product variant.  Default value is “Custom”.
+
+    
+  
+  shipping_rate:
+    type: object
+    required:
+    - handle
+    - title
+    - price
+    properties:
+      handle:
+        type: string
+        description: handle of the shipping rate.
+      title:
+        type: string
+        description: The shipping method name.
+      price:
+        type: string
+        description: The price of the shipping rate.
+
+
+  shipping_line:
+    type: object
+    required:
+    - title
+    - price
+    - tax_lines
+    discriminator: custom
+    properties:
+      custom:
+        description: Indicates whether or not the shipping_line is a custom_shipping_line.  When set to `true` indicates that it is a custom_shipping_line.  
+        type: boolean
+        enum: 
+        - true
+        - false
+  
+      title:
+        type: string
+        description: The title of the shipping method.
+        readOnly: false
+      price:
+        type: integer
+        format: int64
+        description: The price of this shipping method.
+        readOnly: false
+      phone:
+        type: string
+        description: The phone number, if required as specified in the `shipping_rate`.
+      tax_lines:
+        type: array
+        readOnly: false
+        items:
+          $ref: '#/definitions/tax_line'
+      
+
+  regular_shipping_line:
+    allOf:
+    - $ref: '#/definitions/shipping_line'
+    - type: object
+    required:
+    - title
+    - price
+    - tax_lines
+    properties:
+      handle:
+        type: string
+        description: The handle of the shipping rate which was selected and applied
+    
+      
+  custom_shipping_line:
+    allOf:
+    - $ref: '#/definitions/shipping_line'
+    - type: object
+    required:
+    - title
+    - price
+    - tax_lines
+    properties:
+      handle:
+        type: string
+        description: Nil for custom lines.
+         
+
+  metafield:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Unique numeric identifier for the metafield.
+
+  tax_line:
+    type: object
+    required:
+    - title
+    - rate
+    - price
+    properties:
+      title:
+        type: string
+        description: The name of the tax.
+      rate:
+        type: string
+        description: The rate of tax to be applied.
+      price:
+        type: string
+        description: The amount of tax to be charged.
+
+  discount:
+    type: object
+    required:
+    - description
+    - value
+    properties:
+      description:
+        type: string
+        description: Reason for the discount.
+      value:
+        type: string
+        description: The value of the discount. If the type of the discount is `fixed_amount`, then this is a fixed dollar amount, if the type is `percentage`, then this is the percentage. 
+      type:
+        type: string
+        description: The type of the discount. Can be one of - `percentage` or `fixed_amount`. `Fixed_amount` is default value.
+        enum:
+        - percentage
+        - fixed_amount (default)
+
+      amount:
+        type: string
+        description: The applied amount of the discount.
+
+  customer:
+    type: object
+    description: Customer to be associated with the draft order; however only the `id` can be set in order to associate the customer to the draft order.  Setting the value to null removes the customer from the draft order.
+    properties:
+      accepts_marketing:
+        type: boolean
+        description: Indicates whether or not the customer would like to receive email updates from the shop. Valid values are `true` and `false`.
+      created_at: 
+        type: string
+        format: date-time
+        description: The date and time when the customer record was created.
+      email:
+        type: string
+        description: The customer's email address.
+      first_name:
+        type: string
+        description: The customer's first name.
+      order_id:
+        type: integer
+        format: integer
+        description: Unique numeric identifier for the customer.
+      last_name:
+        type: string
+        description: Customer's last name.
+      note: 
+        type: string
+        description: Extra information about the customer.
+      orders_count:
+        type: integer
+        description: The number of orders placed by this customer to a shop.
+      state:
+        type: string
+        description: Description.
+      total_spent:
+        type: integer
+        description: Total amount spent by the customer.
+      updated_at: 
+        type: string
+        format: date-time
+        description: The date and time when the customer record was last updated.
+      tags:
+        type: string
+        description: Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. For example, if an order has three tags - `tag1`, `tag2`, `tag3`.
+
+  Error:
+    type: object
+    description: Object describing errors (values) on specific attributes (keys) that prevented a draft order from being saved.
+    additionalProperties:
+      description: Single `key:value` pair out of possible multiple retruned to describe errors on specific attributes.
+      properties:
+        key:
+          type: string
+          description: Attribute that raised the error.
+        value: 
+          type: string
+          description: Error description.
+            
+      
+
+  Integer:
+    properties:
+      integer:
+        type: integer
+        format: int64
+        
+  Object:
+    properties:
+      object:
+        type: object
+
+parameters:
+  fields:
+    name: fields
+    in: query
+    description: Comma-separated list of fields to include in the response.
+    required: false
+    type: string
+
+
+  limit:
+    name: limit
+    in: query
+    required: false
+    description: Page size.
+    type: integer
+    format: int64
+  page:
+    name: page
+    in: query
+    type: integer
+    format: int64
+    required: false
+    description: Page to show.
+  id:
+    name: id
+    in: query
+    required: false
+    description: id of the draft order.
+    type: string
+    
+  since_id:
+    name: since_id
+    in: query
+    description: Restrict results to be after given ID
+    required: false
+    type: string
+  status:
+    name: status
+    in: query
+    type: string
+    description: Filter by status.
+    enum:
+    - open
+    - invoice_sent
+    - completed
+  ids:
+    name: ids
+    type: string
+    in: query
+    description: Filter by list of ids.
+    
+
+
+responses:
+  Error:
+    description: Object describing errors.
+    schema:
+      $ref: "#/definitions/Error"
+  Integer:
+    description: count of draft orders
+    schema:
+      $ref: "#/definitions/Integer"
+  Object:
+    description: empty object signifying that the draft order is deleted.
+    schema:
+      $ref: "#/definitions/Integer"
+     
+    
