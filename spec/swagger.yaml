@@ -2,6 +2,9 @@ swagger: '2.0'
 info:
   version: 1.0.0
   title: Draft Orders API
+  x-logo:
+    url: "https://github.com/Shopify/documentation/blob/master/_local/assets/images/shopify-logo.png"
+    backgroundColor: "#FFFFFF"
   description: >
     # Draft Orders API 
       
@@ -13,7 +16,7 @@ info:
       
      ## About Draft Orders
     
-     When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calcualted and no transaction is performed.  By contrast, you can use the Draft Orders API to create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including applying one-off discounts to orders, offering special wholesale pricing, and returning draft order invoices for order printing.
+     When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calcualted and no transaction is performed.  With the Draft Orders API, on the other hand, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including applying one-off discounts to orders, offering special wholesale pricing, and returning draft order invoices for order printing.
         
 
   
@@ -270,9 +273,15 @@ paths:
           format: int64
       responses:
         '200':
-          description: The draft order deleted.
+          description: Deleted draft order
           schema:
             $ref: '#/definitions/DraftOrder'
+            
+      x-code-samples:
+        - lang: curl
+          source: |
+            curl -X DELETE -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/57777542.json"
+      
   /admin/draft_orders/count.json:
     get:
       summary: Return count of draft orders
@@ -315,7 +324,7 @@ paths:
   '/admin/draft_orders/#{id}/send_invoice.json':
     post:
       summary: Create an invoice for a draft order
-      description: You can POST an invoice for a draft order by sending a call to the `/admin/draft_orders/#{id}/send_invoice.json` endpoint.  Additionally, you can send a `draft_order_invoice` object in the body of the request to override any of the default email parameters for the invoice.  
+      description: You can use this endpoint to send your customer an invoice via email for thier draft order.  The invoice contains a url link, enabling the customer to pay for the item using web checkout.  Additionally, you can send a `draft_order_invoice` object in the body of the request to override any of the default email parameters for the invoice.  
       tags:
         - Create
       parameters:
@@ -337,6 +346,29 @@ paths:
           description: draft order invoice
           schema:
             $ref: '#/definitions/draft_order_invoice'
+            
+            
+      x-code-samples:
+        - lang: curl
+          source: |
+            curl -X POST -H "Content-Type: application/json" -H "Authorization: Basic YOUR-API-KEY=" -d '' "https://your_store_domain.myshopify.com/admin/draft_orders/57760134/send_invoice.json"
+      
+        - lang: Ruby
+          source: |
+            # load the gem
+            require 'swagger_client'
+            
+            api_instance = SwaggerClient::GetApi.new
+            
+            begin
+              result = api_instance.admin_draft_orders_count_json_get
+              p result
+            rescue SwaggerClient::ApiError => e
+              puts "Exception when calling GetApi->admin_draft_orders_count_json_get: #{e}"
+            end      
+            
+            
+            
   '/admin/draft_orders/#{id}/complete.json':
     put:
       description: Mark a draft order as paid or pending payment.
@@ -346,13 +378,16 @@ paths:
         - name: payment_gateway_id
           in: query
           description: >-
-            Gateway used to receive payment. Either ID of custom manual gateway,
+            Gateway used to receive payment. Either `id` of custom manual gateway,
             or null if using the default “Mark As Paid” gateway.
           type: integer
           format: int64
-        - name: paymentPending
+        - name: payment_pending
           in: query
-          description: true/false
+          description: Sets whether or not payment is pending for the draft order.
+          enum:
+          - true
+          - false
           type: boolean
         - name: id
           in: path
@@ -363,13 +398,24 @@ paths:
           description: draft order
           schema:
             $ref: '#/definitions/DraftOrder'
+            
+            
+      x-code-samples:
+        - lang: curl
+          source: |
+            curl -X PUT -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/57760134/complete.json?payment_gateway_id=null&payment_pending=false"    
+            
+            
   '/admin/draft_orders/#{id}/checkout.json':
-    parameters:
-      - $ref: '#/parameters/id'
     post:
       summary: Create or retrieve existing checkout
       description: >-
-        A call to the `/admin/draft_orders/#{id}/checkout.json` endpoint works in conjunction with the Checkout API and requires the checkout scope.
+        This call will either retrieve an existing checkout for this draft order or will create a new checkout if none exists previosuly.
+        
+         | `Note`| This API call requires the checkouts_api scope, and is only applicable for users of the Sales Channel SDK.  |
+          |---|-------------|
+        
+        
       
       parameters:
         - name: id
@@ -378,11 +424,19 @@ paths:
           type: integer
       responses:
         '200':
-          description: Checkout
+          description: Checkout object that was created or retrieved.  Not in scope for Alpha.
           schema:
             $ref: '#/definitions/checkout'
+            
+            
+      
       tags:
         - Create
+        
+      x-code-samples:
+        - lang: curl
+          source: |
+            curl -X POST -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/57760134/checkout.json" 
 definitions:
   DraftOrder:
     type: object
@@ -534,24 +588,7 @@ definitions:
         description: An optional custom message inserted in the email's body.
   checkout:
     type: object
-    properties:
-      to:
-        type: string
-        description: >-
-          Email associated with the `draft_order_invoice`.  If not specified, the email associated with the draft order, or the customer's email will be used instead.  If no email address is specified an error is returned.
-          
-      from:
-        type: string
-        description: Email address that the email will appear to be sent from. This defaults to the shop's customer email, and if none exists, simply the shop's account email. When provided, this email address must correspond to the email address of one of the staff accounts.
-      bcc:
-        type: string
-        description: array of staff account e-mail addresses.
-      subject:
-        type: string
-        description: The subject of the email that will be sent. When not provided, defaults to the Draft Order Invoice template's subject, as specified in the shop's Notification settings.
-      custom_message:
-        type: string
-        description: An optional custom message inserted in the email's body.
+    description: requires checkout_api scope.  This object is not in scope for Alpha release.
   line_item:
     type: object
     discriminator: custom
