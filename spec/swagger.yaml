@@ -3,7 +3,7 @@ info:
   version: 1.0.0
   title: Draft Orders API
   x-logo:
-    url: "https://github.com/Shopify/documentation/blob/master/_local/assets/images/shopify-logo.png"
+    url: "https://rebilly.github.io/ReDoc/petstore-logo.png"
     backgroundColor: "#FFFFFF"
   description: >
     # Draft Orders API 
