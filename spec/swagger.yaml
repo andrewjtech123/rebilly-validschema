@@ -3,7 +3,7 @@ info:
   version: 1.0.0
   title: Draft Orders API
   x-logo:
-    url: "https://andrewjtech123.github.io/rebilly-validschema/shopify_logo_white.png"
+    url: "https://andrewjtech123.github.io/imagehost/shopify_logo_white.png"
     backgroundColor: "#7ab55c"
   description: >
     # Draft Orders API 
