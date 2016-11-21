@@ -609,6 +609,7 @@ definitions:
         enum: 
         - true
         - false
+        default: false
         
       id:
           type: string
