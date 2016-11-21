@@ -743,6 +743,7 @@ definitions:
         enum: 
         - true
         - false
+        default: false
       
 
   regular_shipping_line:
