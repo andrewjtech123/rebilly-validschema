@@ -334,8 +334,8 @@ paths:
 
   '/admin/draft_orders/#{id}/send_invoice.json':
     post:
-      summary: Create an invoice for a draft order
-      description: You can use this endpoint to send your customer an invoice via email for thier draft order.  The invoice contains a url link, enabling the customer to pay for the item using web checkout.  Additionally, you can send a `draft_order_invoice` object in the body of the request to override any of the default email parameters for the invoice.  
+      summary: Send an invoice for a draft order
+      description: You can use this endpoint to send your customer an invoice via email for their draft order.  The invoice contains a url link, enabling the customer to pay for the item using web checkout.  Additionally, you can send a `draft_order_invoice` object in the body of the request to override any of the default email parameters for the invoice.  
       tags:
         - Create
       parameters:
@@ -522,8 +522,8 @@ definitions:
         items:
           $ref: '#/definitions/tax_line'
         readOnly: true
-      discount:
-        $ref: '#/definitions/discount'
+      applied_discount:
+        $ref: '#/definitions/applied_discount'
       taxes_included:
         type: boolean
         description: States whether or not taxes are included in the order subtotal.
@@ -657,8 +657,8 @@ definitions:
           type: string
           description: An array of custom information for an item that has been added to the cart. Often used to provide product customization options. For more information, see the [documentation on collecting customization information on the product page](https://help.shopify.com/themes/customization/products/get-customization-information-for-products).
           readOnly: false
-      discount:
-          $ref: '#/definitions/discount'
+      applied_discount:
+          $ref: '#/definitions/applied_discount'
       tax_line:
           type: array
           items:
@@ -710,27 +710,6 @@ definitions:
     - $ref: '#/definitions/line_item'
     - type: object
   
-       
-      
-
-    
-  
-  shipping_rate:
-    type: object
-    required:
-    - handle
-    - title
-    - price
-    properties:
-      handle:
-        type: string
-        description: handle of the shipping rate.
-      title:
-        type: string
-        description: The shipping method name.
-      price:
-        type: string
-        description: The price of the shipping rate.
 
 
   shipping_line:
@@ -825,7 +804,7 @@ definitions:
         description: The amount of tax to be charged.
         readOnly: true
 
-  discount:
+  applied_discount:
     type: object
 
     properties:
