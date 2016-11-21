@@ -8,7 +8,7 @@ info:
   description: >
     # Draft Orders API 
       
-      A [Draft Order](https://help.shopify.com/manual/orders/create-orders) represents the status of an order before the customer has completed the checkout process. Using the Draft Orders API you can create a draft order and transition it to a completed order with great flexibility.  The following flows are supported:
+      A [Draft Order](https://help.shopify.com/manual/orders/create-orders) represents the status of an order before the order is set to `completed` status. Using the Draft Orders API you can create a draft order and transition it to a completed order with great flexibility.  The following flows are supported:
       
       * Create a draft order that calculates taxes and totals but accept payment from the customer outside of Shopify.
       * Create a draft order (with taxes and totals) and email your customer a web checkout link to complete purchase and transition to a completed order.
@@ -16,7 +16,7 @@ info:
       
      ## About Draft Orders
     
-     When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calcualted and no transaction is performed.  With the Draft Orders API, on the other hand, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including applying one-off discounts to orders, offering special wholesale pricing, and returning draft order invoices for order printing.
+     When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calculated and no transaction is performed.  With the Draft Orders API, on the other hand, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including applying one-off discounts to orders, offering special wholesale pricing, and including custom product orders for customers. Test 
         
 
   
@@ -297,7 +297,6 @@ paths:
         - Get
       responses:
         '200':
-           description: Count of draft orders
            $ref: '#/responses/Integer'
 
       x-code-samples:
@@ -454,7 +453,6 @@ definitions:
         description: Name of the draft order.
         readOnly: false
       customer:
-        type: object
         $ref: '#/definitions/customer'
         
       shipping_address:
@@ -491,11 +489,9 @@ definitions:
           $ref: '#/definitions/line_item'
 
       metafields:
-        type: array
         $ref: '#/definitions/metafield'
 
       shipping_line:
-        type: object
         $ref: '#/definitions/shipping_line'
 
       tags:
@@ -514,9 +510,7 @@ definitions:
           $ref: '#/definitions/tax_line'
         readOnly: true
       discount:
-        type: object
         $ref: '#/definitions/discount'
-        description: Order level discount.
       taxes_included:
         type: boolean
         description: States whether or not taxes are included in the order subtotal.
@@ -620,7 +614,6 @@ definitions:
           type: string
           description: An array of custom information for an item that has been added to the cart. Often used to provide product customization options. For more information, see the [documentation on collecting customization information on the product page](https://help.shopify.com/themes/customization/products/get-customization-information-for-products).
       discount:
-          type: object
           $ref: '#/definitions/discount'
       tax_line:
           type: array
@@ -879,10 +872,7 @@ definitions:
         type: integer
         format: int64
         
-  Object:
-    properties:
-      object:
-        type: object
+
 
 parameters:
   fields:
@@ -907,12 +897,7 @@ parameters:
     format: int64
     required: false
     description: Page to show.
-  id:
-    name: id
-    in: query
-    required: false
-    description: id of the draft order.
-    type: string
+
     
   since_id:
     name: since_id
@@ -938,16 +923,9 @@ parameters:
 
 
 responses:
-  Error:
-    description: Object describing errors.
-    schema:
-      $ref: "#/definitions/Error"
+
   Integer:
     description: count of draft orders
-    schema:
-      $ref: "#/definitions/Integer"
-  Object:
-    description: empty object signifying that the draft order is deleted.
     schema:
       $ref: "#/definitions/Integer"
      
