@@ -12,11 +12,18 @@ info:
       
       * Create a draft order that calculates taxes and totals but accept payment from the customer outside of Shopify.
       * Create a draft order (with taxes and totals) and email your customer a web checkout link to complete purchase and transition to a completed order.
-      * Use Draft Orders API in conjunction with the [Checkouts API](https://help.shopify.com/api/tutorials/sell-through-the-checkout-api) by created a Checkout object based on a draft order (Sales Channel SDK only).  This enables a highly customizable experience for channels.
+      * Use Draft Orders API in conjunction with the [Checkouts API](https://help.shopify.com/api/tutorials/sell-through-the-checkout-api) by creating a Checkout object based on a draft order (Sales Channel SDK only).  This enables a highly customizable experience for channels.
       
      ## About Draft Orders
     
-     When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calculated and no transaction is performed.  With the Draft Orders API, on the other hand, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including applying one-off discounts to orders, offering special wholesale pricing, and including custom product orders for customers.
+     When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calculated and no transaction is performed.  With the Draft Orders API, on the other hand, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including the following:
+     
+      * Create new orders and enter credit card payments in Shopify for sales you've made by phone, in person, or elsewhere.
+      * Send invoices to customers to pay with a secure checkout link
+      * Use custom items to represent additional costs or products that aren't displayed in your inventory.
+      * Manually re-create mistaken orders from any of your active sales channels
+      * Sell products at discount or wholesale rates
+      * Take pre-orders.
         
 
   
@@ -29,7 +36,7 @@ paths:
   /admin/draft_orders.json:
     get:
       summary: Retrieve draft orders
-      description: You can use this endpoint to return a list of draft order objects.  This can be useful for a variety of applications including draft order printing.  For `line_items` you can use the value of the `custom` field (true/false) to differentiate between custom line items and product variant line items.
+      description: Return a list of draft order objects.
       parameters:
       - $ref: '#/parameters/fields'
       - $ref: '#/parameters/limit'
@@ -61,6 +68,11 @@ paths:
         - lang: curl
           source:  |
             curl -X GET -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders.json"
+            
+        - lang: curl 2
+          source:  |
+            curl -X GET -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders.json"
+            
       
         - lang: Ruby
           source: |
@@ -443,15 +455,15 @@ definitions:
       id:
         type: string
         description: The `id` of the draft order.
-        readOnly: false
+        readOnly: true
       order_id:
         type: string
         description: The `id` of the order associated to the draft order, once created.
-        readOnly: false
+        readOnly: true
       name:
         type: string
         description: Name of the draft order.
-        readOnly: false
+        readOnly: true
       customer:
         $ref: '#/definitions/customer'
         
@@ -464,6 +476,7 @@ definitions:
       note:
         type: string
         description: The text of an optional note that a shop owner can attach to the draft order.
+        readOnly: true
       email:
         type: string
         description: The email address used for sending notifications.
@@ -586,33 +599,63 @@ definitions:
   line_item:
     type: object
     discriminator: custom
+    required:
+    - variant_id
+    - quantity
     properties:
       custom:
-        description: Indicates if this is product_variant_line_item, or a custom_line_item.  If set to `true` indicates that the `line_item` is a custom line item.  If set to `false` indicates that it is a product variant `line_item`.  
+        description: Indicates if this is product_variant_line_item, or a custom_line_item.  If set to `true` indicates that the `line_item` is a custom line item.  If set to `false` indicates that it is a product variant `line_item`. *Read only field*
         type: boolean
         enum: 
         - true
         - false
+        
       id:
           type: string
           description: Can’t be null
           readOnly: true
+          
+      variant_id:
+          type: string
+          description: The `id` of the product variant corresponding to the `line_item`.  Null if custom `line_item`.
+          readOnly: false
+          
+      product_id:
+          type: string
+          description: The `id` of the product corresponding to the line item’s product variant.
+          readOnly: true
+      name:
+        type: string
+        description: The readable name of the product and variant.
+        readOnly: true
+        
+      variant_title:
+        type: string
+        description: The title of the product variant.
+        readOnly: true
+        default: Custom
+          
      
       vendor:
           type: string
           description: vendor
+          readOnly: true
       quantity:
           type: string
           description: quantity
+          readOnly: false
       gift_card:
           type: boolean
           description: Indicates if the product is a gift card. Values - `true` or `false`.
+          readOnly: true
       fulfillment_service:
           type: string
           description: Service provider who is doing the fulfillment. Valid values are either `manual` or the name of the provider. eg `amazon`, `shipwire`, etc.  Defaults to `manual` for custom line items.
+          readOnly: true
       properties:
           type: string
           description: An array of custom information for an item that has been added to the cart. Often used to provide product customization options. For more information, see the [documentation on collecting customization information on the product page](https://help.shopify.com/themes/customization/products/get-customization-information-for-products).
+          readOnly: false
       discount:
           $ref: '#/definitions/discount'
       tax_line:
@@ -638,44 +681,35 @@ definitions:
         price:
           type: string
           description: The price of the item before discounts have been applied.  Can only be specified if this is a custom line item, in which case it is mandatory.  To change the price of a product, use `discount` as specified below.
+          readOnly: false
         grams:
           type: string
           description: Weight in grams.  Can only be specified if this is a custom line item.  If not specified, defaults to `0`.
+          readOnly: false
         requires_shipping:
           type: boolean
           description: States whether or not the fulfillment requires shipping. Values are `true` or `false`.  Can only be specified if this is a custom line item.  Defaults to `false`.
           enum: 
           - true
           - false
+          readOnly: false
         sku:
           type: string
           description: Can only be specified if this is a custom line item.
+          readOnly: false
         taxable:
           type: boolean
           description: States whether or not the product is taxable. Values are `true` or `false`.  Can only be specified if this is a custom line item.  Mandatory for custom products.
+          readOnly: false
 
   product_variant_line_item:      
     description: product variant line item
     allOf:
     - $ref: '#/definitions/line_item'
     - type: object
-      required:
-      - variant_id
+  
        
-      properties:
-        variant_id:
-          type: string
-          description: The `id` of the product variant corresponding to the `line_item`.  Null if custom `line_item`.
-          readOnly: false
-        product_id:
-          type: string
-          description: The `id` of the product corresponding to the line item’s product variant.
-        name:
-          type: string
-          description: The readable name of the product and variant.
-        variant_title:
-          type: string
-          description: The title of the product variant.  Default value is “Custom”.
+      
 
     
   
@@ -699,64 +733,68 @@ definitions:
 
   shipping_line:
     type: object
-    required:
-    - title
-    - price
-    - tax_lines
+  
     discriminator: custom
     properties:
       custom:
-        description: Indicates whether or not the shipping_line is a custom_shipping_line.  When set to `true` indicates that it is a custom_shipping_line.  
+        description: Indicates whether or not the shipping_line is a custom_shipping_line.  When set to `true` indicates that it is a custom_shipping_line. *Read only field* 
         type: boolean
         enum: 
         - true
         - false
-  
-      title:
-        type: string
-        description: The title of the shipping method.
-        readOnly: false
-      price:
-        type: integer
-        format: int64
-        description: The price of this shipping method.
-        readOnly: false
-      phone:
-        type: string
-        description: The phone number, if required as specified in the `shipping_rate`.
-      tax_lines:
-        type: array
-        readOnly: false
-        items:
-          $ref: '#/definitions/tax_line'
       
 
   regular_shipping_line:
     allOf:
     - $ref: '#/definitions/shipping_line'
     - type: object
-    required:
-    - title
-    - price
-    - tax_lines
+
     properties:
       handle:
         type: string
         description: The handle of the shipping rate which was selected and applied
+      title:
+        type: string
+        description: The title of the shipping method.
+        readOnly: true 
+      price:
+        type: integer
+        format: int64
+        description: The price of this shipping method.
+        readOnly: true  
+        
+      tax_lines:
+        type: array
+        readOnly: true
+        items:
+          $ref: '#/definitions/tax_line'  
+  
     
       
   custom_shipping_line:
     allOf:
     - $ref: '#/definitions/shipping_line'
     - type: object
-    required:
-    - title
-    - price
-    - tax_lines
+  
     properties:
       handle:
         type: string
         description: Nil for custom lines.
+      title:
+        type: string
+        description: The title of the shipping method.
+        readOnly: false   
+      price:
+        type: integer
+        format: int64
+        description: The price of this shipping method.
+        readOnly: false  
+        
+      tax_lines:
+        type: array
+        readOnly: true
+        items:
+          $ref: '#/definitions/tax_line'  
          
 
   metafield:
@@ -777,12 +815,15 @@ definitions:
       title:
         type: string
         description: The name of the tax.
+        readOnly: true
       rate:
         type: string
         description: The rate of tax to be applied.
+        readOnly: true
       price:
         type: string
         description: The amount of tax to be charged.
+        readOnly: true
 
   discount:
     type: object
@@ -793,23 +834,28 @@ definitions:
       description:
         type: string
         description: Reason for the discount.
+        readOnly: false
       value:
         type: string
-        description: The value of the discount. If the type of the discount is `fixed_amount`, then this is a fixed dollar amount, if the type is `percentage`, then this is the percentage. 
+        description: The value of the discount. If the type of the discount is `fixed_amount`, then this is a fixed dollar amount, if the type is `percentage`, then this is the percentage.
+        readOnly: false
       type:
         type: string
         description: The type of the discount. Can be one of - `percentage` or `fixed_amount`. `Fixed_amount` is default value.
         enum:
         - percentage
         - fixed_amount (default)
+        readOnly: false
 
       amount:
         type: string
         description: The applied amount of the discount.
+        readOnly: false
 
   customer:
     type: object
     description: Customer to be associated with the draft order; however only the `id` can be set in order to associate the customer to the draft order.  Setting the value to null removes the customer from the draft order.
+    readOnly: false
     properties:
       accepts_marketing:
         type: boolean
