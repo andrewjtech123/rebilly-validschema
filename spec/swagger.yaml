@@ -11,7 +11,7 @@ info:
       A [Draft Order](https://help.shopify.com/manual/orders/create-orders) represents the status of an order before the order is set to `completed` status. Using the Draft Orders API you can create a draft order and transition it to a completed order with great flexibility.  The following flows are supported:
       
       * Create a draft order that calculates taxes and totals but accept payment from the customer outside of Shopify.
-      * Create a draft order (with taxes and totals) and email your customer a web checkout link to complete purchase and transition to a completed order.
+      * Create a draft order (with taxes and totals) and send your customer a web checkout link to complete purchase and transition to a completed order.  
       * Use Draft Orders API in conjunction with the [Checkouts API](https://help.shopify.com/api/tutorials/sell-through-the-checkout-api) by creating a Checkout object based on a draft order (Sales Channel SDK only).  This enables a highly customizable experience for channels.
       
      ## About Draft Orders
@@ -100,7 +100,7 @@ paths:
       summary: Create a draft order
       description: |
           
-          Using the Draft Orders API you can create draft orders using product variant line items, or your own custom line items.  This enables you to create one-off products that exist outside of your regular inventory management system.  To create a product variant draft order, simply specify a `variant_id` `quantity` and `discount` (if applicable).  Create a custom line item by supplying `title`, `price`, `taxable` and `quantity`. 
+          Using the Draft Orders API you can create orders in draft state using product variant line items, or your own custom line items.  This enables you to create one-off products that exist outside of your regular inventory management system.  To create a product variant draft order, simply specify a `variant_id` `quantity` and `discount` (if applicable).  Create a custom line item by supplying `title`, `price`, `taxable` and `quantity`. 
           
         
           | `Note`| The array of line items on a draft order must not contain a `variant_id` more than once. The data copied over from a variant upon creation of a line item is never subsequently updated.  |
@@ -679,6 +679,7 @@ definitions:
         title:
           type: string
           description:  The title of the product or variant.  Can only be specified if this is a custom line item, in which case it is mandatory.
+          readOnly: false
         price:
           type: string
           description: The price of the item before discounts have been applied.  Can only be specified if this is a custom line item, in which case it is mandatory.  To change the price of a product, use `discount` as specified below.
@@ -809,10 +810,7 @@ definitions:
 
   tax_line:
     type: object
-    required:
-    - title
-    - rate
-    - price
+
     properties:
       title:
         type: string
@@ -829,9 +827,7 @@ definitions:
 
   discount:
     type: object
-    required:
-    - description
-    - value
+
     properties:
       description:
         type: string
