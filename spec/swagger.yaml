@@ -16,7 +16,7 @@ info:
       
      ## About Draft Orders
     
-     When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calculated and no transaction is performed.  With the Draft Orders API, on the other hand, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including applying one-off discounts to orders, offering special wholesale pricing, and including custom product orders for customers. test testy testy testy 
+     When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calculated and no transaction is performed.  With the Draft Orders API, on the other hand, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including applying one-off discounts to orders, offering special wholesale pricing, and including custom product orders for customers.
         
 
   
