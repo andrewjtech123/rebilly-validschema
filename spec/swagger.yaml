@@ -354,7 +354,7 @@ paths:
   '/admin/draft_orders/#{id}/send_invoice.json':
     post:
       summary: Send an invoice for a draft order
-      description: You can use this endpoint to send your customer an invoice via email for their draft order.  The invoice contains a url link, enabling the customer to pay for the item using web checkout.  Additionally, you can send a `draft_order_invoice` object in the body of the request to override any of the default email parameters for the invoice.  
+      description: You can use this endpoint to send your customer an invoice via email for their draft order.  The invoice contains a url link, enabling the customer to pay for the item using web checkout.  Additionally, you can send a `draft_order_invoice` hash in the body of the request to override any of the default email parameters for the invoice.  
       tags:
         - Create
       parameters:
@@ -491,11 +491,9 @@ definitions:
         $ref: '#/definitions/customer'
         
       shipping_address:
-        type: string
-        description: The mailing address to where the draft order will be shipped.
+        $ref: '#/definitions/shipping_address'
       billing_address:
-        type: string
-        description: The mailing address associated with the payment method.
+        $ref: '#/definitions/billing_address'
       note:
         type: string
         description: The text of an optional note that a shop owner can attach to the draft order.
@@ -597,12 +595,11 @@ definitions:
         readOnly: true
 
   draft_order_invoice:
-    type: object
     properties:
       to:
         type: string
         description: >-
-          Email associated with the `draft_order_invoice`.  If not specified, the email associated with the draft order, or the customer's email will be used instead.  If no email address is specified an error is returned.
+          Email to send the `draft_order_invoice`.  If left blank will use the email associated to the draft order if present, or the customer email.  If all three possible email sources are empty, an error is returned.
           
       from:
         type: string
@@ -622,9 +619,7 @@ definitions:
   line_item:
     type: object
     discriminator: custom
-    required:
-    - variant_id
-    - quantity
+   
     properties:
       custom:
         description: Indicates if this is product_variant_line_item, or a custom_line_item.  If set to `true` indicates that the `line_item` is a custom line item.  If set to `false` indicates that it is a product variant `line_item`. *Read only field*
@@ -696,7 +691,7 @@ definitions:
       required:
       - title
       - price
-      - grams
+      - quantity
     
       properties:
         title:
@@ -707,6 +702,10 @@ definitions:
           type: string
           description: The price of the item before discounts have been applied.  Can only be specified if this is a custom line item, in which case it is mandatory.  To change the price of a product, use `applied_discount` as specified below.
           readOnly: false
+        quantity:
+          type: string
+          description: quantity
+          readOnly: false  
         grams:
           type: string
           description: Weight in grams.  Can only be specified if this is a custom line item.  If not specified, defaults to `0`.
@@ -732,6 +731,9 @@ definitions:
     allOf:
     - $ref: '#/definitions/line_item'
     - type: object
+    required:
+    - variant_id
+    - quantity
   
 
 
@@ -754,13 +756,12 @@ definitions:
     - $ref: '#/definitions/shipping_line'
     - type: object
     required:
-    - title
-    - price
+    - handle
 
     properties:
       handle:
         type: string
-        description: The handle of the shipping rate which was selected and applied
+        description: The handle of the shipping rate which was selected and applied.
       title:
         type: string
         description: The title of the shipping method.
@@ -783,6 +784,9 @@ definitions:
     allOf:
     - $ref: '#/definitions/shipping_line'
     - type: object
+    required:
+    - title
+    - price
   
     properties:
       handle:
@@ -962,6 +966,123 @@ definitions:
         type: string
         description: Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. For example, if an order has three tags - `tag1`, `tag2`, `tag3`.
         readOnly: true
+        
+  shipping_address:
+    type: object
+    description: The mailing address to where the order will be shipped. This address is optional and will not be available on orders that do not require one.
+    properties:
+      address1:
+        type: string
+        description: The street address of the shipping address.
+      address2:
+        type: string
+        description: An optional additional field for the street address of the shipping address.
+      city:
+        type: string
+        description: The city of the shipping address.
+        
+      company:
+        type: string
+        description: The company of the person associated with the shipping address.
+      country:
+        type: string
+        description: The name of the country of the shipping address.
+        
+      country_code:
+        type: string
+        description: The two-letter code for the country of the shipping address.
+      first_name:
+        type: string
+        description: The first name of the person associated with the payment method.
+      last_name:
+        type: string
+        description: The last name of the person associated with the payment method.
+      latitude:
+        type: string
+        format: latitude
+        description: The latitude of the shipping address.
+      longitude:
+        type: string
+        format: longitude
+        description: The longitude of the shipping address.
+      name:
+        type: string
+        description: The full name of the person associated with the payment method.
+      phone:
+        type: string
+        description: The phone number at the shipping address.
+      province:
+        type: string
+        description: The name of the state or province of the shipping address.
+      province_code:
+        type: string
+        description: The two-letter abbreviation of the state or province of the shipping address.
+      zip:
+        type: string
+        format: zip
+        description: The zip or postal code of the shipping address.
+        
+  
+    
+  billing_address:
+    type: object
+    description: The mailing address associated with the payment method. This address is an optional field that will not be available on orders that do not require one.
+    properties:
+      address1:
+        type: string
+        description: The street address of the billing address.
+      address2: 
+        type: string
+        description: An optional additional field for the street address of the billing address.
+      city:
+        type: string
+        description: The city of the billing address.
+        
+      company:
+        type: string
+        description: The company of the person associated with the billing address.  
+        
+      country:
+        type: string
+        description: The name of the country of the billing address.
+      
+      country_code:
+        type: string
+        description: The two-letter code (ISO 3166-1 alpha-2 two-letter country code) for the country of the billing address.
+      
+      first_name:
+        type: string
+        description: The first name of the person associated with the payment method.
+      last_name:
+        type: string
+        description: The last name of the person associated with the payment method.
+      latitude:
+        type: string
+        format: latitude
+        description: The latitude of the billing address.
+      longitude:
+        type: string
+        format: longitude
+        description: The longitude of the billing address. 
+      name:
+        type: string
+        description: The full name of the person associated with the payment method.
+      phone:
+        type: string
+        description: The phone number at the billing address.
+      province:
+        type: string
+        description: The name of the state or province of the billing address.
+      province_code:
+        type: string
+        description: The two-letter abbreviation of the state or province of the billing address.
+      zip:
+        type: string
+        format: zip
+        description: The zip or postal code of the billing address.
+        
+        
+      
 
   Error:
     type: object
