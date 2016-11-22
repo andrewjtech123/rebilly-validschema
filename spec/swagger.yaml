@@ -1,10 +1,16 @@
 swagger: '2.0'
+externalDocs:
+  description: Find more info here
+  url: https://swagger.io
+  
+  
 info:
   version: 1.0.0
   title: Draft Orders API
   x-logo:
     url: "https://andrewjtech123.github.io/imagehost/shopify_logo_white.png"
     backgroundColor: "#7ab55c"
+  
   description: >
     # Draft Orders API 
       
@@ -26,11 +32,25 @@ info:
       * Take pre-orders.
         
 
-  
+
 schemes:
   - https
   
 host: your-store-domain.myshopify.com
+
+tags:
+  - name: Get
+    description: Retrieve draft orders.
+  - name: Create
+    description: Create draft orders.
+  - name: Delete
+    description: Delete draft orders
+  - name: Update
+    description: Update draft orders.
+  - name: Not For Alpha
+    description: Operations not ready for Alpha launch.
+    
+    
 
 paths:
   /admin/draft_orders.json:
@@ -385,6 +405,7 @@ paths:
       description: Mark a draft order as paid or pending payment.
       tags:
         - Update
+        - Not For Alpha
       parameters:
         - name: payment_gateway_id
           in: query
@@ -443,6 +464,7 @@ paths:
       
       tags:
         - Create
+        - Not For Alpha
         
       x-code-samples:
         - lang: curl
