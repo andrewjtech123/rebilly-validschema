@@ -86,11 +86,9 @@ paths:
       x-code-samples:
         - lang: curl
           source:  |
-            curl -X GET -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders.json"
+            curl -X GET -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders.json
             
-        - lang: curl 2
-          source:  |
-            curl -X GET -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders.json"
+        
             
       
         - lang: Ruby
@@ -155,6 +153,44 @@ paths:
       x-code-samples:
         - lang: curl
           source: |
+            curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders.json -d '{
+            	"draft_order": {
+            		"email": "paul.norman@example.com",
+              		"customer": {
+                		"email": "paul.norman@example.com",
+                		"first_name": "Paul",
+                		"last_name": "Norman"
+              		},
+                	"billing_address": {
+                  		"first_name": "John",
+                  		"last_name": "Smith",
+                  		"address1": "123 Fake Street",
+                  		"phone": "555-555-5555",
+                  		"city": "Fakecity",
+                  		"province": "Ontario",
+                  		"country": "Canada",
+                  		"zip": "K2P 1L4"
+                	},
+                	"shipping_address": {
+                  		"first_name": "Jane",
+                  		"last_name": "Smith",
+                  		"address1": "123 Fake Street",
+                  		"phone": "777-777-7777",
+                  		"city": "Fakecity",
+                  		"province": "Ontario",
+                  		"country": "Canada",
+                  		"zip": "K2P 1L4"
+            		},
+              		"line_items": [
+            			{
+                  			"custom": true,
+                  			"title": "Basic White Tee",
+                  			"price": 19.99,
+                  			"quantity": 2
+            			}
+              		]
+            	}
+            }'
             
    
             
@@ -180,7 +216,7 @@ paths:
       x-code-samples:
         - lang: curl
           source: |
-            curl -X GET -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/57760134.json?fields=line_items"
+            curl -X GET -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/57760134.json
       
         - lang: Ruby
           source: |
@@ -250,7 +286,7 @@ paths:
       x-code-samples:
         - lang: curl
           source: |
-            curl -X DELETE -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/57777542.json"
+            curl -X DELETE -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/#{id}.json
       
   /admin/draft_orders/count.json:
     get:
@@ -272,7 +308,7 @@ paths:
       x-code-samples:
         - lang: curl
           source: |
-            curl -X GET -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/count.json"
+            curl -X GET -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/count.json
       
         - lang: Ruby
           source: |
@@ -320,7 +356,13 @@ paths:
       x-code-samples:
         - lang: curl
           source: |
-            curl -X POST -H "Content-Type: application/json" -H "Authorization: Basic YOUR-API-KEY=" -d '' "https://your_store_domain.myshopify.com/admin/draft_orders/57760134/send_invoice.json"
+            curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders.json -d '{
+              "draft_order_invoice": {
+              	"to": "paul.norman@example.com",
+              	"subject": "Here is your Draft Order!",
+              	"custom_message": "This is a test custom message."
+              }
+            }'
       
         - lang: Ruby
           source: |
@@ -376,7 +418,7 @@ paths:
       x-code-samples:
         - lang: curl
           source: |
-            curl -X PUT -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/57760134/complete.json?payment_gateway_id=null&payment_pending=false"    
+            curl -X PUT -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/#{id}/complete.json?payment_gateway_id=null&payment_pending=false"    
             
             
   '/admin/draft_orders/#{id}/checkout.json':
@@ -409,7 +451,7 @@ paths:
       x-code-samples:
         - lang: curl
           source: |
-            curl -X POST -H "Authorization: Basic YOUR-API-KEY=" "https://your_store_domain.myshopify.com/admin/draft_orders/57760134/checkout.json" 
+            curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/#{id}/checkout.json
 definitions:
   DraftOrder:
     type: object
