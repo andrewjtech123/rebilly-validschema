@@ -30,8 +30,6 @@ info:
       * Manually re-create mistaken orders from any of your active sales channels
       * Sell products at discount or wholesale rates
       * Take pre-orders.
-        
-        test
 
 
 schemes:
@@ -48,7 +46,7 @@ tags:
     description: Delete draft orders
   - name: Update
     description: Update draft orders.
-  - name: Not For Alpha
+  - name: To Be Implemented
     description: Operations not ready for Alpha launch.
     
     
@@ -403,10 +401,13 @@ paths:
             
   '/admin/draft_orders/#{id}/complete.json':
     put:
-      description: Mark a draft order as paid or pending payment.
+      description: |
+                   Mark a draft order as paid or pending payment.  
+                   
+                   ![To Be Implemented](https://andrewjtech123.github.io/imagehost/tag-implemented.png) 
       tags:
         - Update
-        - Not For Alpha
+        - To Be Implemented
       parameters:
         - name: payment_gateway_id
           in: query
@@ -443,10 +444,9 @@ paths:
     post:
       summary: Create or retrieve existing checkout
       description: >-
-        This call will either retrieve an existing checkout for this draft order or will create a new checkout if none exists previosuly.
+        This call will either retrieve an existing checkout for this draft order or will create a new checkout if none exists previosuly.  
         
-         | `Note`| This API call requires the checkouts_api scope, and is only applicable for users of the Sales Channel SDK.  |
-          |---|-------------|
+        ![To Be Implemented](https://andrewjtech123.github.io/imagehost/tag-implemented.png) 
         
         
       
@@ -465,7 +465,7 @@ paths:
       
       tags:
         - Create
-        - Not For Alpha
+        - To Be Implemented
         
       x-code-samples:
         - lang: curl
@@ -705,7 +705,7 @@ definitions:
           readOnly: false
         price:
           type: string
-          description: The price of the item before discounts have been applied.  Can only be specified if this is a custom line item, in which case it is mandatory.  To change the price of a product, use `discount` as specified below.
+          description: The price of the item before discounts have been applied.  Can only be specified if this is a custom line item, in which case it is mandatory.  To change the price of a product, use `applied_discount` as specified below.
           readOnly: false
         grams:
           type: string
@@ -753,6 +753,9 @@ definitions:
     allOf:
     - $ref: '#/definitions/shipping_line'
     - type: object
+    required:
+    - title
+    - price
 
     properties:
       handle:
@@ -805,10 +808,50 @@ definitions:
   metafield:
     type: object
     properties:
+      created_at:
+        type: string
+        format: date-time
+        description: The date and time when the metafield was created. The API returns this value in ISO 8601 format.
+      description:
+        type: string
+        description: Additional information about the metafield. This property is optional.
+    
       id:
         type: integer
         format: int64
         description: Unique numeric identifier for the metafield.
+        
+      key:
+        type: string
+        description: Identifier for the metafield (maximum of 30 characters).
+      namespace:
+        type: string
+        description: Container for a set of metadata. Namespaces help distinguish between metadata you created against metadata created by another individual with a similar namespace (maximum of 20 characters).
+        
+      owner_id:
+        type: integer
+        format: int64
+        description: A unique numeric identifier for the metafield's owner.
+      owner_resource:
+        type: string
+        description: Unique id for that particular resource.
+        
+      value: 
+        type: integer
+        format: int64
+        description: Information to be stored as metadata.
+        
+      value_type:
+        type: string
+        description: States whether the information in the value is stored as a 'string' or 'integer.'
+        enum:
+        - string
+        - integer
+      updated_at: 
+        type: string
+        format: date-time
+        description: The date and time when the metafield was published. The API returns this value in ISO 8601 format.
+        
 
   tax_line:
     type: object
@@ -829,8 +872,18 @@ definitions:
 
   applied_discount:
     type: object
+    required:
+    - id
+    - amount
+    - value
+    - value_type
 
     properties:
+      id:
+        type: string
+        description: The `id` of the applied discount line.
+        readOnly: false
+      
       description:
         type: string
         description: Reason for the discount.
@@ -839,12 +892,13 @@ definitions:
         type: string
         description: The value of the discount. If the type of the discount is `fixed_amount`, then this is a fixed dollar amount, if the type is `percentage`, then this is the percentage.
         readOnly: false
-      type:
+      value_type:
         type: string
-        description: The type of the discount. Can be one of - `percentage` or `fixed_amount`. `Fixed_amount` is default value.
+        description: The type of the discount. Can be one of - `percentage` or `fixed_amount`. 
         enum:
         - percentage
-        - fixed_amount (default)
+        - fixed_amount 
+        
         readOnly: false
 
       amount:
@@ -860,42 +914,54 @@ definitions:
       accepts_marketing:
         type: boolean
         description: Indicates whether or not the customer would like to receive email updates from the shop. Valid values are `true` and `false`.
+        readOnly: true
       created_at: 
         type: string
         format: date-time
         description: The date and time when the customer record was created.
+        readOnly: true
       email:
         type: string
         description: The customer's email address.
+        readOnly: true
       first_name:
         type: string
         description: The customer's first name.
+        readOnly: true
       order_id:
         type: integer
         format: integer
         description: Unique numeric identifier for the customer.
+        readOnly: true
       last_name:
         type: string
         description: Customer's last name.
+        readOnly: true
       note: 
         type: string
         description: Extra information about the customer.
+        readOnly: true
       orders_count:
         type: integer
         description: The number of orders placed by this customer to a shop.
+        readOnly: true
       state:
         type: string
         description: Description.
+        readOnly: true
       total_spent:
         type: integer
         description: Total amount spent by the customer.
+        readOnly: true
       updated_at: 
         type: string
         format: date-time
         description: The date and time when the customer record was last updated.
+        readOnly: true
       tags:
         type: string
         description: Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. For example, if an order has three tags - `tag1`, `tag2`, `tag3`.
+        readOnly: true
 
   Error:
     type: object
