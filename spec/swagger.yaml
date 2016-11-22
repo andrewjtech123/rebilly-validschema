@@ -127,8 +127,8 @@ paths:
           
           #### About Custom Shipping Lines
           
-            Using the Draft Orders API provides you with the flexibility to fulfill order shipments either using Shopify or outside of Shopify.  To fulfill your order within Shopify, you can send the `handle` of the `shipping_rate` set via the Shopify admin.  For a custom shipping line, simply specify a `shipping_line` object with no `handle`.  This is covered in more detail in the endpoint calls below.  
-         
+            The Draft Orders API provides you with the flexibility of sending orders to your customers using custom shipping lines.  A custom shipping line includes a `title` and `price` with `handle` set to Nil.  A shipping line with a carrier provided shipping rate (currently only set via the admin) includes the shipping rate `handle`.
+            
           
       tags:
         - Create
@@ -155,95 +155,7 @@ paths:
       x-code-samples:
         - lang: curl
           source: |
-            curl -X POST -H "Content-Type: application/json" -H "Authorization: Basic YOUR-API-KEY=" -d '{
-              "id": 57760135,
-              "order_id": 57760134,
-              "name": "api created draft order",
-              "customer": {
-                "accepts_marketing": true,
-                "created_at": "2016-11-18T17:10:07Z",
-                "email": "string",
-                "first_name": "string",
-                "order_id": 0,
-                "last_name": "string",
-                "note": "string",
-                "orders_count": 0,
-                "state": "string",
-                "total_spent": 0,
-                "updated_at": "2016-11-18T17:10:07Z",
-                "tags": "string"
-              },
-              "shipping_address": "string",
-              "billing_address": "string",
-              "note": "string",
-              "email": "string",
-              "currency": "string",
-              "invoice_sent_at": "2016-11-18T17:10:07Z",
-              "invoice_url": "string",
-              "line_items": [
-                {
-                  "custom": true,
-                  "id": "string",
-                  "vendor": "string",
-                  "quantity": "string",
-                  "gift_card": true,
-                  "fulfillment_service": "string",
-                  "properties": "string",
-                  "discount": {
-                    "description": "string",
-                    "value": "string",
-                    "type": "percentage",
-                    "amount": "string"
-                  },
-                  "tax_line": [
-                    {
-                      "title": "string",
-                      "rate": "string",
-                      "price": "string"
-                    }
-                  ]
-                }
-              ],
-              "metafields": {
-                "id": 0
-              },
-              "shipping_line": {
-                "custom": true,
-                "title": "string",
-                "price": 0,
-                "phone": "string",
-                "tax_lines": [
-                  {
-                    "title": "string",
-                    "rate": "string",
-                    "price": "string"
-                  }
-                ]
-              },
-              "tags": "string",
-              "tax_exempt": true,
-              "tax_lines": [
-                {
-                  "title": "string",
-                  "rate": "string",
-                  "price": "string"
-                }
-              ],
-              "discount": {
-                "description": "string",
-                "value": "string",
-                "type": "percentage",
-                "amount": "string"
-              },
-              "taxes_included": true,
-              "total_tax": "string",
-              "subtotal_price": "string",
-              "total_price": "string",
-              "completed_at": "2016-11-18T17:10:07Z",
-              "created_at": "2016-11-18T17:10:07Z",
-              "updated_at": "2016-11-18T17:10:07Z",
-              "status": "open"
-            }' "https://your_store_domain.myshopify.com/admin/draft_orders.json"
+            
    
             
   '/admin/draft_orders/#{id}.json':
@@ -287,8 +199,35 @@ paths:
               puts "Exception when calling GetApi->admin_draft_ordersid_json_get: #{e}"
             end
             
-  
-            
+ 
+      
+    put:
+      description: Update a draft order
+      tags:
+        - Update
+      parameters:
+      
+        - name: id
+          in: path
+          description: draft order `id`.
+          required: true
+          type: integer
+          format: int64
+        - name: draft_order
+          in: body
+          description: draft_order to create.
+          schema:
+            allOf:
+              - $ref: '#/definitions/DraftOrder'
+            required:
+            - line_items
+      responses:
+        '200':
+          description: A single DraftOrder
+          schema:
+            $ref: '#/definitions/DraftOrder'
+       
+        
             
     
     delete:
