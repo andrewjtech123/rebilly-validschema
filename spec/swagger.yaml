@@ -54,7 +54,7 @@ tags:
 paths:
   /admin/draft_orders.json:
     get:
-      summary: Retrieve draft orders
+      summary: Retrieve a list of draft orders
       description: Return a list of draft order objects.
       parameters:
       - $ref: '#/parameters/fields'
@@ -93,23 +93,11 @@ paths:
       
         - lang: Ruby
           source: |
-              # load the gem
-              require 'swagger_client'
-              
-              api_instance = SwaggerClient::GetApi.new
-              
-              opts = { 
-                fields: "fields_example", # String | Comma-separated list of fields to include in the response
-                limit: 789, # Integer | Page size
-                page: 789 # Integer | Page to show
-              }
-              
-              begin
-                result = api_instance.admin_draft_orders_json_get(opts)
-                p result
-              rescue SwaggerClient::ApiError => e
-                puts "Exception when calling GetApi->admin_draft_orders_json_get: #{e}"
-              end
+              require 'shopify_api'
+
+              shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
+              ShopifyAPI::Base.site = shop_url
+              draft_order = ShopifyAPI::DraftOrder.all
             
             
   
@@ -192,6 +180,36 @@ paths:
             	}
             }'
             
+        - lang: Ruby
+          source: |
+              require 'shopify_api'
+
+              shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
+              ShopifyAPI::Base.site = shop_url
+              ShopifyAPI::DraftOrder.create({
+                email: "paul.norman@example.com",
+                customer: {
+                    email: "paul.norman@example.com",
+                    first_name: "Paul",
+                    last_name: "Norman"
+                },
+                shipping_address: {
+                    first_name: "Jane",
+                    last_name: "Smith",
+                    address1: "123 Fake Street",
+                    phone: "777-777-7777",
+                    city: "Fakecity",
+                    province: "Ontario",
+                    country: "Canada",
+                    zip: "K2P 1L4"
+                },
+                line_items: [{
+                    custom: true,
+                    title: "Basic White Tee",
+                    price: 19.99,
+                    quantity: 2
+                }]
+              })    
    
             
   '/admin/draft_orders/#{id}.json':
@@ -220,20 +238,11 @@ paths:
       
         - lang: Ruby
           source: |
-            # load the gem
-            require 'swagger_client'
-            
-            api_instance = SwaggerClient::GetApi.new
-            
-            id = 789 # Integer | draft order id
-            
-            
-            begin
-              result = api_instance.admin_draft_ordersid_json_get(id)
-              p result
-            rescue SwaggerClient::ApiError => e
-              puts "Exception when calling GetApi->admin_draft_ordersid_json_get: #{e}"
-            end
+              require 'shopify_api'
+
+              shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
+              ShopifyAPI::Base.site = shop_url
+              draft_order = ShopifyAPI::DraftOrder.find(#{id})
             
  
       
@@ -287,6 +296,15 @@ paths:
         - lang: curl
           source: |
             curl -X DELETE -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/#{id}.json
+            
+        - lang: Ruby
+          source: |
+              require 'shopify_api'
+
+              shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
+              ShopifyAPI::Base.site = shop_url
+              draft_order = ShopifyAPI::DraftOrder.find(#{id})
+              draft_order.destroy    
       
   /admin/draft_orders/count.json:
     get:
@@ -312,17 +330,11 @@ paths:
       
         - lang: Ruby
           source: |
-            # load the gem
-            require 'swagger_client'
-            
-            api_instance = SwaggerClient::GetApi.new
-            
-            begin
-              result = api_instance.admin_draft_orders_count_json_get
-              p result
-            rescue SwaggerClient::ApiError => e
-              puts "Exception when calling GetApi->admin_draft_orders_count_json_get: #{e}"
-            end
+            require 'shopify_api'
+
+            shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
+            ShopifyAPI::Base.site = shop_url
+            draft_order = ShopifyAPI::DraftOrder.count
 
 
 
@@ -366,17 +378,12 @@ paths:
       
         - lang: Ruby
           source: |
-            # load the gem
-            require 'swagger_client'
-            
-            api_instance = SwaggerClient::GetApi.new
-            
-            begin
-              result = api_instance.admin_draft_orders_count_json_get
-              p result
-            rescue SwaggerClient::ApiError => e
-              puts "Exception when calling GetApi->admin_draft_orders_count_json_get: #{e}"
-            end      
+            require 'shopify_api'
+
+            shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
+            ShopifyAPI::Base.site = shop_url
+            draft_order = ShopifyAPI::DraftOrder.find(#{id})
+            draft_order.send_invoice   
             
             
             
@@ -418,7 +425,16 @@ paths:
       x-code-samples:
         - lang: curl
           source: |
-            curl -X PUT -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/#{id}/complete.json?payment_gateway_id=null&payment_pending=false"    
+            curl -X PUT -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/#{id}/complete.json?payment_gateway_id=null&payment_pending=false" 
+            
+        - lang: Ruby
+          source: |
+            require 'shopify_api'
+  
+            shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
+            ShopifyAPI::Base.site = shop_url
+            draft_order = ShopifyAPI::DraftOrder.find(#{id})
+            draft_order.send_invoice     
             
             
   '/admin/draft_orders/#{id}/checkout.json':
@@ -452,6 +468,16 @@ paths:
         - lang: curl
           source: |
             curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/#{id}/checkout.json
+            
+        - lang: Ruby
+          source: |
+            require 'shopify_api'
+
+            shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
+            ShopifyAPI::Base.site = shop_url
+            draft_order = ShopifyAPI::DraftOrder.find(#{id})
+            draft_order.checkout    
+            
 definitions:
   DraftOrder:
     type: object
