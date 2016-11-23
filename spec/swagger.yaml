@@ -477,11 +477,11 @@ definitions:
         $ref: '#/definitions/billing_address'
       note:
         type: string
-        description: The text of an optional note that a shop owner can attach to the draft order.
+        description: The text of an optional note that a merchant can attach to the draft order.
         readOnly: true
       email:
         type: string
-        description: The email address used for sending notifications.
+        description: The email address used for sending notifications.  For example, the customer email address, if a customer is associated to the draft order.
       currency:
         type: string
         description: The three letter code for the currency to be used for the payment.
@@ -494,12 +494,12 @@ definitions:
     
       invoice_url:
         type: string
-        description: The url to send to the customer for completing the checkout.  When using `send_invoice`, this url is emailed to the customer.
+        description: Url sent to the customer to complete web checkout.  When using the `send_invoice.json` call, the url is emailed to the customer.
         readOnly: true
 
       line_items:
         type: array
-        description: Draft orders must include at least one `line_item`.
+        description: Product variant line item or custom line item associated to the draft order.  Each draft order must include at least one `line_item`.
         items:
           $ref: '#/definitions/line_item'
 
@@ -511,16 +511,16 @@ definitions:
 
       tags:
         type: string
-        description: Tags are additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. Each individual tag is limited to 40 characters in length.
+        description: Additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. Each individual tag is limited to 40 characters in length.
       tax_exempt:
         type: boolean
-        description: Sets whether taxes are exempt for this draft order. If this value is `false`, Shopify will honor the `tax_exempt` value for each `line_item`.
+        description: Sets whether or not taxes are exempt for this draft order. If this value is `false`, Shopify will honor the `taxable` setting for each `line_item`.
         enum:
         - true
         - false 
       tax_lines:
         type: array
-        description: An array of `tax_line` objects, each of which details the taxes applicable to the checkout. 
+        description: An array of `tax_line` objects, each of which details the applicable taxes.
         items:
           $ref: '#/definitions/tax_line'
         readOnly: true
@@ -528,7 +528,7 @@ definitions:
         $ref: '#/definitions/applied_discount'
       taxes_included:
         type: boolean
-        description: States whether or not taxes are included in the order subtotal.
+        description: States whether or not taxes are included in the draft order subtotal.
         readOnly: true
         enum:
         - true
@@ -541,7 +541,7 @@ definitions:
 
       subtotal_price:
         type: string
-        description: Subtotal after discounts, before shipping and taxes have been applied.
+        description: Subtotal after discounts, but before shipping and taxes have been applied.
         readOnly: true
 
       total_price:
@@ -552,12 +552,12 @@ definitions:
       completed_at:
         type: string
         format: date-time
-        description: Date at which an order was created and the draft order moved to “completed” status.
+        description: Date at which order is created and the draft order changes to “completed” status.
         readOnly: true
       created_at:
         type: string
         format: date-time
-        description: By default, this auto-generated property is the date and time when the order was created in Shopify, in ISO 8601 format. If you are importing orders to the Shopify platform from another system, the writable `processed_at` property will override the `created_at date`.
+        description: By default, this auto-generated property is the date and time when the order was created in Shopify, in ISO 8601 format. 
         readOnly: true
 
       updated_at:
@@ -572,7 +572,7 @@ definitions:
         - open
         - invoice_sent
         - completed
-        description: String describing the state of the draft order - `open`, `invoice sent`, `completed`.
+        description: String describing the state of the draft order.
         readOnly: true
 
   draft_order_invoice:
@@ -673,6 +673,7 @@ definitions:
       - title
       - price
       - quantity
+      - taxable
     
       properties:
         title:
@@ -720,6 +721,7 @@ definitions:
 
   shipping_line:
     type: object
+    description: Object describing the shipping method and price associated with the draft order.  Custom `shipping_lines` do not include a `shipping_rate` handle.  
   
     discriminator: custom
     properties:
@@ -792,6 +794,7 @@ definitions:
 
   metafield:
     type: object
+    description: Additional information that can be attached to the draft order.
     properties:
       created_at:
         type: string
@@ -1116,7 +1119,7 @@ parameters:
   since_id:
     name: since_id
     in: query
-    description: Restrict results to be after given ID
+    description: Restrict results to be after given ID.
     required: false
     type: string
   status:
