@@ -1104,7 +1104,7 @@ definitions:
     type: object
     description: Object describing errors (values) on specific attributes (keys) that prevented a draft order from being saved.
     additionalProperties:
-      description: Single `key:value` pair out of possible multiple retruned to describe errors on specific attributes.
+      description: Single `key:value` pair out of possible multiple returned to describe errors on specific attributes.
       properties:
         key:
           type: string
@@ -1136,7 +1136,7 @@ parameters:
     name: limit
     in: query
     required: false
-    description: Page size.
+    description: Amount of results (default 50) (maximum 250)
     type: integer
     format: int64
   page:
