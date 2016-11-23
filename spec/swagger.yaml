@@ -584,19 +584,19 @@ definitions:
           
       from:
         type: string
-        description: The email address that the email will appear to be sent from. This defaults to the shop's customer email, and if none exists, the shop's account email. When provided, this email address must correspond to the email address of one of the staff accounts.
+        description: The email address that the email will appear to be sent from. This defaults to the store's customer email, and if none exists, the store's account email. When provided, this email address must correspond to the email address of one of the staff accounts.
       bcc:
         type: string
         description: Optional array of email addresses to bcc. These must correspond to valid staff account email addresses.
       subject:
         type: string
-        description: The subject of the email that will be sent. When not provided, defaults to the Draft Order Invoice template's subject, as specified in the shop's Notification settings.
+        description: The subject of the email that will be sent. When not provided, defaults to the Draft Order Invoice template's subject, as specified in the store's Notification settings.
       custom_message:
         type: string
-        description: An optional custom message inserted in the email's body.
+        description: An optional custom message provided in the body of the email.
   checkout:
     type: object
-    description: requires checkout_api scope.  This object is not in scope for Alpha release.
+    description: Object describing the checkout for the draft order.
   line_item:
     type: object
     discriminator: custom
@@ -612,7 +612,7 @@ definitions:
         
       id:
           type: string
-          description: Can’t be null
+          description: The `id` of the line item.
           readOnly: true
           
       variant_id:
@@ -626,14 +626,14 @@ definitions:
           readOnly: true
       name:
         type: string
-        description: The readable name of the product and variant.
+        description: The name of the product.
         readOnly: true
         
       variant_title:
         type: string
-        description: The title of the product variant.
+        description: The title of the product variant.  Defaults to "Custom" for custom line items created via the API.
         readOnly: true
-        default: Custom
+    
           
      
       vendor:
@@ -682,11 +682,11 @@ definitions:
           readOnly: false
         price:
           type: string
-          description: The price of the item before discounts have been applied.  Can only be specified if this is a custom line item, in which case it is mandatory.  To change the price of a product, use `applied_discount` as specified below.
+          description: The price of the item before discounts have been applied.  Can only be specified if this is a custom line item, in which case it is mandatory. 
           readOnly: false
         quantity:
           type: string
-          description: quantity
+          description: The number of products that were purchased.
           readOnly: false  
         grams:
           type: string
@@ -694,19 +694,23 @@ definitions:
           readOnly: false
         requires_shipping:
           type: boolean
-          description: States whether or not the fulfillment requires shipping. Values are `true` or `false`.  Can only be specified if this is a custom line item.  Defaults to `false`.
+          description: States whether or not the fulfillment requires shipping. Can only be specified if this is a custom line item.  
           enum: 
           - true
           - false
           readOnly: false
+          default: false
         sku:
           type: string
-          description: Can only be specified if this is a custom line item.
+          description: A unique identifier of the item in the fulfillment. Can only be specified if this is a custom line item.
           readOnly: false
         taxable:
           type: boolean
-          description: States whether or not the product is taxable. Values are `true` or `false`.  Can only be specified if this is a custom line item.  Mandatory for custom products.
+          description: States whether or not the product is taxable. Can only be specified if this is a custom line item.
           readOnly: false
+          enum:
+          - true
+          - false
 
   product_variant_line_item:      
     description: product variant line item
@@ -752,7 +756,7 @@ definitions:
       price:
         type: integer
         format: int64
-        description: The price of this shipping method.
+        description: The price of the shipping method.
         readOnly: true  
         
       tax_lines:
@@ -782,7 +786,7 @@ definitions:
       price:
         type: integer
         format: int64
-        description: The price of this shipping method.
+        description: The price of the shipping method.
         readOnly: false  
         
       tax_lines:
@@ -860,6 +864,8 @@ definitions:
 
   applied_discount:
     type: object
+    description: Discount which will be applied to the line item or the overall order. A draft order line item can have one discount. A draft order can have one order-level discount. 
+
     required:
     - id
     - amount
@@ -878,11 +884,11 @@ definitions:
         readOnly: false
       value:
         type: string
-        description: The value of the discount. If the type of the discount is `fixed_amount`, then this is a fixed dollar amount, if the type is `percentage`, then this is the percentage.
+        description: The value of the discount. If the type of the discount is `fixed_amount`, then this is a fixed dollar amount. If the type is `percentage`, then this is the percentage.
         readOnly: false
       value_type:
         type: string
-        description: The type of the discount. Can be one of - `percentage` or `fixed_amount`. 
+        description: The type of the discount.
         enum:
         - percentage
         - fixed_amount 
@@ -931,7 +937,7 @@ definitions:
         readOnly: true
       orders_count:
         type: integer
-        description: The number of orders placed by this customer to a shop.
+        description: The number of orders placed by this customer.
         readOnly: true
       state:
         type: string
