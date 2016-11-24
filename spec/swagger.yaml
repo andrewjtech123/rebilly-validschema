@@ -517,10 +517,46 @@ paths:
           type: integer
       responses:
         '200':
-          description: draft order
+          description: Created
           schema:
             $ref: '#/definitions/DraftOrder'
             
+        
+       
+        '202':
+          description: Accepted with Pending operations
+          schema:
+            $ref: '#/definitions/DraftOrder'
+          headers:
+            Location:
+              description: Polling URI endpoint.
+              type: string
+            Retry-After:
+              description: Polling frequency.
+              type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'
+                  
+        '404':
+          description: Not Found
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'          
+    
+        '422':
+          description: Unprocessable Entity
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'    
             
       x-code-samples:
         - lang: curl
