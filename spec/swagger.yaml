@@ -48,6 +48,19 @@ tags:
     description: Update draft orders.
   - name: To Be Implemented
     description: Operations not ready for Alpha launch.
+  - name: Errors
+    description: |
+      Draft order endpoints will use HTTP status codes to differentiate between draft orders with pending operations (using a 202 Accepted) and draft orders which are ready (using a 200 OK).
+
+
+      In addition to the HTTP status codes, responses will also use Location and Retry-After headers to specify the polling URI endpoint and polling frequency respectively.
+      
+      
+      The response will contain the partially calculated draft order and any calculated attributes dependant on stepwise operations will be null/empty until available.
+      
+      Clients will be responsible for polling the endpoint specified in the Location header until a 200 OK is returned.
+      
+    x-traitTag: true  
     
     
 
@@ -74,12 +87,13 @@ paths:
             $ref: '#/definitions/DraftOrder'
         
         '400':
-          description: General API error
+          description: Bad request
           schema:
             type: object
             properties:
               errors:
                   $ref: '#/definitions/Error'
+                 
        
           
             
@@ -133,10 +147,38 @@ paths:
             
 
       responses:
-        '200':
-          description: A single DraftOrder
+        '201':
+          description: Created.
           schema:
             $ref: '#/definitions/DraftOrder'
+        '202':
+          description: Accepted with Pending operations.
+          schema:
+            $ref: '#/definitions/DraftOrder'
+          headers:
+            Location:
+              description: Polling URI endpoint.
+              type: string
+            Retry-After:
+              description: Polling frequency.
+              type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'
+    
+        '422':
+          description: Unprocessable Entity
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'  
+        
+            
             
       x-code-samples:
         - lang: curl
@@ -267,10 +309,46 @@ paths:
             required:
             - line_items
       responses:
-        '200':
-          description: A single DraftOrder
+            
+      
+        '201':
+          description: Created
           schema:
             $ref: '#/definitions/DraftOrder'
+        '202':
+          description: Accepted with Pending operations
+          schema:
+            $ref: '#/definitions/DraftOrder'
+          headers:
+            Location:
+              description: Polling URI endpoint.
+              type: string
+            Retry-After:
+              description: Polling frequency.
+              type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'
+                  
+        '404':
+          description: Not Found
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'          
+    
+        '422':
+          description: Unprocessable Entity
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'     
        
         
             
@@ -359,10 +437,32 @@ paths:
 
 
       responses:
+      
+      
         '201':
-          description: draft order invoice
+          description: Created
           schema:
-            $ref: '#/definitions/draft_order_invoice'
+            $ref: '#/definitions/DraftOrder'
+       
+                  
+        '404':
+          description: Not Found
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'          
+    
+        '422':
+          description: Unprocessable Entity
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error' 
+           
+            
+        
             
             
       x-code-samples:
