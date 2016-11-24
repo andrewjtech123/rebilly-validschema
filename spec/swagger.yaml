@@ -48,7 +48,7 @@ tags:
     description: Update draft orders.
   - name: To Be Implemented
     description: Operations not ready for Alpha launch.
-  - name: Errors
+  - name: Response Codes
     description: |
       Draft order endpoints will use HTTP status codes to differentiate between draft orders with pending operations (using a 202 Accepted) and draft orders which are ready (using a 200 OK).
 
