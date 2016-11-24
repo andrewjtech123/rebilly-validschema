@@ -590,7 +590,7 @@ paths:
           type: integer
       responses:
         '200':
-          description: Checkout object that was created or retrieved.  Not in scope for Alpha.
+          description: Checkout object that was created or retrieved.
           schema:
             $ref: '#/definitions/checkout'
             
