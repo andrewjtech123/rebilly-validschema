@@ -1242,10 +1242,10 @@ definitions:
     additionalProperties:
       description: Single `key:value` pair out of possible multiple returned to describe errors on specific attributes.
       properties:
-        key:
+        "shipping_line":
           type: string
           description: Attribute that raised the error.
-        value: 
+        "is_inavlid": 
           type: string
           description: Error description.
             
