@@ -1029,15 +1029,16 @@ definitions:
     description: Discount which will be applied to the line item or the overall order. A draft order line item can have one discount. A draft order can have one order-level discount. 
 
     required:
-    - id
+    - title
     - amount
     - value
     - value_type
 
     properties:
-      id:
+      
+      title:
         type: string
-        description: The `id` of the applied discount line.
+        description: Title of the discount.
         readOnly: false
       
       description:
@@ -1238,16 +1239,26 @@ definitions:
 
   Error:
     type: object
-    description: Object describing errors (values) on specific attributes (keys) that prevented a draft order from being saved.
-    additionalProperties:
-      description: Single `key:value` pair out of possible multiple returned to describe errors on specific attributes.
-      properties:
-        "shipping_line":
-          type: string
-          description: Attribute that raised the error.
-        "is_inavlid": 
-          type: string
-          description: Error description.
+    description: |  
+      Object describing errors (values) on specific attributes (keys) that prevented a draft order from being saved.
+      
+      **Example:**
+      
+      ```
+      # Response
+      HTTP/1.1 422 Unprocessable Entity
+      {
+        "errors": {
+          "shipping_line": [
+            "is invalid"
+          ],
+          "line_items": [
+            "cannot be empty"
+          ]
+        }
+      }
+      
+      ```
             
       
 
