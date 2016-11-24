@@ -148,11 +148,11 @@ paths:
 
       responses:
         '201':
-          description: Created.
+          description: Created
           schema:
             $ref: '#/definitions/DraftOrder'
         '202':
-          description: Accepted with Pending operations.
+          description: Accepted with Pending operations
           schema:
             $ref: '#/definitions/DraftOrder'
           headers:
@@ -543,7 +543,7 @@ paths:
                   $ref: '#/definitions/Error'
                   
         '404':
-          description: Not Found
+          description: Not Found 
           schema:
             type: object
             properties:
