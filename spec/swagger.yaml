@@ -135,10 +135,11 @@ paths:
           description: draft_order to create.
           schema:
             allOf:
-              - $ref: '#/definitions/DraftOrder'
+              - $ref: '#/definitions/customerDraftOrder'
             required:
             - line_items
-      
+          
+  
           
             
 
@@ -662,9 +663,7 @@ definitions:
         description: Name of the draft order.
         readOnly: true
         
-      customer_id:
-        type: string
-        description: Customer `id` used to associate the customer to the draft order.  Set to null to remove the customer from the draft order.
+    
         
       customer:
         $ref: '#/definitions/customer'
@@ -679,7 +678,8 @@ definitions:
         readOnly: true
       email:
         type: string
-        description: The email address used for sending notifications.  For example, the customer email address, if a customer is associated to the draft order.
+        description: The email address used for sending notifications.  For example, the customer email address, if a customer is associated to the draft order.  If no customer exists, this will be used to load/generate one.
+
       currency:
         type: string
         description: The three letter code for the currency to be used for the payment.
@@ -772,6 +772,29 @@ definitions:
         - completed
         description: String describing the state of the draft order.
         readOnly: true
+        
+        
+  customerDraftOrder:
+    description: custom line item
+    allOf:
+    - $ref: '#/definitions/DraftOrder'
+    - type: object
+      
+      properties:
+        customer_id:
+          type: string
+          description: Not actually serialized in output.  Used to load/remove the associated customer.  When a customer is loaded, the customer’s email will be loaded on the draft order if it exists.  When a customer is removed, the shipping, billing, and email addresses will also be removed.
+        use_customer_default_address:
+          type: boolean
+          description: Not actually serialized in output.  Used to fill unspecified shipping/billing address with the customer’s default address.
+          enum:
+          - true
+          - false
+     
+      
+    
+  
+  
 
   draft_order_invoice:
     properties:
@@ -1160,7 +1183,8 @@ definitions:
         
   shipping_address:
     type: object
-    description: The mailing address to where the order will be shipped. This address is optional and will not be available on orders that do not require one.
+    description: The mailing address to where the order will be shipped.  If no customer exists, this will be used to generate one.
+
     properties:
       address1:
         type: string
@@ -1217,7 +1241,8 @@ definitions:
     
   billing_address:
     type: object
-    description: The mailing address associated with the payment method. This address is an optional field that will not be available on orders that do not require one.
+    description: The mailing address associated with the payment method.  If no customer exists, this will be used to generate one. (If both shpping and billing are provided and different, the shipping address will become the default address for the customer, and both will be added to the customer.)
+
     properties:
       address1:
         type: string
