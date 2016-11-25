@@ -661,6 +661,11 @@ definitions:
         type: string
         description: Name of the draft order.
         readOnly: true
+        
+      customer_id:
+        type: string
+        description: customer `id` used to associate the customer to the draft order.  
+        
       customer:
         $ref: '#/definitions/customer'
         
@@ -750,7 +755,7 @@ definitions:
       created_at:
         type: string
         format: date-time
-        description: By default, this auto-generated property is the date and time when the order was created in Shopify, in ISO 8601 format. 
+        description: By default, this auto-generated property is the date and time when the draft order was created in Shopify, in ISO 8601 format. 
         readOnly: true
 
       updated_at:
@@ -1096,9 +1101,11 @@ definitions:
 
   customer:
     type: object
-    description: Customer to be associated with the draft order; however only the `id` can be set in order to associate the customer to the draft order.  Setting the value to null removes the customer from the draft order.
-    readOnly: false
+    description: Customer associated with the draft order; Customer `id` is used to associate the customer to the draft order.  Setting the value to null removes the customer from the draft order.
+    readOnly: true
     properties:
+        
+        
       accepts_marketing:
         type: boolean
         description: Indicates whether or not the customer would like to receive email updates from the shop. Valid values are `true` and `false`.
@@ -1314,7 +1321,7 @@ parameters:
     name: limit
     in: query
     required: false
-    description: Amount of results (default 50) (maximum 250)
+    description: Amount of results (default 50) (maximum 250).
     type: integer
     format: int64
   page:
