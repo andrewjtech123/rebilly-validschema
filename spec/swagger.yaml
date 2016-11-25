@@ -664,7 +664,7 @@ definitions:
         
       customer_id:
         type: string
-        description: customer `id` used to associate the customer to the draft order.  
+        description: Customer `id` used to associate the customer to the draft order.  Set to null to remove the customer from the draft order.
         
       customer:
         $ref: '#/definitions/customer'
@@ -778,7 +778,7 @@ definitions:
       to:
         type: string
         description: >-
-          Email to send the `draft_order_invoice`.  If left blank will use the email associated to the draft order if present, or the customer email.  If all three possible email sources are empty, an error is returned.
+          Email where the `draft_order_invoice` will be sent.  If left blank the email associated to the draft order is used instead; otherwise, the customer email is used.  If all three possible email sources are empty, an error is returned.
           
       from:
         type: string
@@ -1101,7 +1101,7 @@ definitions:
 
   customer:
     type: object
-    description: Customer associated with the draft order; Customer `id` is used to associate the customer to the draft order.  Setting the value to null removes the customer from the draft order.
+    description: Customer associated with the draft order.
     readOnly: true
     properties:
         
