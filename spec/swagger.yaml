@@ -269,6 +269,14 @@ paths:
           schema:
             $ref: '#/definitions/DraftOrder'
             
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'    
+            
       x-code-samples:
         - lang: curl
           source: |
@@ -366,6 +374,15 @@ paths:
           schema:
             $ref: '#/definitions/DraftOrder'
             
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'
+                  
+            
       x-code-samples:
         - lang: curl
           source: |
@@ -396,6 +413,15 @@ paths:
       responses:
         '200':
            $ref: '#/responses/Integer'
+           
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'
+                  
 
       x-code-samples:
         - lang: curl
@@ -512,7 +538,7 @@ paths:
           required: true
           type: integer
       responses:
-        '200':
+        '201':
           description: Created
           schema:
             $ref: '#/definitions/DraftOrder'
@@ -585,10 +611,19 @@ paths:
           required: true
           type: integer
       responses:
-        '200':
+        '201':
           description: Checkout object created or retrieved.
           schema:
             $ref: '#/definitions/checkout'
+            
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'
+                  
             
             
       
