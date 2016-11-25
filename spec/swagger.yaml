@@ -78,7 +78,7 @@ paths:
 
       responses:
         '200':
-          description: List of DraftOrder
+          description: List of draft orders
           schema:
             $ref: '#/definitions/DraftOrder'
         
@@ -265,7 +265,7 @@ paths:
           format: int64
       responses:
         '200':
-          description: A single DraftOrder
+          description: A single draft order
           schema:
             $ref: '#/definitions/DraftOrder'
             
@@ -586,7 +586,7 @@ paths:
           type: integer
       responses:
         '200':
-          description: Checkout object that was created or retrieved.
+          description: Checkout object created or retrieved.
           schema:
             $ref: '#/definitions/checkout'
             
