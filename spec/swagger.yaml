@@ -89,6 +89,14 @@ paths:
             properties:
               errors:
                   $ref: '#/definitions/Error'
+                  
+        '404':
+          description: Not found
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'           
                  
        
           
@@ -149,7 +157,7 @@ paths:
           schema:
             $ref: '#/definitions/DraftOrder'
         '202':
-          description: Accepted with Pending operations
+          description: Accepted with pending operations
           schema:
             $ref: '#/definitions/DraftOrder'
           headers:
@@ -160,7 +168,7 @@ paths:
               description: Polling frequency.
               type: string
         '400':
-          description: Bad Request
+          description: Bad request
           schema:
             type: object
             properties:
@@ -168,7 +176,7 @@ paths:
                   $ref: '#/definitions/Error'
     
         '422':
-          description: Unprocessable Entity
+          description: Unprocessable entity
           schema:
             type: object
             properties:
@@ -271,12 +279,20 @@ paths:
             $ref: '#/definitions/DraftOrder'
             
         '400':
-          description: Bad Request
+          description: Bad request
           schema:
             type: object
             properties:
               errors:
                   $ref: '#/definitions/Error'    
+                  
+        '404':
+          description: Not found
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'           
             
       x-code-samples:
         - lang: curl
@@ -321,7 +337,7 @@ paths:
           schema:
             $ref: '#/definitions/DraftOrder'
         '202':
-          description: Accepted with Pending operations
+          description: Accepted with pending operations
           schema:
             $ref: '#/definitions/DraftOrder'
           headers:
@@ -332,7 +348,7 @@ paths:
               description: Polling frequency.
               type: string
         '400':
-          description: Bad Request
+          description: Bad request
           schema:
             type: object
             properties:
@@ -340,7 +356,7 @@ paths:
                   $ref: '#/definitions/Error'
                   
         '404':
-          description: Not Found
+          description: Not found
           schema:
             type: object
             properties:
@@ -348,7 +364,7 @@ paths:
                   $ref: '#/definitions/Error'          
     
         '422':
-          description: Unprocessable Entity
+          description: Unprocessable entity
           schema:
             type: object
             properties:
@@ -376,12 +392,20 @@ paths:
             $ref: '#/definitions/DraftOrder'
             
         '400':
-          description: Bad Request
+          description: Bad request
           schema:
             type: object
             properties:
               errors:
                   $ref: '#/definitions/Error'
+                  
+        '404':
+          description: Not found
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'           
                   
             
       x-code-samples:
@@ -416,7 +440,7 @@ paths:
            $ref: '#/responses/Integer'
            
         '400':
-          description: Bad Request
+          description: Bad request
           schema:
             type: object
             properties:
@@ -469,7 +493,7 @@ paths:
        
                   
         '404':
-          description: Not Found
+          description: Not found
           schema:
             type: object
             properties:
@@ -477,7 +501,7 @@ paths:
                   $ref: '#/definitions/Error'          
     
         '422':
-          description: Unprocessable Entity
+          description: Unprocessable entity
           schema:
             type: object
             properties:
@@ -547,7 +571,7 @@ paths:
         
        
         '202':
-          description: Accepted with Pending operations
+          description: Accepted with pending operations
           schema:
             $ref: '#/definitions/DraftOrder'
           headers:
@@ -566,7 +590,7 @@ paths:
                   $ref: '#/definitions/Error'
                   
         '404':
-          description: Not Found 
+          description: Not found 
           schema:
             type: object
             properties:
@@ -574,7 +598,7 @@ paths:
                   $ref: '#/definitions/Error'          
     
         '422':
-          description: Unprocessable Entity
+          description: Unprocessable entity
           schema:
             type: object
             properties:
@@ -600,7 +624,7 @@ paths:
     post:
       summary: Create or retrieve existing checkout
       description: >-
-        This call will either retrieve an existing checkout for this draft order or will create a new checkout if none exists previosuly.  
+        This call will either retrieve an existing checkout for this draft order or will create a new checkout if none exists previously.  Requires checkout scope and access to the Sales Channel SDK.   
         
         ![To Be Implemented](https://andrewjtech123.github.io/imagehost/tag-implemented.png) 
         
@@ -618,12 +642,20 @@ paths:
             $ref: '#/definitions/checkout'
             
         '400':
-          description: Bad Request
+          description: Bad request
           schema:
             type: object
             properties:
               errors:
                   $ref: '#/definitions/Error'
+                  
+        '404':
+          description: Not found
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'           
                   
             
             
@@ -1301,9 +1333,14 @@ definitions:
       
 
   Error:
+  
     type: object
+    
+      
     description: |  
-      Object describing errors (values) on specific attributes (keys) that prevented a draft order from being saved.
+      Object describing errors (values) on specific attributes (keys) that prevented an operation from being completed successfully.
+      
+    
       
       **Example:**
       
@@ -1323,6 +1360,20 @@ definitions:
       
       ```
             
+    schema:
+    $ref: "#/definitions/ErrorModel"
+      
+  
+  
+  ErrorModel:
+    type: object
+    properties:
+      attribute:
+        type: string
+      error:
+        type: string  
+    
+    
       
 
   Integer:
@@ -1387,5 +1438,8 @@ responses:
     description: count of draft orders
     schema:
       $ref: "#/definitions/Integer"
+      
+      
+    
      
     
