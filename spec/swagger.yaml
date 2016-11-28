@@ -490,6 +490,15 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/DraftOrder'
+            
+            
+        '400':
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              errors:
+                  $ref: '#/definitions/Error'    
        
                   
         '404':
@@ -636,8 +645,13 @@ paths:
           required: true
           type: integer
       responses:
+        '200':
+          description: Checkout retrieved
+          schema:
+            $ref: '#/definitions/checkout'    
+      
         '201':
-          description: Checkout object created or retrieved.
+          description: Checkout created
           schema:
             $ref: '#/definitions/checkout'
             
@@ -1370,7 +1384,7 @@ definitions:
     properties:
       attribute:
         type: string
-      error:
+      message:
         type: string  
     
     
