@@ -310,7 +310,7 @@ paths:
           description: draft_order to create.
           schema:
             allOf:
-              - $ref: '#/definitions/DraftOrder'
+              - $ref: '#/definitions/customerDraftOrder'
             required:
             - line_items
       responses:
