@@ -42,10 +42,14 @@ tags:
     description: Delete draft orders
   - name: Update
     description: Update draft orders.
+  - name: Send Invoice
+    description: Send an invoice for a draft order.  
   - name: To Be Implemented
     description: Operations not ready for Alpha launch.
   - name: Response Codes
     description: |
+      Shopify uses conventional HTTP response codes to indicate the success or failure of an API request. In general, codes in the 2xx range indicate success, and codes in the 4xx range indicate an error that failed given the information provided.  You can view the complete list of HTTP response code [here](https://help.shopify.com/api/guides/response-status-codes).
+      
       Draft order endpoints will use HTTP status codes to differentiate between draft orders with pending operations (using a 202 Accepted) and draft orders which are successfully created (201 Created) or updated (200 OK).
 
 
@@ -64,7 +68,10 @@ paths:
   /admin/draft_orders.json:
     get:
       summary: Retrieve a list of draft orders
-      description: Return a list of draft order objects.
+      description: |
+        Return a list of draft order objects.  
+        
+
       parameters:
       - $ref: '#/parameters/fields'
       - $ref: '#/parameters/limit'
@@ -72,6 +79,7 @@ paths:
       - $ref: '#/parameters/since_id'
       - $ref: '#/parameters/status'
       - $ref: '#/parameters/ids'
+    
     
       tags:
         - Get
@@ -468,7 +476,7 @@ paths:
       summary: Send an invoice for a draft order
       description: You can use this endpoint to send your customer an invoice via email for their draft order.  The invoice contains a url link, enabling the customer to pay for the item using web checkout.  Additionally, you can send a `draft_order_invoice` hash in the body of the request to override any of the default email parameters for the invoice.  
       tags:
-        - Create
+        - Send Invoice
       parameters:
         - name: draft_order_invoice
           in: body
@@ -489,7 +497,8 @@ paths:
         '201':
           description: Created
           schema:
-            $ref: '#/definitions/DraftOrder'
+            $ref: '#/definitions/draft_order_invoice'
+            
             
             
         '400':
@@ -550,7 +559,7 @@ paths:
                    
                    ![To Be Implemented](https://andrewjtech123.github.io/imagehost/tag-implemented.png) 
       tags:
-        - Update
+    
         - To Be Implemented
       parameters:
         - name: payment_gateway_id
@@ -675,7 +684,7 @@ paths:
             
       
       tags:
-        - Create
+  
         - To Be Implemented
         
       x-code-samples:
@@ -1026,11 +1035,7 @@ definitions:
         description: The price of the shipping method.
         readOnly: true  
         
-      tax_lines:
-        type: array
-        readOnly: true
-        items:
-          $ref: '#/definitions/tax_line'  
+      
   
     
       
@@ -1056,11 +1061,6 @@ definitions:
         description: The price of the shipping method.
         readOnly: false  
         
-      tax_lines:
-        type: array
-        readOnly: true
-        items:
-          $ref: '#/definitions/tax_line'  
          
 
   metafield:
@@ -1433,7 +1433,9 @@ parameters:
     name: status
     in: query
     type: string
-    description: Filter by status.
+    description: |   
+      Filter by status.
+       ![To Be Implemented](https://andrewjtech123.github.io/imagehost/tag-implemented.png) 
     enum:
     - open
     - invoice_sent
