@@ -144,11 +144,11 @@ paths:
             
           ### Applying Discounts
           
-            Using the Draft Orders API you can apply discounts to entire draft orders or specific `line_items`.  Both draft orders and `line_items` can only have one discount object each.
+            Using the Draft Orders API you can apply discounts to entire draft orders or specific `line_items`.  Both draft orders and `line_items` can only have one discount object each.  Using the `value_type` field of `applied_discount` you can specify either a `fixed_amount` discount or a `percentage` discount, based on your intent.  The final value of the calculated discount is represented by the `amount` field.
             
-          #### Fixed Amount and Percentage Discounts
+          #### About Fixed Amount and Percentage Discounts
             
-            Applied discounts can either be `fixed_amount` discounts or `percentage` discounts.  For `fixed_amount` discounts the total `amount` corresponds to the `line_item` `quantity` times the `value` of the discount.  For `percentage` discounts, the total amount corresponds to the following
+            Calculations for discounts are based on the setting of the `value_type` field.  For `fixed_amount` discounts the total `amount` corresponds to the `line_item` `quantity` times the `value` of the discount.  For `percentage` discounts, the total amount corresponds to the following:
             
             `amount = floor(price * quantity * value) / 100`
             
@@ -158,11 +158,11 @@ paths:
             
             *Fixed Amount Discount*
             
-            For a $20 `line_item` with $10 dollars off, discount `amount`  corresponds to `applied_discount` `value` of $10 dollars.
+            For a single $20 `line_item` (quantity=1) with $10 dollars off, discount `amount`  corresponds to `applied_discount` `value` of $10 dollars.
             
             *Percentage Discount*
             
-            For a $20 dollar `line_item` with 10% off, discount amount corresponds to the following
+            For a single $20 dollar `line_item` (quantity=1) with 10% off, discount amount corresponds to the following:
             
             `floor ($20 * 1 * 10) / 100 = $4` 
             
@@ -1191,9 +1191,11 @@ definitions:
       amount:
         type: string
         description: |  
-          The applied amount of the discount.  For `value_type = "fixed_amount" amount = quantity * value`
+          The applied amount of the discount, based on the setting of `value_type`. 
           
-          For `value_type = "percentage" amount = floor(price * quantity * value) / 100` 
+          When `value_type` is set to `fixed_amount` discount `amount` = `quantity * value`
+          
+          When `value_type` is set to `percentage` discount `amount` = `floor(price * quantity * value) / 100` 
           
           where `floor()` is the usual round down function.
           
