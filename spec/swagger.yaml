@@ -21,10 +21,10 @@ info:
      When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calculated and no transaction is performed.  With the Draft Orders API, on the other hand, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including the following:
      
       * Create new orders and enter credit card payments in Shopify for sales you've made by phone, in person, or elsewhere.
-      * Send invoices to customers to pay with a secure checkout link
+      * Send invoices to customers to pay with a secure checkout link.
       * Use custom items to represent additional costs or products that aren't displayed in your inventory.
-      * Manually re-create mistaken orders from any of your active sales channels
-      * Sell products at discount or wholesale rates
+      * Manually re-create mistaken orders from any of your active sales channels.
+      * Sell products at discount or wholesale rates.
       * Take pre-orders.
 
 
@@ -144,11 +144,25 @@ paths:
             
           ### Applying Discounts
           
-            Using the Draft Orders API you can apply discounts to entire draft orders or specific line_items.  Both draft orders and line_items can only have one discount object each.
+            Using the Draft Orders API you can apply discounts to entire draft orders or specific `line_items`.  Both draft orders and `line_items` can only have one discount object each.
             
-            **Fixed amount and percentage discounts**
+          #### Fixed Amount and Percentage Discounts
             
-            Applied discounts can either be `fixed_amount` discounts or `percentage` discounts.
+            Applied discounts can either be `fixed_amount` discounts or `percentage` discounts.  For `fixed_amount` discounts the total `amount` corresponds to the `line_item` `quantity` times the `value` of the discount.  For `percentage` discounts, the total amount corresponds to the following
+            
+            `product price x line_item_quantity x value`
+            
+            **Examples**
+            
+            *Fixed Amount Discount*
+            
+            For a $20 product with $10 dollars off, discount `amount`  corresponds to `applied_discount` `value` of $10 dollars.
+            
+            *Percentage Discount*
+            
+            For a $20 dollar product with 10% off, discount amount corresponds to the following
+            
+            `$20 x 1 x 10% / 100 = $4` 
             
           
       tags:
