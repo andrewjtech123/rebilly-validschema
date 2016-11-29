@@ -164,7 +164,7 @@ paths:
             
             For a single $20 dollar `line_item` (quantity=1) with 10% off, discount amount corresponds to the following:
             
-            `floor ($20 * 1 * 10) / 100 = $4` 
+            `floor ($20 * 1 * 10) / 100 = $2` 
             
           
       tags:
