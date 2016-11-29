@@ -138,7 +138,7 @@ paths:
           |---|-------------|  
           
           
-          #### About Custom Shipping Lines
+          ### About Custom Shipping Lines
           
             The Draft Orders API provides you with the flexibility of sending orders to your customers using custom shipping lines.  A custom shipping line includes a `title` and `price` with `handle` set to Nil.  A shipping line with a carrier provided shipping rate (currently only set via the admin) includes the shipping rate `handle`.
             
@@ -150,19 +150,21 @@ paths:
             
             Applied discounts can either be `fixed_amount` discounts or `percentage` discounts.  For `fixed_amount` discounts the total `amount` corresponds to the `line_item` `quantity` times the `value` of the discount.  For `percentage` discounts, the total amount corresponds to the following
             
-            `product price x line_item_quantity x value`
+            `amount = floor(price * quantity * value) / 100`
             
-            **Examples**
+            where `floor()` is the usual round down function. 
+            
+            **Examples:**
             
             *Fixed Amount Discount*
             
-            For a $20 product with $10 dollars off, discount `amount`  corresponds to `applied_discount` `value` of $10 dollars.
+            For a $20 `line_item` with $10 dollars off, discount `amount`  corresponds to `applied_discount` `value` of $10 dollars.
             
             *Percentage Discount*
             
-            For a $20 dollar product with 10% off, discount amount corresponds to the following
+            For a $20 dollar `line_item` with 10% off, discount amount corresponds to the following
             
-            `$20 x 1 x 10% / 100 = $4` 
+            `floor ($20 * 1 * 10) / 100 = $4` 
             
           
       tags:
@@ -1154,7 +1156,7 @@ definitions:
 
   applied_discount:
     type: object
-    description: Discount which will be applied to the line item or the overall order. A draft order line item can have one discount. A draft order can have one order-level discount. 
+    description: Discount which will be applied to the line item or the overall order. A draft order `line_item` can have one discount. A draft order can have one order-level discount. 
 
     required:
     - title
@@ -1188,7 +1190,14 @@ definitions:
 
       amount:
         type: string
-        description: The applied amount of the discount.
+        description: |  
+          The applied amount of the discount.  For `value_type = "fixed_amount" amount = quantity * value`
+          
+          For `value_type = "percentage" amount = floor(price * quantity * value) / 100` 
+          
+          where `floor()` is the usual round down function.
+          
+
         readOnly: false
 
   customer:
