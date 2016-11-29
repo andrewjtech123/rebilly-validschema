@@ -135,11 +135,20 @@ paths:
           
         
           | `Note`| The array of line items on a draft order must not contain a `variant_id` more than once. The data copied over from a variant upon creation of a line item is never subsequently updated.  |
-          |---|-------------|
+          |---|-------------|  
+          
           
           #### About Custom Shipping Lines
           
             The Draft Orders API provides you with the flexibility of sending orders to your customers using custom shipping lines.  A custom shipping line includes a `title` and `price` with `handle` set to Nil.  A shipping line with a carrier provided shipping rate (currently only set via the admin) includes the shipping rate `handle`.
+            
+          ### Applying Discounts
+          
+            Using the Draft Orders API you can apply discounts to entire draft orders or specific line_items.  Both draft orders and line_items can only have one discount object each.
+            
+            **Fixed amount and percentage discounts**
+            
+            Applied discounts can either be `fixed_amount` discounts or `percentage` discounts.
             
           
       tags:
