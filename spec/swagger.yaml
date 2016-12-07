@@ -40,7 +40,7 @@ tags:
     description: Send an invoice for a draft order.
   - name: Status Codes  
     description: |
-      Shopify uses conventional HTTP response codes to indicate the success or failure of an API request. In general, codes in the 2xx range indicate success, and codes in the 4xx range indicate an error that failed given the information provided.  You can view the complete list of HTTP response code [here](https://help.shopify.com/api/guides/response-status-codes).
+      Shopify uses conventional HTTP status codes to indicate the success or failure of an API request. In general, codes in the 2xx range indicate success, and codes in the 4xx range indicate an error that failed given the information provided.  You can view the complete list of HTTP status codes [here](https://help.shopify.com/api/guides/response-status-codes).
 
       Draft order endpoints will use HTTP status codes to differentiate between draft orders with pending operations (using a 202 Accepted) and draft orders which are successfully created (201 Created) or updated (200 OK).
 
@@ -776,7 +776,7 @@ paths:
             example: 
                 {	"draft_order": {
               	"line_items": [{
-              		"title": "Basic White Tee",
+              		"title": "Custom Tee",
               		"price": "20.00",
               		"quantity": 2
               	}]
@@ -1501,7 +1501,7 @@ paths:
               {
   "draft_order_invoice": {
     "to": "paul.norman@example.com",
-    "from": "andrew.johnston@shopify.com",
+    "from": "merchant@shopify.com",
     "subject": "Here is your new order invoice!",
     "custom_message": "This is a test custom message.",
     "bcc": []
@@ -1552,7 +1552,7 @@ paths:
       description: |
         Mark a draft order as paid or pending payment.  
 
-        ![To Be Implemented](https://andrewjtech123.github.io/imagehost/tag-implemented.png)
+        ![To Be Implemented](https://help.shopify.com/assets/images/tag-implemented.png)
       tags:
         - To Be Implemented
       parameters:
@@ -1776,7 +1776,7 @@ paths:
       description: |
         This call will either retrieve an existing checkout for this draft order or will create a new checkout if none exists previously. Requires checkout scope and access to the Sales Channel SDK.    
         
-        ![To Be Implemented](https://andrewjtech123.github.io/imagehost/tag-implemented.png)  
+        ![To Be Implemented](https://help.shopify.com/assets/images/tag-implemented.png)  
         
       parameters:
         - name: id
@@ -2459,7 +2459,7 @@ parameters:
     type: string
     description: |
       Filter by status.
-       ![To Be Implemented](https://andrewjtech123.github.io/imagehost/tag-implemented.png)
+       ![To Be Implemented](https://help.shopify.com/assets/images/tag-implemented.png)
     enum:
       - open
       - invoice_sent
