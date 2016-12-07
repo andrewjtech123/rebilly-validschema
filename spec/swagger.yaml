@@ -33,7 +33,7 @@ tags:
   - name: Create
     description: Create draft orders.
   - name: Delete
-    description: Delete draft orders
+    description: Delete draft orders.
   - name: Update
     description: Update draft orders.
   - name: Send Invoice
@@ -96,6 +96,7 @@ paths:
         - lang: Ruby
           source: |
             require 'shopify_api'
+
 
             shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
             ShopifyAPI::Base.site = shop_url
@@ -338,10 +339,11 @@ paths:
       x-code-samples:
         - lang: curl
           source: |
-            curl -X GET -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/57760134.json
+            curl -X GET -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/#{id}.json
         - lang: Ruby
           source: |
             require 'shopify_api'
+
 
             shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
             ShopifyAPI::Base.site = shop_url
@@ -409,13 +411,14 @@ paths:
             <!--- Remove customer from an existing draft order --->
 
             curl -X PUT -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/#{id}.json -d '{ "draft_order": {
-              	"id": 1234,
-              	"customer": null
-            }}'
+            	"id": 1234,
+            	"customer": null
+              }}'
 
         - lang: Ruby
           source: |
             require 'shopify_api'
+
 
             shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
             ShopifyAPI::Base.site = shop_url
@@ -460,6 +463,7 @@ paths:
           source: |
             require 'shopify_api'
 
+
             shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
             ShopifyAPI::Base.site = shop_url
             draft_order = ShopifyAPI::DraftOrder.find(#{id})
@@ -494,6 +498,7 @@ paths:
         - lang: Ruby
           source: |
             require 'shopify_api'
+
 
             shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
             ShopifyAPI::Base.site = shop_url
@@ -543,10 +548,18 @@ paths:
                 $ref: '#/definitions/Error'
       x-code-samples:
         - lang: curl
-          source: "curl -X POST -H \"Content-Type: application/json\" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders.json -d '{\n  \"draft_order_invoice\": {\n  \t\"to\": \"paul.norman@example.com\",\n  \t\"subject\": \"Here is your Draft Order!\",\n  \t\"custom_message\": \"This is a test custom message.\"\n  }\n}'\n"
+          source: |
+            curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders.json -d '{
+              "draft_order_invoice": {
+              	"to": "paul.norman@example.com",
+              	"subject": "Here is your new order invoice!",
+              	"custom_message": "This is a test custom message."
+              }
+            }'
         - lang: Ruby
           source: |
             require 'shopify_api'
+
 
             shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
             ShopifyAPI::Base.site = shop_url
@@ -555,7 +568,7 @@ paths:
   '/admin/draft_orders/#{id}/complete.json':
     put:
       description: |
-        Mark a draft order as paid or pending payment.
+        Mark a draft order as paid or pending payment.  
 
         ![To Be Implemented](https://andrewjtech123.github.io/imagehost/tag-implemented.png)
       tags:
@@ -617,7 +630,8 @@ paths:
       x-code-samples:
         - lang: curl
           source: |
-            curl -X PUT -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/#{id}/complete.json?payment_gateway_id=null&payment_pending=false"
+            curl -X PUT -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/#{id}/complete.json?payment_gateway_id=null&payment_pending=false
+          
         - lang: Ruby
           source: |
             require 'shopify_api'
@@ -629,9 +643,11 @@ paths:
   '/admin/draft_orders/#{id}/checkout.json':
     post:
       summary: Create or retrieve existing checkout
-      description: |-
-        This call will either retrieve an existing checkout for this draft order or will create a new checkout if none exists previously.  Requires checkout scope and access to the Sales Channel SDK.
-        ![To Be Implemented](https://andrewjtech123.github.io/imagehost/tag-implemented.png)
+      description: |
+        This call will either retrieve an existing checkout for this draft order or will create a new checkout if none exists previously. Requires checkout scope and access to the Sales Channel SDK.    
+        
+        ![To Be Implemented](https://andrewjtech123.github.io/imagehost/tag-implemented.png)  
+        
       parameters:
         - name: id
           in: path
@@ -669,6 +685,7 @@ paths:
         - lang: Ruby
           source: |
             require 'shopify_api'
+
 
             shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
             ShopifyAPI::Base.site = shop_url
