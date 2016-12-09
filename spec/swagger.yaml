@@ -52,6 +52,19 @@ tags:
 
       For long running operations, clients will be responsible for polling the endpoint specified in the Location header until a 200 OK response is returned.
     x-traitTag: true
+    
+  - name: Webhooks
+    description: |
+      You can use webhooks for your draft orders app to execute code after a specific event happens on a shop, for example, after a draft order is created, updated or deleted.  Webhooks can be created using the REST API, and our [webhook guide](https://help.shopify.com/api/tutorials/webhooks) will help you get set up.  
+      
+      Webhooks can be registered for the following draft order events
+      
+        | `Events`| `draftorders/create`, `draftorders/update`, `draftorders/delete`   |
+        |---|-------------|
+      
+      
+    x-traitTag: true  
+    
   - name: To Be Implemented
     description: Operations not ready for Alpha launch.
   
