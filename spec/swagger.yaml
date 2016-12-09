@@ -1918,7 +1918,8 @@ definitions:
         description: 'Additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. Each individual tag is limited to 40 characters in length.'
       tax_exempt:
         type: boolean
-        description: 'Sets whether or not taxes are exempt for this draft order. If this value is `false`, Shopify will honor the `taxable` setting for each `line_item`.'
+        description: |  
+          Sets whether or not taxes are exempt for this draft order. If this value is `false`, Shopify will honor the `taxable` setting for each `line_item`.  However, if a customer is applied to the draft order using    `customer_id`, the customer's  `tax_exempt` settings take precedence.  Further, when a customer's `tax_exempt` field is set to `true` it is not possible to set draft order `tax_exempt` to `false`.  
         enum:
           - true
           - false
@@ -1980,7 +1981,8 @@ definitions:
         properties:
           customer_id:
             type: string
-            description: 'Not actually serialized in output.  Used to load/remove the associated customer.  When a customer is loaded, the customer’s email will be loaded on the draft order if it exists.  When a customer is removed, the shipping, billing, and email addresses will also be removed.'
+            description: |
+              Not actually serialized in output.  Used to load/remove the associated customer.  When a customer is loaded, the customer’s email will be loaded on the draft order if it exists.  When a customer is removed, the shipping, billing, and email addresses will also be removed.  A customer's `tax_exempt` settings take precendence over any draft order, or `line_item` tax settings.  When a customer is loaded with `tax_exempt` set to `true` it is not possible to set draft order `tax_exempt` to `false`.
           use_customer_default_address:
             type: boolean
             description: Not actually serialized in output.  Used to fill unspecified shipping/billing address with the customer’s default address.
