@@ -781,6 +781,7 @@ paths:
               		"quantity": 2
               	}]
                 }}
+                
     
               
 
@@ -971,6 +972,17 @@ paths:
               errors:
                 $ref: '#/definitions/Error'
       x-code-samples:
+       
+        - lang: JSON ex#2
+          source: |
+            <!--- Create a product_variant line_item --->
+          
+              {	"draft_order": {
+            	"line_items": [{
+            		"variant_id": "1234",
+              	"quantity": 2
+            	}]
+              }}
       
         - lang: curl ex#1
           source: |
@@ -1062,6 +1074,22 @@ paths:
             	  }],
             	"use_customer_default_address": true
               }}'
+              
+        - lang: curl ex#4
+          source: |
+              <!--- Create a draft order using a product_variant line_item --->
+  
+              curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders.json -d '{
+              "draft_order": {
+              	"customer_id": "913089605",
+                	"line_items": [{
+                		"variant_id": "1234",
+                		"quantity": 2,
+                
+              	  }],
+              	"use_customer_default_address": true
+                }}       
+       
 
         - lang: Ruby
           source: |
