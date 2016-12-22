@@ -32,7 +32,6 @@ info:
      | `Note`| Once a draft order is set to status `completed` the only further draft order modifications that can be made are adding `tags` or `metafields`.  No other draft order actions are permitted.  |
         |---|-------------|
     
-      ![To Be Implemented](https://help.shopify.com/assets/images/tag-implemented.png) 
     
     
     
