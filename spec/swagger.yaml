@@ -8,10 +8,10 @@ info:
   description: |
     # Draft Orders API
 
-      A [Draft Order](https://help.shopify.com/manual/orders/create-orders) represents the status of an order before the order is set to `completed` status. Using the Draft Orders API you can create a draft order and transition it to a completed order with great flexibility.  The following flows are supported:
+      A [Draft Order](https://help.shopify.com/manual/orders/create-orders) represents the status of an order before the draft order is set to `completed` status.  At this point the draft order persists in `completed` state and a corresponding order is created in Shopify with payment status set to  `paid` or `pending`.  Using the Draft Orders API you can create a draft order and transition it to an order with great flexibility.  The following flows are supported:
 
       * Create a draft order that calculates taxes and totals but accept payment from the customer outside of Shopify.
-      * Create a draft order (with taxes and totals) and send your customer a web checkout link to complete purchase and transition to a completed order.
+      * Create a draft order (with taxes and totals) and send your customer a web checkout link to complete purchase and transition to an order.
       * Use Draft Orders API in conjunction with the [Checkouts API](https://help.shopify.com/api/tutorials/sell-through-the-checkout-api) by creating a Checkout object based on a draft order (Sales Channel SDK only).  This enables a highly customizable experience for channels.
 
      ## About Draft Orders
@@ -24,6 +24,18 @@ info:
       * Manually re-create mistaken orders from any of your active sales channels.
       * Sell products at discount or wholesale rates.
       * Take pre-orders.
+      
+    ### Lifecycle of a Draft Order  
+    
+    When a draft order is created it is set to `open` status.  At this point an invoice can be sent to the customer for payment, and status changes to `invoice_sent`.  Otherwise, the order can be paid or set to pending, in which case the draft order is set to `completed` and an order is created with payment status `paid` or `pending`.
+    
+     | `Note`| Once a draft order is set to status `completed` the only further draft order modifications that can be made are adding `tags` or `metafields`.  No other draft order actions are permitted.  |
+        |---|-------------|
+    
+      ![To Be Implemented](https://help.shopify.com/assets/images/tag-implemented.png) 
+    
+    
+    
 schemes:
   - https
 host: your-store-domain.myshopify.com
@@ -50,12 +62,15 @@ tags:
 
       The response will contain the partially calculated draft order and any calculated attributes dependant on stepwise operations will be null/empty until available.
 
-      For long running operations, clients will be responsible for polling the endpoint specified in the Location header until a 200 OK response is returned.
+      For long running operations, clients will be responsible for polling the endpoint specified in the Location header until a 200 OK response is returned.  As an alternative to polling, you can consider registering for the `draft_orders/update` topic as described below.  In this way, your webhooks endpoint will be notified when pending operations on the draft order complete.
+      
     x-traitTag: true
     
   - name: Webhooks
     description: |
       You can use webhooks for your draft orders app to execute code after a specific event happens on a shop, for example, after a draft order is created, updated or deleted.  Webhooks can be created using the REST API, and our [webhook guide](https://help.shopify.com/api/tutorials/webhooks) will help you get set up.  
+      
+      A relevant use case for webhooks is to subscribe to the `draft_orders/update` webhook, as an alternative to polling the draft order endpoint.  A `draft_orders/update` webhook is sent to your webhook endpoint when any pending operations on the draft order are complete.   
       
       Webhooks can be registered for the following draft order events
       
@@ -1971,7 +1986,10 @@ definitions:
           - open
           - invoice_sent
           - completed
-        description: String describing the state of the draft order.
+        description: | 
+          String describing the state of the draft order.
+          | `Note`| Once a draft order is set to status `completed` the only further draft order modifications that can be made are adding `tags` or `metafields`.  No other draft order actions are permitted.  |
+          |---|-------------|
         readOnly: true
   customerDraftOrder:
     description: custom line item
