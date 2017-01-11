@@ -8,7 +8,7 @@ info:
   description: |
     # Draft Orders API
 
-      A [Draft Order](https://help.shopify.com/manual/orders/create-orders) represents the status of an order before the draft order is set to `completed` status.  At this point the draft order persists in `completed` state and a corresponding order is created in Shopify with payment status set to  `paid` or `pending`.  Using the Draft Orders API you can create a draft order and transition it to an order with great flexibility.  The following flows are supported:
+      A [Draft Order](https://help.shopify.com/manual/orders/create-orders) represents the status of an order before the draft order is set to `completed` status.  At this point the draft order persists in `completed` state and a corresponding order is created in Shopify.  Using the Draft Orders API you can create a draft order and transition it to an order with great flexibility.  The following flows are supported:
 
       * Create a draft order that calculates taxes and totals but accept payment from the customer outside of Shopify.
       * Create a draft order (with taxes and totals) and send your customer a web checkout link to complete purchase and transition to an order.
@@ -27,9 +27,9 @@ info:
       
     ### Lifecycle of a Draft Order  
     
-    When a draft order is created it is set to `open` status.  At this point an invoice can be sent to the customer for payment, and status changes to `invoice_sent`.  Otherwise, the order can be paid or set to pending, in which case the draft order is set to `completed` and an order is created with payment status `paid` or `pending`.
+    When a draft order is created it is set to `open` status.  At this point an invoice can be sent to the customer for payment, and status changes to `invoice_sent`.  Otherwise, the order can be paid or set to pending, in which case the draft order is set to `completed` and an order is created.
     
-     | `Note`| Once a draft order is set to status `completed` the only further draft order modifications that can be made are adding `tags` or `metafields`.  No other draft order actions are permitted.  |
+     | `Note`| Once a draft order is set to status `completed` the only further draft order modifications that can be made are adding `tags` or `metafields`.  |
         |---|-------------|
     
     
