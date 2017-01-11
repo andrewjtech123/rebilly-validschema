@@ -2246,7 +2246,6 @@ definitions:
     type: object
     description: Discount which will be applied to the line item or the overall order. A draft order `line_item` can have one discount. A draft order can have one order-level discount.
     required:
-      - title
       - amount
       - value
       - value_type
@@ -2284,6 +2283,8 @@ definitions:
   customer:
     type: object
     description: Customer associated with the draft order.  Used to load/remove the associated customer with customer `id`.  When a customer is loaded, the customer’s email will be loaded on the draft order if it exists.  When a customer is removed, the shipping, billing, and email addresses will also be removed. The recommended way to remove a customer from a draft order is to make a POST request with customer object set to null.  If this is not possible, a customer may also be removed by setting all of `customer`, `email`, `shipping_address`, and `billing_address` to null.   
+    required:
+      - id
     readOnly: false
     properties:
       accepts_marketing:
