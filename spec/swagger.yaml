@@ -27,7 +27,7 @@ info:
       
     ### Lifecycle of a Draft Order  
     
-    When a draft order is created it is set to `open` status.  At this point an invoice can be sent to the customer for payment, and status changes to `invoice_sent`.  Otherwise, the order can be paid or set to pending, in which case the draft order is set to `completed` and an order is created.
+    When a draft order is created it is set to `open` status.  At this point an invoice can be sent to the customer for payment, and status changes to `invoice_sent`.  Otherwise, the draft order can be paid, set to pending, or paid by credit card; in each case, the draft order is set to `completed` and an order is created.
     
      | `Note`| Once a draft order is set to status `completed` the only further draft order modifications that can be made are adding `tags` or `metafields`.  |
         |---|-------------|
