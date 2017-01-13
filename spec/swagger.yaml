@@ -1021,7 +1021,7 @@ paths:
               		"price": "20.00",
               		"quantity": 2
             	  }]
-              }}'
+              }'
 
         - lang: curl ex#2
           source: |
@@ -1093,7 +1093,7 @@ paths:
 
             curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders.json -d '{
             "draft_order": {
-            	"customer_id": "913089605",
+            
               	"line_items": [{
               		"title": "Custom Tee",
               		"price": "20.00",
@@ -1108,7 +1108,6 @@ paths:
   
               curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders.json -d '{
               "draft_order": {
-              	"customer_id": "913089605",
                 	"line_items": [{
                 		"variant_id": "1234",
                 		"quantity": 2,
@@ -1289,8 +1288,10 @@ paths:
               - line_items
             example:
               { "draft_order": {
-            	"customer_id": null
+            	"id": 1234,
+            	"customer": null
               }}
+
 
       responses:
         '200':
