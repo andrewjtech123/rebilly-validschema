@@ -49,35 +49,7 @@ tags:
     description: Update draft orders.
   - name: Send Invoice
     description: Send an invoice for a draft order.
-  - name: Status Codes  
-    description: |
-      Shopify uses conventional HTTP status codes to indicate the success or failure of an API request. In general, codes in the 2xx range indicate success, and codes in the 4xx range indicate an error that failed given the information provided.  You can view the complete list of HTTP status codes [here](https://help.shopify.com/api/guides/response-status-codes).
-
-      Draft order endpoints will use HTTP status codes to differentiate between draft orders with pending operations (using a 202 Accepted) and draft orders which are successfully created (201 Created) or updated (200 OK).
-
-
-      In addition to the HTTP status codes, responses will also use Location and Retry-After headers to specify the polling URI endpoint and polling frequency respectively.
-
-
-      The response will contain the partially calculated draft order and any calculated attributes dependant on stepwise operations will be null/empty until available.
-
-      For long running operations, clients will be responsible for polling the endpoint specified in the Location header until a 200 OK response is returned.  As an alternative to polling, you can consider registering for the `draft_orders/update` topic as described below.  In this way, your webhooks endpoint will be notified when pending operations on the draft order complete.
-      
-    x-traitTag: true
-    
-  - name: Webhooks
-    description: |
-      You can use webhooks for your draft orders app to execute code after a specific event happens on a shop, for example, after a draft order is created, updated or deleted.  Webhooks can be created using the REST API, and our [webhook guide](https://help.shopify.com/api/tutorials/webhooks) will help you get set up.  
-      
-      A relevant use case for webhooks is to subscribe to the `draft_orders/update` webhook, as an alternative to polling the draft order endpoint.  A `draft_orders/update` webhook is sent to your webhook endpoint when any pending operations on the draft order are complete.   
-      
-      Webhooks can be registered for the following draft order events
-      
-        | `Events`| `draft_orders/create`, `draft_orders/update`, `draft_orders/delete`   |
-        |---|-------------|
-      
-      
-    x-traitTag: true  
+ 
     
   
 paths:
