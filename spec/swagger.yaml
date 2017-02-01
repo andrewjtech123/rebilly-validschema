@@ -79,8 +79,6 @@ tags:
       
     x-traitTag: true  
     
-  - name: To Be Implemented
-    description: Operations not ready for Alpha launch.
   
 paths:
   /admin/draft_orders.json:
@@ -1555,6 +1553,27 @@ paths:
           in: path
           required: true
           type: integer
+          
+      x-code-samples:
+        - lang: curl
+          source: |
+            curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders.json -d '{
+              "draft_order_invoice": {
+              	"to": "paul.norman@example.com",
+              	"subject": "Here is your new order invoice!",
+              	"custom_message": "This is a test custom message."
+              }
+            }'
+        - lang: Ruby
+          source: |
+            require 'shopify_api'
+
+
+            shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
+            ShopifyAPI::Base.site = shop_url
+            draft_order = ShopifyAPI::DraftOrder.find(#{id})
+            draft_order.send_invoice  
+      
       responses:
         '201':
           description: Created
@@ -1592,299 +1611,8 @@ paths:
             properties:
               errors:
                 $ref: '#/definitions/Error'
-      x-code-samples:
-        - lang: curl
-          source: |
-            curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders.json -d '{
-              "draft_order_invoice": {
-              	"to": "paul.norman@example.com",
-              	"subject": "Here is your new order invoice!",
-              	"custom_message": "This is a test custom message."
-              }
-            }'
-        - lang: Ruby
-          source: |
-            require 'shopify_api'
-
-
-            shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
-            ShopifyAPI::Base.site = shop_url
-            draft_order = ShopifyAPI::DraftOrder.find(#{id})
-            draft_order.send_invoice
-  '/admin/draft_orders/#{id}/complete.json':
-    put:
-      description: |
-        Mark a draft order as paid or pending payment.  
-
-        ![To Be Implemented](https://help.shopify.com/assets/images/tag-implemented.png)
-      tags:
-        - To Be Implemented
-      parameters:
-        - name: payment_gateway_id
-          in: query
-          description: 'Gateway used to receive payment. Either `id` of custom manual gateway, or null if using the default “Mark As Paid” gateway.'
-          type: integer
-          format: int64
-        - name: payment_pending
-          in: query
-          description: Sets whether or not payment is pending for the draft order.
-          enum:
-            - true
-            - false
-          type: boolean
-        - name: id
-          in: path
-          required: true
-          type: integer
-      responses:
-        '200':
-          description: Updated
-          schema:
-            $ref: '#/definitions/DraftOrder'
-          examples:
-            application/json:
-              {
-  "draft_order": {
-    "id": 59743814,
-    "note": null,
-    "email": null,
-    "taxes_included": false,
-    "currency": "CAD",
-    "subtotal_price": "40.00",
-    "total_tax": "5.99",
-    "total_price": "45.99",
-    "invoice_sent_at": null,
-    "created_at": "2016-12-07T13:04:30-05:00",
-    "updated_at": "2016-12-07T14:08:44-05:00",
-    "tax_exempt": false,
-    "completed_at": "2016-12-07T14:08:44-05:00",
-    "name": "#D11",
-    "status": "completed",
-    "line_items": [
-      {
-        "variant_id": null,
-        "product_id": null,
-        "title": "Custom Tee",
-        "variant_title": null,
-        "sku": null,
-        "vendor": null,
-        "price": "20.00",
-        "grams": 0,
-        "quantity": 2,
-        "requires_shipping": false,
-        "taxable": true,
-        "gift_card": false,
-        "fulfillment_service": "manual",
-        "tax_lines": [
-          {
-            "price": "2.00",
-            "rate": 0.05,
-            "title": "GST"
-          },
-          {
-            "price": "3.99",
-            "rate": 0.09975,
-            "title": "QST"
-          }
-        ],
-        "applied_discount": null,
-        "name": "Custom Tee",
-        "properties": null,
-        "custom": true
-      }
-    ],
-    "shipping_address": null,
-    "billing_address": null,
-    "invoice_url": "https://checkout.shopify.com/14376108/invoices/dc1f1d079d4615d2be342a36364862f0",
-    "applied_discount": null,
-    "order_id": 4760719174,
-    "shipping_line": null,
-    "tax_lines": [
-      {
-        "price": "2.00",
-        "rate": 0.05,
-        "title": "GST"
-      },
-      {
-        "price": "3.99",
-        "rate": 0.09975,
-        "title": "QST"
-      }
-    ],
-    "tags": "",
-    "customer": null
-  }
-}
-        '202':
-          description: Accepted with pending operations
-          schema:
-            $ref: '#/definitions/DraftOrder'
-          examples:
-            application/json:
-              {
-  "draft_order": {
-    "id": 59743814,
-    "note": null,
-    "email": null,
-    "taxes_included": false,
-    "currency": "CAD",
-    "subtotal_price": "40.00",
-    "total_tax": "5.99",
-    "total_price": "45.99",
-    "invoice_sent_at": null,
-    "created_at": "2016-12-07T13:04:30-05:00",
-    "updated_at": "2016-12-07T14:08:44-05:00",
-    "tax_exempt": false,
-    "completed_at": "2016-12-07T14:08:44-05:00",
-    "name": "#D11",
-    "status": "completed",
-    "line_items": [
-      {
-        "variant_id": null,
-        "product_id": null,
-        "title": "Custom Tee",
-        "variant_title": null,
-        "sku": null,
-        "vendor": null,
-        "price": "20.00",
-        "grams": 0,
-        "quantity": 2,
-        "requires_shipping": false,
-        "taxable": true,
-        "gift_card": false,
-        "fulfillment_service": "manual",
-        "tax_lines": [
-          {
-            "price": "2.00",
-            "rate": 0.05,
-            "title": "GST"
-          },
-          {
-            "price": "3.99",
-            "rate": 0.09975,
-            "title": "QST"
-          }
-        ],
-        "applied_discount": null,
-        "name": "Custom Tee",
-        "properties": null,
-        "custom": true
-      }
-    ],
-    "shipping_address": null,
-    "billing_address": null,
-    "invoice_url": "https://checkout.shopify.com/14376108/invoices/dc1f1d079d4615d2be342a36364862f0",
-    "applied_discount": null,
-    "order_id": 4760719174,
-    "shipping_line": null,
-    "tax_lines": [
-      {
-        "price": "2.00",
-        "rate": 0.05,
-        "title": "GST"
-      },
-      {
-        "price": "3.99",
-        "rate": 0.09975,
-        "title": "QST"
-      }
-    ],
-    "tags": "",
-    "customer": null
-  }
-}
-          headers:
-            Location:
-              description: Polling URI endpoint.
-              type: string
-            Retry-After:
-              description: Polling frequency.
-              type: string
-        '400':
-          description: Bad Request
-          schema:
-            type: object
-            properties:
-              errors:
-                $ref: '#/definitions/Error'
-        '404':
-          description: Not found
-          schema:
-            type: object
-            properties:
-              errors:
-                $ref: '#/definitions/Error'
-        '422':
-          description: Unprocessable entity
-          schema:
-            type: object
-            properties:
-              errors:
-                $ref: '#/definitions/Error'
-      x-code-samples:
-        - lang: curl
-          source: |
-            curl -X PUT -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/#{id}/complete.json?payment_gateway_id=null&payment_pending=false
-          
-        - lang: Ruby
-          source: |
-            require 'shopify_api'
-
-            shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
-            ShopifyAPI::Base.site = shop_url
-            draft_order = ShopifyAPI::DraftOrder.find(#{id})
-            draft_order.send_invoice
-  '/admin/draft_orders/#{id}/checkout.json':
-    post:
-      summary: Create or retrieve existing checkout
-      description: |
-        This call will either retrieve an existing checkout for this draft order or will create a new checkout if none exists previously. Requires checkout scope and access to the Sales Channel SDK.    
-        
-        ![To Be Implemented](https://help.shopify.com/assets/images/tag-implemented.png)  
-        
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: integer
-      responses:
-        '200':
-          description: Checkout retrieved
-          schema:
-            $ref: '#/definitions/checkout'
-        '201':
-          description: Checkout created
-          schema:
-            $ref: '#/definitions/checkout'
-        '400':
-          description: Bad request
-          schema:
-            type: object
-            properties:
-              errors:
-                $ref: '#/definitions/Error'
-        '404':
-          description: Not found
-          schema:
-            type: object
-            properties:
-              errors:
-                $ref: '#/definitions/Error'
-      tags:
-        - To Be Implemented
-      x-code-samples:
-        - lang: curl
-          source: |
-            curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders/#{id}/checkout.json
-        - lang: Ruby
-          source: |
-            require 'shopify_api'
-
-
-            shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
-            ShopifyAPI::Base.site = shop_url
-            draft_order = ShopifyAPI::DraftOrder.find(#{id})
-            draft_order.checkout
+      
+  
 definitions:
   DraftOrder:
     type: object
