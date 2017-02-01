@@ -49,7 +49,13 @@ tags:
     description: Update draft orders.
   - name: Send Invoice
     description: Send an invoice for a draft order.
- 
+  - name: Status Codes
+    description: some description
+    x-traitTag: true
+  - name: Webhooks
+    description: some description
+    x-traitTag: true
+
     
   
 paths:
