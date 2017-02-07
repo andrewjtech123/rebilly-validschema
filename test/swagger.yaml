@@ -1,0 +1,56 @@
+---
+swagger: '2.0'
+info:
+  version: 0.0.0
+  title: Simple API
+paths:
+  /A:
+    get:
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ResultForCallA'
+  /B:
+    get:
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ResultForCallB'
+
+definitions:
+  ResultForCallA:
+    type: object
+    x-extendedDiscriminator: status
+  ResultForCallB:
+    type: object
+    x-extendedDiscriminator: status
+  SuccessForCallA:
+    properties:
+      status:
+        enum:
+          - 'true'
+      data_a:
+        type: string
+    allOf:
+      - $ref: '#/definitions/ResultForCallA'
+  SuccessForCallB:
+    properties:
+      status:
+        enum:
+          - 'true'
+      data_b:
+        type: string
+    allOf:
+      - $ref: '#/definitions/ResultForCallB'
+  FailForAnyCall:
+    properties:
+      status:
+        enum:
+          - 'false'
+      reason:
+        type: string
+    allOf:
+      - $ref: '#/definitions/ResultForCallA'
+      - $ref: '#/definitions/ResultForCallB'

@@ -7,40 +7,96 @@ info:
     backgroundColor: null
   description: |
     # Draft Orders API
+    >
+      A draft order represents an order created by the merchant before it is completed. Merchants can use the Shopify admin to create orders and send invoices directly from the Orders page.
+      Using the Draft Orders API, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This provides great flexibility concerning how
+      orders are created and completed using the API, and enables a wide range of use cases including the following:
 
-      A [Draft Order](https://help.shopify.com/manual/orders/create-orders) represents the status of an order before the draft order is set to `completed` status.  At this point the draft order persists in `completed` state and a corresponding order is created in Shopify.  Using the Draft Orders API you can create a draft order and transition it to an order with great flexibility.  The following flows are supported:
-
-      * Create a draft order that calculates taxes and totals but accept payment from the customer outside of Shopify.
-      * Create a draft order (with taxes and totals) and send your customer a web checkout link to complete purchase and transition to an order.
-      * Use Draft Orders API in conjunction with the [Checkouts API](https://help.shopify.com/api/tutorials/sell-through-the-checkout-api) by creating a Checkout object based on a draft order (Sales Channel SDK only).  This enables a highly customizable experience for channels.
-
-     ## About Draft Orders
-
-     When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calculated and no transaction is performed.  With the Draft Orders API, on the other hand, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including the following:
-
-      * Create new orders and enter credit card payments in Shopify for sales you've made by phone, in person, or elsewhere.
+      * Create new orders for sales made by phone, in person, via chat, or by other means. Credit card payments for these orders
+      can subsequently be entered in the Shopify admin.
       * Send invoices to customers to pay with a secure checkout link.
-      * Use custom items to represent additional costs or products that aren't displayed in your inventory.
-      * Manually re-create mistaken orders from any of your active sales channels.
+      * Use custom items to represent additional costs or products that aren't displayed in a shop's inventory.
+      * Re-create mistaken orders.
       * Sell products at discount or wholesale rates.
       * Take pre-orders.
-      
-    ### Lifecycle of a Draft Order  
-    
-    When a draft order is created it is set to `open` status.  At this point an invoice can be sent to the customer for payment, and status changes to `invoice_sent`.  Otherwise, the draft order can be paid, set to pending, or paid by credit card; in each case, the draft order is set to `completed` and an order is created.
-    
+
+      ***
+
+      ![Beta](https://help.shopify.com/assets/images/beta.png) Please note that the API is currently in beta and subject to change.
+      By using this API, you agree to update your app in a timely fashion in response to any beta-period changes that are rolled out.
+
+      *Need Help?* - Check out the [Shopify API forum](https://ecommerce.shopify.com/c/shopify-apis-and-technology).
+
+      *Want to provide feedback?* - Help us improve by providing [your feedback](https://docs.google.com/forms/d/e/1FAIpQLSd9DZmVdSSPYdGSJ4PJp6M-WKolvo3BGqq_5YP96hjLe_QPSw/viewform).
+
+      ***
+
+
+
+    ## Lifecycle of a Draft Order
+
+    >
+      A [Draft Order](https://help.shopify.com/manual/orders/create-orders) represents the status of an order
+      before the draft order is set to `completed` status.
+      At this point the draft order persists in `completed` state and a corresponding order is created in Shopify.
+
+
+      When a draft order is created it is set to `open` status.
+      At this point an invoice can be sent to the customer for payment, and status changes to `invoice_sent`.
+      Otherwise, the draft order can be paid, set to pending, or paid by credit card;
+      in each case, the draft order is set to `completed` and an order is created.
+
      | `Note`| Once a draft order is set to status `completed` the only further draft order modifications that can be made are adding `tags` or `metafields`.  |
         |---|-------------|
-    
-    
-    
-    
+
+    ## Completing a Draft Order
+
+      Using the Draft Orders API you can create a draft order and transition it to an order with great flexibility.
+      The following flows are supported:
+
+      * Create a draft order that calculates taxes and totals but accept payment from the customer outside of Shopify.
+      * Create a draft order (with taxes and totals) and send an invoice to the customer.
+      * Use Draft Orders API in conjunction with the [Checkouts API](https://help.shopify.com/api/tutorials/sell-through-the-checkout-api)
+      by creating a Checkout object based on a draft order (Sales Channel SDK only).  This enables a highly customizable experience for channels.
+
+
+    # Webhooks
+
+    >
+      You can use webhooks for your draft orders app to execute code after a specific event happens on a shop, for example, after a draft order is created, updated or deleted.
+      Webhooks can be created using the REST API, and our [webhook guide](https://help.shopify.com/api/tutorials/webhooks) will help you get set up.
+
+      Webhooks can be registered for the following draft order events
+
+      | `Events`| `draft_orders/create`, `draft_orders/update`, `draft_orders/delete` |
+         |---|-------------|
+
+
+
+    # Status Codes
+
+    >
+      Shopify uses conventional HTTP status codes to indicate the success or failure of an API request.
+      In general, codes in the 2xx range indicate success, and codes in the 4xx range indicate an error that failed given the information provided.
+      You can view the complete list of HTTP status codes [here](https://help.shopify.com/api/guides/response-status-codes).
+      Draft order endpoints will use HTTP status codes to differentiate between draft orders with pending operations (using a 202 Accepted) and draft orders which are successfully created (201 Created) or updated (200 OK).
+      In addition to the HTTP status codes, responses will also use Location and Retry-After headers to specify the polling URI endpoint and polling frequency respectively.
+      The response will contain the partially calculated draft order and any calculated attributes dependant on stepwise operations may be subject to change until processing is complete.
+      For long running operations, clients will be responsible for polling the endpoint specified in the Location header until a 200 OK response is returned.
+
+
 schemes:
   - https
 host: your-store-domain.myshopify.com
 tags:
   - name: Get
     description: Retrieve draft orders.
+  - name: Retrieve
+    description: Retrieve a specific draft order.
+  - name: List
+    description: Return list of draft orders.
+  - name: Count
+    description: Return a count of draft orders.
   - name: Create
     description: Create draft orders.
   - name: Delete
@@ -49,19 +105,23 @@ tags:
     description: Update draft orders.
   - name: Send Invoice
     description: Send an invoice for a draft order.
-  - name: Status Codes
-    description: some description
-    x-traitTag: true
-  - name: Webhooks
-    description: some description
-    x-traitTag: true
+x-tagGroups:
+  - name: Endpoints
+    tags:
+      - Retrieve
+      - List
+      - Count
+      - Create
+      - Update
+      - Delete
+      - Send Invoice
 
-    
-  
+
+
 paths:
   /admin/draft_orders.json:
     get:
-      summary: Retrieve a list of draft orders
+      summary: Return a list of draft orders
       description: |
         Return a list of draft order objects.
       parameters:
@@ -72,7 +132,7 @@ paths:
         - $ref: '#/parameters/status'
         - $ref: '#/parameters/ids'
       tags:
-        - Get
+        - List
       responses:
         '200':
           description: List of draft orders
@@ -82,7 +142,7 @@ paths:
             application/json:
               {
   "draft_orders": [
-    
+
     {
       "id": 58379910,
       "note": null,
@@ -696,21 +756,15 @@ paths:
     }
   ]
 }
-            
+
         '400':
           description: Bad request
-          schema:
-            type: object
-            properties:
-              errors:
-                $ref: '#/definitions/Error'
+
+
         '404':
           description: Not found
-          schema:
-            type: object
-            properties:
-              errors:
-                $ref: '#/definitions/Error'
+
+
       x-code-samples:
         - lang: curl
           source: |
@@ -769,14 +823,14 @@ paths:
         - name: draft_order
           in: body
           description: |
-  
-    
+
+
           schema:
             allOf:
               - $ref: '#/definitions/customerDraftOrder'
             required:
               - line_items
-            example: 
+            example:
                 {	"draft_order": {
               	"line_items": [{
               		"title": "Custom Tee",
@@ -784,21 +838,21 @@ paths:
               		"quantity": 2
               	}]
                 }}
-                
-    
-              
 
-              
 
-              
+
+
+
+
+
       responses:
         '201':
           description: Created
           schema:
             $ref: '#/definitions/DraftOrder'
-            
+
           examples:
-            application/json: 
+            application/json:
               {
   "draft_order": {
     "id": 59742086,
@@ -871,8 +925,8 @@ paths:
     "customer": null
   }
 }
- 
-            
+
+
         '202':
           description: Accepted with pending operations
           schema:
@@ -884,9 +938,9 @@ paths:
             Retry-After:
               description: Polling frequency.
               type: string
-              
+
           examples:
-            application/json: 
+            application/json:
               {
   "draft_order": {
     "id": 59742086,
@@ -959,7 +1013,7 @@ paths:
     "customer": null
   }
 }
-   
+
         '400':
           description: Bad request
           schema:
@@ -975,18 +1029,18 @@ paths:
               errors:
                 $ref: '#/definitions/Error'
       x-code-samples:
-       
+
         - lang: JSON ex#2
           source: |
             <!--- Create a product_variant line_item --->
-          
+
               {	"draft_order": {
             	"line_items": [{
             		"variant_id": "1234",
               	"quantity": 2
             	}]
               }}
-      
+
         - lang: curl ex#1
           source: |
             <!--- Create a simple draft order --->
@@ -1068,9 +1122,8 @@ paths:
             <!--- Create a draft order that loads shipping and billing addresses automatically from the customer’s default address --->
 
             curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders.json -d '{
-            
-              "draft_order": {
-              
+            "draft_order": {
+
                 	"line_items": [{
                 		"title": "Custom Tee",
                 		"price": "20.00",
@@ -1079,17 +1132,16 @@ paths:
               	"customer": {
               		"id": 4312658502
               	},
-              	"use_customer_default_address": true 
+              	"use_customer_default_address": true
                 }}
-              
+
         - lang: curl ex#4
           source: |
               <!--- Create a draft order using a product_variant line_item --->
-  
+
               curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders.json -d '{
-              
-                "draft_order": {
-                
+              "draft_order": {
+
                   	"line_items": [{
                   		"variant_id": "26669237382",
                   		"quantity": 2
@@ -1097,9 +1149,9 @@ paths:
                 	"customer": {
                 		"id": 4312658502
                 	},
-                	"use_customer_default_address": true 
-                  }}  
-       
+                	"use_customer_default_address": true
+                  }}
+
 
         - lang: Ruby
           source: |
@@ -1133,9 +1185,9 @@ paths:
             })
   '/admin/draft_orders/#{id}.json':
     get:
-      description: Receive a single draft order
+      description: Retrieve a single draft order
       tags:
-        - Get
+        - Retrieve
       parameters:
         - $ref: '#/parameters/fields'
         - name: id
@@ -1149,7 +1201,7 @@ paths:
           description: A single draft order
           schema:
             $ref: '#/definitions/DraftOrder'
-            
+
           examples:
             application/json:
               {
@@ -1224,21 +1276,13 @@ paths:
     "customer": null
   }
 }
-  
+
         '400':
           description: Bad request
-          schema:
-            type: object
-            properties:
-              errors:
-                $ref: '#/definitions/Error'
+
         '404':
           description: Not found
-          schema:
-            type: object
-            properties:
-              errors:
-                $ref: '#/definitions/Error'
+
       x-code-samples:
         - lang: curl
           source: |
@@ -1373,7 +1417,7 @@ paths:
     "customer": null
   }
 }
-            
+
         '202':
           description: Accepted with pending operations
           schema:
@@ -1440,7 +1484,7 @@ paths:
           format: int64
       responses:
         '200':
-          description: Draft order deleted successfully 
+          description: Draft order deleted successfully
           schema:
             $ref: '#/definitions/Object'
         '400':
@@ -1482,17 +1526,13 @@ paths:
         - $ref: '#/parameters/status'
         - $ref: '#/parameters/ids'
       tags:
-        - Get
+        - Count
       responses:
         '200':
           $ref: '#/responses/Integer'
         '400':
           description: Bad request
-          schema:
-            type: object
-            properties:
-              errors:
-                $ref: '#/definitions/Error'
+
       x-code-samples:
         - lang: curl
           source: |
@@ -1531,27 +1571,6 @@ paths:
           in: path
           required: true
           type: integer
-          
-      x-code-samples:
-        - lang: curl
-          source: |
-            curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders.json -d '{
-              "draft_order_invoice": {
-              	"to": "paul.norman@example.com",
-              	"subject": "Here is your new order invoice!",
-              	"custom_message": "This is a test custom message."
-              }
-            }'
-        - lang: Ruby
-          source: |
-            require 'shopify_api'
-
-
-            shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
-            ShopifyAPI::Base.site = shop_url
-            draft_order = ShopifyAPI::DraftOrder.find(#{id})
-            draft_order.send_invoice  
-      
       responses:
         '201':
           description: Created
@@ -1589,8 +1608,26 @@ paths:
             properties:
               errors:
                 $ref: '#/definitions/Error'
-      
-  
+      x-code-samples:
+        - lang: curl
+          source: |
+            curl -X POST -H "Content-Type: application/json" https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin/draft_orders.json -d '{
+              "draft_order_invoice": {
+              	"to": "paul.norman@example.com",
+              	"subject": "Here is your new order invoice!",
+              	"custom_message": "This is a test custom message."
+              }
+            }'
+        - lang: Ruby
+          source: |
+            require 'shopify_api'
+
+
+            shop_url = "https://#{api_key}:#{api_password}@your_store_domain.myshopify.com/admin"
+            ShopifyAPI::Base.site = shop_url
+            draft_order = ShopifyAPI::DraftOrder.find(#{id})
+            draft_order.send_invoice
+
 definitions:
   DraftOrder:
     type: object
@@ -1617,6 +1654,31 @@ definitions:
         type: string
         description: The text of an optional note that a merchant can attach to the draft order.
         readOnly: true
+      note_attributes:
+        type: array
+        description: |
+          Extra information that is added to the draft order.
+          Each array entry must contain a hash with `name` and `value` keys as shown.
+          ```
+          "note_attributes": [
+            {
+              "name": "custom engraving",
+              "value": "Happy Birthday"
+            },
+            {
+              "name": "colour",
+              "value": "green"
+            }
+          ],
+          ```
+        items:
+          $ref: '#/definitions/note_attributes'
+
+
+
+
+
+
       email:
         type: string
         description: 'The email address used for sending notifications.  For example, the customer email address, if a customer is associated to the draft order.  If no customer exists, this will be used to load/generate one.'
@@ -1638,8 +1700,6 @@ definitions:
         description: Product variant line item or custom line item associated to the draft order.  Each draft order must include at least one `line_item`.
         items:
           $ref: '#/definitions/line_item'
-      metafields:
-        $ref: '#/definitions/metafield'
       shipping_line:
         $ref: '#/definitions/shipping_line'
       tags:
@@ -1647,8 +1707,14 @@ definitions:
         description: 'Additional short descriptors, commonly used for filtering and searching, formatted as a string of comma-separated values. Each individual tag is limited to 40 characters in length.'
       tax_exempt:
         type: boolean
-        description: |  
-          Sets whether or not taxes are exempt for this draft order. If this value is `false`, Shopify will honor the `taxable` setting for each `line_item`.  However, if a customer is applied to the draft order using customer object `id`, the customer's  `tax_exempt` settings take precedence.  Further, when a customer's `tax_exempt` field is set to `true` it is not possible to set draft order `tax_exempt` to `false`.  
+        description: |
+          >
+            Sets whether or not taxes are exempt for this draft order.
+            If this value is `false`, Shopify will honor the `taxable` setting for each `line_item`.
+            However, if a customer is applied to the draft order using customer object `id`,
+            the customer's  `tax_exempt` settings take precedence.
+            Further, when a customer's `tax_exempt` field is set to `true`
+            it is not possible to set draft order `tax_exempt` to `false`.
         enum:
           - true
           - false
@@ -1700,7 +1766,7 @@ definitions:
           - open
           - invoice_sent
           - completed
-        description: | 
+        description: |
           String describing the state of the draft order.
           | `Note`| Once a draft order is set to status `completed` the only further draft order modifications that can be made are adding `tags` or `metafields`.  No other draft order actions are permitted.  |
           |---|-------------|
@@ -1711,13 +1777,15 @@ definitions:
       - $ref: '#/definitions/DraftOrder'
       - type: object
         properties:
-          
+
           use_customer_default_address:
             type: boolean
             description: Not actually serialized in output.  Used to fill unspecified shipping/billing address with the customer’s default address.
             enum:
               - true
               - false
+          metafields:
+             $ref: '#/definitions/metafield'
   draft_order_invoice:
     properties:
       to:
@@ -1740,7 +1808,7 @@ definitions:
     description: Object describing the checkout for the draft order.
   line_item:
     type: object
-    discriminator: custom
+    x-extendedDiscriminator: custom
     properties:
       custom:
         description: 'Indicates if this is product_variant_line_item, or a custom_line_item.  If set to `true` indicates that the `line_item` is a custom line item.  If set to `false` indicates that it is a product variant `line_item`. *Read only field*'
@@ -1786,9 +1854,8 @@ definitions:
         description: 'Service provider who is doing the fulfillment. Valid values are either `manual` or the name of the provider. eg `amazon`, `shipwire`, etc.  Defaults to `manual` for custom line items.'
         readOnly: true
       properties:
-        type: string
-        description: 'An array of custom information for an item that has been added to the cart. Often used to provide product customization options. For more information, see the [documentation on collecting customization information on the product page](https://help.shopify.com/themes/customization/products/get-customization-information-for-products).'
-        readOnly: false
+        type: array
+        $ref: '#/definitions/line_item_properties'
       applied_discount:
         $ref: '#/definitions/applied_discount'
       tax_line:
@@ -1852,7 +1919,7 @@ definitions:
   shipping_line:
     type: object
     description: Object describing the shipping method and price associated with the draft order.  Custom `shipping_lines` do not include a `shipping_rate` handle.
-    discriminator: custom
+    x-extendedDiscriminator: custom
     properties:
       custom:
         description: Indicates whether or not the shipping_line is a custom_shipping_line.  When set to `true` indicates that it is a custom_shipping_line. *Read only field*
@@ -1880,6 +1947,36 @@ definitions:
         format: int64
         description: The price of the shipping method.
         readOnly: true
+
+  line_item_properties:
+    type: object
+    description: |
+      >
+        An array of custom information for an item that has been added to the draft order.
+        Often used to provide product customization options.
+        Is most often used for carts by collecting customization information on the product page.
+        For more information, see [the documentation](https://help.shopify.com/themes/customization/products/get-customization-information-for-products).
+        ```
+        "properties": [
+        {
+          "name": "custom engraving",
+          "value": "Happy Birthday"
+        },
+        {
+          "name": "colour",
+          "value": "green"
+        }
+        ],
+        ```
+
+    properties:
+      name:
+        type: string
+        description: name for the `line_item_property`.
+      value:
+        type: string
+        description: value for the `line_item_property`.
+
   custom_shipping_line:
     allOf:
       - $ref: '#/definitions/shipping_line'
@@ -1997,7 +2094,14 @@ definitions:
         readOnly: false
   customer:
     type: object
-    description: Customer associated with the draft order.  Used to load/remove the associated customer with customer `id`.  When a customer is loaded, the customer’s email will be loaded on the draft order if it exists.  When a customer is removed, the shipping, billing, and email addresses will also be removed. The recommended way to remove a customer from a draft order is to make a POST request with customer object set to null.  If this is not possible, a customer may also be removed by setting all of `customer`, `email`, `shipping_address`, and `billing_address` to null.   
+    description: >
+      Customer associated with the draft order.
+      Used to load/remove the associated customer with customer `id`.
+      When a customer is loaded, the customer’s email will be loaded on the draft order if it exists.
+      When a customer is removed, the shipping, billing, and email addresses will also be removed.
+      The recommended way to remove a customer from a draft order is to make a POST request with customer object set
+      to null, without specifying an email, shipping address, or billing address. If this is not possible, a customer may also be removed by setting all of
+      `customer`, `email`, `shipping_address`, and `billing_address` to null.
     required:
       - id
     readOnly: false
@@ -2021,9 +2125,9 @@ definitions:
         readOnly: true
       id:
         type: string
-        description: A unique numeric identifier for the customer.  
+        description: A unique numeric identifier for the customer.
         readOnly: false
-    
+
       order_id:
         type: integer
         format: integer
@@ -2162,6 +2266,22 @@ definitions:
         type: string
         format: zip
         description: The zip or postal code of the billing address.
+
+  note_attributes:
+    type: object
+
+    properties:
+      name:
+        type: string
+        description: name for the `note_attribute`.
+      value:
+        type: string
+        description: value for the `note_attribute`.
+
+
+
+
+
   Error:
     type: object
     description: |
@@ -2169,11 +2289,11 @@ definitions:
 
 
 
-      **Example:**
+      **Example 1:**
 
       ```
-      # Response
-      HTTP/1.1 422 Unprocessable Entity
+
+      HTTP/1.1 4xx
       {
         "errors": {
           "shipping_line": [
@@ -2186,10 +2306,37 @@ definitions:
       }
 
       ```
+      Also, note that the API will return the `errors` object for errors that apply to the attributes of Draft Order child objects (eg. applied_discount, line_items).
+
+      **Example 2:**
+
+      ```
+
+      {
+        "errors": {
+          "applied_discount.value": "must be positive"
+        }
+      }
+
+      ```
+
+       **Example 3:**
+
+      ```
+
+      {
+        "errors": {
+          "line_items[1].quantity": [
+            "must be greater than or equal to 1"
+          ]
+        }
+      }
+
+      ```
 
     schema: null
     $ref: '#/definitions/ErrorModel'
-    
+
   Object:
     type: object
   ErrorModel:
@@ -2237,7 +2384,6 @@ parameters:
     type: string
     description: |
       Filter by status.
-       ![To Be Implemented](https://help.shopify.com/assets/images/tag-implemented.png)
     enum:
       - open
       - invoice_sent
