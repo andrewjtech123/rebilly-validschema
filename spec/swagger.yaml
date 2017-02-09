@@ -7,12 +7,18 @@ info:
     backgroundColor: null
   description: |
     # Draft Orders API
+    >
+      A draft order represents an order created by the merchant before it is completed. Merchants can use the Shopify admin to create orders and send invoices directly from the Orders page.
+      Using the Draft Orders API, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This provides great flexibility concerning how
+      orders are created and completed using the API, and enables a wide range of use cases including the following:
 
-      A [Draft Order](https://help.shopify.com/manual/orders/create-orders) represents the status of an order before the draft order is set to `completed` status.  At this point the draft order persists in `completed` state and a corresponding order is created in Shopify.  Using the Draft Orders API you can create a draft order and transition it to an order with great flexibility.  The following flows are supported:
-
-      * Create a draft order that calculates taxes and totals but accept payment from the customer outside of Shopify.
-      * Create a draft order (with taxes and totals) and send your customer a web checkout link to complete purchase and transition to an order.
-      * Use Draft Orders API in conjunction with the [Checkouts API](https://help.shopify.com/api/tutorials/sell-through-the-checkout-api) by creating a Checkout object based on a draft order (Sales Channel SDK only).  This enables a highly customizable experience for channels.
+      * Create new orders for sales made by phone, in person, via chat, or by other means. Credit card payments for these orders
+      can subsequently be entered in the Shopify admin.
+      * Send invoices to customers to pay with a secure checkout link.
+      * Use custom items to represent additional costs or products that aren't displayed in a shop's inventory.
+      * Re-create mistaken orders.
+      * Sell products at discount or wholesale rates.
+      * Take pre-orders.
 
       ***
 
@@ -25,21 +31,22 @@ info:
 
       ***
 
+      </br>
 
-     ## About Draft Orders
+      ###  <img src="https://screenshot.click/01-50-7b210-rzih8.jpg" alt="Postman" style="width: 50px;"/> Postman Collection
 
-     When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calculated and no transaction is performed.  With the Draft Orders API, on the other hand, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including the following:
+      Postman is an application that simplifies sending HTTP requests to Shopify API endpoints. To begin interacting with the Draft Orders API, simply click the button below and replace the sample variables indicated by `{{ }}` with your actual values. For a more comprehensive guide on using Postman with the Shopify API: [click here](https://help.shopify.com/api/tutorials/using-postman)
 
-      * Create new orders and enter credit card payments in Shopify for sales you've made by phone, in person, or elsewhere.
-      * Send invoices to customers to pay with a secure checkout link.
-      * Use custom items to represent additional costs or products that aren't displayed in your inventory.
-      * Manually re-create mistaken orders from any of your active sales channels.
-      * Sell products at discount or wholesale rates.
-      * Take pre-orders.
+      [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.getpostman.com/collections/5f0ae5d5ca1268d0307e)
 
-    ### Lifecycle of a Draft Order
+    ## Lifecycle of a Draft Order
 
     >
+      A [Draft Order](https://help.shopify.com/manual/orders/create-orders) represents the status of an order
+      before the draft order is set to `completed` status.
+      At this point the draft order persists in `completed` state and a corresponding order is created in Shopify.
+
+
       When a draft order is created it is set to `open` status.
       At this point an invoice can be sent to the customer for payment, and status changes to `invoice_sent`.
       Otherwise, the draft order can be paid, set to pending, or paid by credit card;
@@ -47,6 +54,17 @@ info:
 
      | `Note`| Once a draft order is set to status `completed` the only further draft order modifications that can be made are adding `tags` or `metafields`.  |
         |---|-------------|
+
+    ## Completing a Draft Order
+
+      Using the Draft Orders API you can create a draft order and transition it to an order with great flexibility.
+      The following flows are supported:
+
+      * Create a draft order that calculates taxes and totals but accept payment from the customer outside of Shopify.
+      * Create a draft order (with taxes and totals) and send an invoice to the customer.
+      * Use Draft Orders API in conjunction with the [Checkouts API](https://help.shopify.com/api/tutorials/sell-through-the-checkout-api)
+      by creating a Checkout object based on a draft order (Sales Channel SDK only).  This enables a highly customizable experience for channels.
+
 
     # Webhooks
 
@@ -1798,18 +1816,14 @@ definitions:
     type: object
     discriminator: custom
     properties:
-      custom:
+      custom: &line_item_custom
         description: 'Indicates if this is product_variant_line_item, or a custom_line_item.  If set to `true` indicates that the `line_item` is a custom line item.  If set to `false` indicates that it is a product variant `line_item`. *Read only field*'
         type: boolean
-        enum:
-          - true
-          - false
-        default: false
       id:
         type: string
         description: The `id` of the line item.
         readOnly: true
-      variant_id:
+      variant_id: &line_item_variant_id
         type: string
         description: The `id` of the product variant corresponding to the `line_item`.  Null if custom `line_item`.
         readOnly: false
@@ -1831,7 +1845,7 @@ definitions:
         readOnly: true
       quantity:
         type: string
-        description: quantity
+        description: The number of products that were purchased.
         readOnly: false
       gift_card:
         type: boolean
@@ -1850,28 +1864,29 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/tax_line'
+    required:
+      - quantity
   custom_line_item:
-    description: custom line item
     allOf:
       - $ref: '#/definitions/line_item'
       - type: object
+        description: custom line item
         required:
           - title
           - price
-          - quantity
           - taxable
         properties:
           title:
             type: string
             description: 'The title of the product or variant.  Can only be specified if this is a custom line item, in which case it is mandatory.'
             readOnly: false
+          custom:
+            <<: *line_item_custom
+            enum:
+             - true
           price:
             type: string
             description: 'The price of the item before discounts have been applied.  Can only be specified if this is a custom line item, in which case it is mandatory.'
-            readOnly: false
-          quantity:
-            type: string
-            description: The number of products that were purchased.
             readOnly: false
           grams:
             type: string
@@ -1896,14 +1911,25 @@ definitions:
             enum:
               - true
               - false
+          variant_id:
+            <<: *line_item_variant_id
+            enum:
+              - null
   product_variant_line_item:
-    description: product variant line item
     allOf:
       - $ref: '#/definitions/line_item'
       - type: object
-    required:
-      - variant_id
-      - quantity
+        description: product variant line item
+        required:
+          - variant_id
+        properties:
+          variant_id:
+            <<: *line_item_variant_id
+          custom:
+            <<: *line_item_custom
+            default: false
+            enum:
+            - false
   shipping_line:
     type: object
     description: Object describing the shipping method and price associated with the draft order.  Custom `shipping_lines` do not include a `shipping_rate` handle.
