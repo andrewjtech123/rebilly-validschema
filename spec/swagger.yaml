@@ -7,18 +7,12 @@ info:
     backgroundColor: null
   description: |
     # Draft Orders API
-    >
-      A draft order represents an order created by the merchant before it is completed. Merchants can use the Shopify admin to create orders and send invoices directly from the Orders page.
-      Using the Draft Orders API, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This provides great flexibility concerning how
-      orders are created and completed using the API, and enables a wide range of use cases including the following:
 
-      * Create new orders for sales made by phone, in person, via chat, or by other means. Credit card payments for these orders
-      can subsequently be entered in the Shopify admin.
-      * Send invoices to customers to pay with a secure checkout link.
-      * Use custom items to represent additional costs or products that aren't displayed in a shop's inventory.
-      * Re-create mistaken orders.
-      * Sell products at discount or wholesale rates.
-      * Take pre-orders.
+      A [Draft Order](https://help.shopify.com/manual/orders/create-orders) represents the status of an order before the draft order is set to `completed` status.  At this point the draft order persists in `completed` state and a corresponding order is created in Shopify.  Using the Draft Orders API you can create a draft order and transition it to an order with great flexibility.  The following flows are supported:
+
+      * Create a draft order that calculates taxes and totals but accept payment from the customer outside of Shopify.
+      * Create a draft order (with taxes and totals) and send your customer a web checkout link to complete purchase and transition to an order.
+      * Use Draft Orders API in conjunction with the [Checkouts API](https://help.shopify.com/api/tutorials/sell-through-the-checkout-api) by creating a Checkout object based on a draft order (Sales Channel SDK only).  This enables a highly customizable experience for channels.
 
       ***
 
@@ -32,15 +26,20 @@ info:
       ***
 
 
+     ## About Draft Orders
 
-    ## Lifecycle of a Draft Order
+     When using the [Orders API](https://help.shopify.com/api/reference/order) to create orders, no payment information is calculated and no transaction is performed.  With the Draft Orders API, on the other hand, you can create orders on which shipping, taxes and all total amounts are calculated by Shopify.  This enables a wide range of use cases including the following:
+
+      * Create new orders and enter credit card payments in Shopify for sales you've made by phone, in person, or elsewhere.
+      * Send invoices to customers to pay with a secure checkout link.
+      * Use custom items to represent additional costs or products that aren't displayed in your inventory.
+      * Manually re-create mistaken orders from any of your active sales channels.
+      * Sell products at discount or wholesale rates.
+      * Take pre-orders.
+
+    ### Lifecycle of a Draft Order
 
     >
-      A [Draft Order](https://help.shopify.com/manual/orders/create-orders) represents the status of an order
-      before the draft order is set to `completed` status.
-      At this point the draft order persists in `completed` state and a corresponding order is created in Shopify.
-
-
       When a draft order is created it is set to `open` status.
       At this point an invoice can be sent to the customer for payment, and status changes to `invoice_sent`.
       Otherwise, the draft order can be paid, set to pending, or paid by credit card;
@@ -48,17 +47,6 @@ info:
 
      | `Note`| Once a draft order is set to status `completed` the only further draft order modifications that can be made are adding `tags` or `metafields`.  |
         |---|-------------|
-
-    ## Completing a Draft Order
-
-      Using the Draft Orders API you can create a draft order and transition it to an order with great flexibility.
-      The following flows are supported:
-
-      * Create a draft order that calculates taxes and totals but accept payment from the customer outside of Shopify.
-      * Create a draft order (with taxes and totals) and send an invoice to the customer.
-      * Use Draft Orders API in conjunction with the [Checkouts API](https://help.shopify.com/api/tutorials/sell-through-the-checkout-api)
-      by creating a Checkout object based on a draft order (Sales Channel SDK only).  This enables a highly customizable experience for channels.
-
 
     # Webhooks
 
@@ -1808,7 +1796,7 @@ definitions:
     description: Object describing the checkout for the draft order.
   line_item:
     type: object
-    x-extendedDiscriminator: custom
+    discriminator: custom
     properties:
       custom:
         description: 'Indicates if this is product_variant_line_item, or a custom_line_item.  If set to `true` indicates that the `line_item` is a custom line item.  If set to `false` indicates that it is a product variant `line_item`. *Read only field*'
@@ -1919,7 +1907,7 @@ definitions:
   shipping_line:
     type: object
     description: Object describing the shipping method and price associated with the draft order.  Custom `shipping_lines` do not include a `shipping_rate` handle.
-    x-extendedDiscriminator: custom
+    discriminator: custom
     properties:
       custom:
         description: Indicates whether or not the shipping_line is a custom_shipping_line.  When set to `true` indicates that it is a custom_shipping_line. *Read only field*
